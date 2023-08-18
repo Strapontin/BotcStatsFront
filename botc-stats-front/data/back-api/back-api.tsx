@@ -32,7 +32,8 @@ import { Role } from "@/entities/Role";
 import { Player } from "@/entities/Player";
 import { Game } from "@/entities/Game";
 
-const apiUrl = "http://192.168.1.48:7099";
+// const apiUrl = "http://192.168.1.48:7099";
+const apiUrl = process.env.BACKEND_URL!;
 
 /* Login/Logout */
 

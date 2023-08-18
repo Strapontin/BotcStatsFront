@@ -20,8 +20,6 @@ export const authOptions = {
       if (account) {
         token.accessToken = account.access_token;
       }
-      // console.log("jwt");
-      // console.log(token);
       return token;
     },
     async session({
@@ -40,8 +38,6 @@ export const authOptions = {
         method: "GET",
       });
 
-      // console.log("session");
-      // console.log(response);
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
       return session;
