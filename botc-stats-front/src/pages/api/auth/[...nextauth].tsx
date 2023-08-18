@@ -5,8 +5,8 @@ export const authOptions = {
   // Configure one or more authentication providers
   providers: [
     DiscordProvider({
-      clientId: process.env.DISCORD_ID!,
-      clientSecret: process.env.DISCORD_SECRET!,
+      clientId: process.env.NEXT_PUBLIC_DISCORD_ID!,
+      clientSecret: process.env.NEXT_PUBLIC_DISCORD_SECRET!,
       authorization: {
         // url: "https://discord.com/api/users/@me/guilds/765137571608920074/member",
         params: { scope: "guilds.members.read" },
