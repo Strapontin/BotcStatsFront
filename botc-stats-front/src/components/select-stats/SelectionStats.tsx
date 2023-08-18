@@ -8,7 +8,6 @@ export default function SelectionStats() {
   const router = useRouter();
 
   const user = useContext(AuthContext);
-  console.log(user)
 
   let connexionBlock = (
     <Dropdown.Item css={{ display: "none" }}>
