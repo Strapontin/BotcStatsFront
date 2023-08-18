@@ -11,7 +11,7 @@ export default function ImageIconName(props: {
   const imgFileName = removeDiacritics(props.name)
     .replaceAll(" ", "-")
     .replaceAll("'", "");
-  const imgPath = `/images/roles-icons/${imgFileName}.png`;
+  const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png`;
 
   var roleName = props.name;
 
