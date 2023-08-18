@@ -1,4 +1,4 @@
-import { Image } from "@nextui-org/react";
+import Image from "next/image";
 import RoleColored from "./role-colored";
 import { CharacterType } from "@/entities/enums/characterType";
 import { removeDiacritics } from "../../helper/string";
