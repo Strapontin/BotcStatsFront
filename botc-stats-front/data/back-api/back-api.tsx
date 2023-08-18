@@ -33,8 +33,9 @@ import { Player } from "@/entities/Player";
 import { Game } from "@/entities/Game";
 
 // const apiUrl = "http://192.168.1.48:7099";
-const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
-console.log(apiUrl)
+const apiUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL! ??
+  "https://botcstatsback-zdgyxyd7kq-od.a.run.app";
 
 /* Login/Logout */
 
