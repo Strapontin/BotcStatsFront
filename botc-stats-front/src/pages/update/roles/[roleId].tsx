@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import {
   updateRole,
@@ -13,6 +13,7 @@ import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreate
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import AuthContext from "@/stores/authContext";
 
 export default function UpdateRolePage() {
   const router = useRouter();
@@ -27,6 +28,8 @@ export default function UpdateRolePage() {
   const [role, setRole] = useState<Role>(getNewEmptyRole());
 
   const [roles, setRoles] = useState<string[]>([]);
+
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   const canUpdateRole = useCallback(() => {
     if (role.name === "") {
@@ -100,7 +103,7 @@ export default function UpdateRolePage() {
   async function btnUpdateRole() {
     if (!canUpdateRole()) return;
 
-    if (await updateRole(role)) {
+    if (await updateRole(role, accessToken)) {
       const r = await getRoleById(roleId);
       setRole(r);
       setRoleCreateEditKey(roleCreateEditKey + 1);
@@ -148,7 +151,7 @@ export default function UpdateRolePage() {
   async function btnDeletePressed() {
     setDisableBtnDelete(true);
     setTimeout(async () => {
-      if (await deleteRole(oldRole.id)) {
+      if (await deleteRole(oldRole.id, accessToken)) {
         updateMessage(false, "Le rôle a été supprimé correctement.");
         closePopupDelete();
       }
@@ -189,25 +192,27 @@ export default function UpdateRolePage() {
 
   return (
     <Fragment>
-      <RoleCreateEdit
-        key={roleCreateEditKey}
-        title={title}
-        role={role}
-        setRole={setRole}
-        message={message}
-        btnPressed={btnUpdateRole}
-        btnText="Modifier le rôle"
-      />
+      <div className="toto">
+        <RoleCreateEdit
+          key={roleCreateEditKey}
+          title={title}
+          role={role}
+          setRole={setRole}
+          message={message}
+          btnPressed={btnUpdateRole}
+          btnText="Modifier le rôle"
+        />
 
-      <Button
-        shadow
-        ghost
-        color="error"
-        onPress={() => setPopupDeleteVisible(true)}
-        disabled={disableBtnDelete}
-      >
-        Supprimer le rôle
-      </Button>
+        <Button
+          shadow
+          ghost
+          color="error"
+          onPress={() => setPopupDeleteVisible(true)}
+          disabled={disableBtnDelete}
+        >
+          Supprimer le rôle
+        </Button>
+      </div>
       <Spacer y={3} />
       {popup}
     </Fragment>

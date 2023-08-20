@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+// import { cookies } from "next/dist/client/components/headers";
 import { createContext, useEffect, useState } from "react";
 
 const AuthContext = createContext({
@@ -15,11 +16,15 @@ export const AuthContextProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     async function getUserData() {
-      if (!session.data) return;
+      // console.log(cookies());
+      if (!session.data || user.accessToken)
+        return;
       const tbaServerId = "765137571608920074";
       const storyTellerRoleId = "797739056406069279";
 
       const accessToken = session.data.accessToken;
+      console.log(accessToken);
+      console.log(user);
 
       const response = await fetch(
         `https://discord.com/api/users/@me/guilds/${tbaServerId}/member`,
@@ -32,9 +37,10 @@ export const AuthContextProvider = ({ children }: { children: any }) => {
         accessToken,
       };
       setUser(s);
+      // cookies().set("userToken", s);
     }
     getUserData();
-  }, [session.data]);
+  }, [session.data, user]);
 
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };

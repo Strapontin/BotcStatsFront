@@ -36,12 +36,12 @@ export default NextAuth({
       token: any;
       user: any;
     }) {
-      const tbaServerId = 765137571608920074;
-      const url = `https://discord.com/api/users/@me/guilds/${tbaServerId}/member`;
+      // const tbaServerId = 765137571608920074;
+      // const url = `https://discord.com/api/users/@me/guilds/${tbaServerId}/member`;
 
-      const response = await fetch(url, {
-        method: "GET",
-      });
+      // const response = await fetch(url, {
+      //   method: "GET",
+      // });
 
       // Send properties to the client, like an access_token from a provider.
       session.accessToken = token.accessToken;
@@ -51,7 +51,7 @@ export default NextAuth({
     //   return baseUrl;
     // },
   },
-  debug: true,
+  // debug: true,
 
   // cookies: {
   //   pkceCodeVerifier: {

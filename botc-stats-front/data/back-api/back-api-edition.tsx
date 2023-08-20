@@ -26,7 +26,8 @@ export async function getEditionById(apiUrl: string, id: number) {
 export async function createNewEdition(
   apiUrl: string,
   editionName: string,
-  rolesId: number[]
+  rolesId: number[],
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions`, {
     method: "POST",
@@ -35,6 +36,7 @@ export async function createNewEdition(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -56,7 +58,8 @@ export async function updateEdition(
   apiUrl: string,
   editionId: number,
   editionName: string,
-  rolesId: number[]
+  rolesId: number[],
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions`, {
     method: "PUT",
@@ -65,6 +68,7 @@ export async function updateEdition(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -87,7 +91,8 @@ export async function updateEdition(
 
 export async function deleteEdition(
   apiUrl: string,
-  editionId: number
+  editionId: number,
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions/${editionId}`, {
     method: "DELETE",
@@ -96,6 +101,7 @@ export async function deleteEdition(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",

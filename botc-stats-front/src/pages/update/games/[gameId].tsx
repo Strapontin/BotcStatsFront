@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import {
   updateGame,
@@ -14,6 +14,7 @@ import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
 import { useRouter } from "next/router";
 import { getPlayerPseudoString } from "@/entities/Player";
+import AuthContext from "@/stores/authContext";
 
 export default function UpdateGamePage() {
   const router = useRouter();
@@ -25,6 +26,8 @@ export default function UpdateGamePage() {
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
   const [game, setGame] = useState<Game>(getNewEmptyGame());
+
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   useEffect(() => {
     if (gameId === undefined || isNaN(gameId)) return;
@@ -49,7 +52,7 @@ export default function UpdateGamePage() {
   async function btnUpdateGame() {
     if (!canUpdateGame()) return;
 
-    if (await updateGame(game)) {
+    if (await updateGame(game, accessToken)) {
       const g = await getGameById(gameId);
       setGame(g);
       setGameCreateEditKey(gameCreateEditKey + 1);
@@ -112,7 +115,7 @@ export default function UpdateGamePage() {
   async function btnDeletePressed() {
     setDisableBtnDelete(true);
     setTimeout(async () => {
-      if (await deleteGame(game.id)) {
+      if (await deleteGame(game.id, accessToken)) {
         updateMessage(false, "La partie a été supprimé correctement.");
         closePopupDelete();
       }

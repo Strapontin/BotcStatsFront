@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import Title from "@/components/ui/title";
 import { createNewRole, getAllRoles } from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
@@ -9,6 +9,7 @@ import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
 import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
 import { Role, getNewEmptyRole } from "@/entities/Role";
+import AuthContext from "@/stores/authContext";
 
 export default function CreateRole() {
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
@@ -16,6 +17,8 @@ export default function CreateRole() {
   const [role, setRole] = useState<Role>(getNewEmptyRole());
 
   const [roles, setRoles] = useState<string[]>([]);
+
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   useEffect(() => {
     async function initRoles() {
@@ -60,7 +63,14 @@ export default function CreateRole() {
     )
       return;
 
-    if (await createNewRole(role.name, role.characterType, role.alignment)) {
+    if (
+      await createNewRole(
+        role.name,
+        role.characterType,
+        role.alignment,
+        accessToken
+      )
+    ) {
       setRole(getNewEmptyRole());
 
       updateMessage(false, `Rôle "${role.name}" enregistré correctement.`);
@@ -100,7 +110,7 @@ export default function CreateRole() {
       setRole={setRole}
       message={message}
       btnPressed={createRole}
-      btnText="Créer un module"
+      btnText="Créer un rôle"
     />
   );
 }

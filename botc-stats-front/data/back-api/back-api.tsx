@@ -57,16 +57,16 @@ export async function getGameById(id: number) {
   return queryGameById(apiUrl, id);
 }
 
-export async function createNewGame(game: Game) {
-  return queryCreateNewGame(apiUrl, game);
+export async function createNewGame(game: Game, accessToken: string) {
+  return queryCreateNewGame(apiUrl, game, accessToken);
 }
 
-export async function updateGame(game: Game) {
-  return queryUpdateGame(apiUrl, game);
+export async function updateGame(game: Game, accessToken: string) {
+  return queryUpdateGame(apiUrl, game, accessToken);
 }
 
-export async function deleteGame(gameId: number) {
-  return queryDeleteGame(apiUrl, gameId);
+export async function deleteGame(gameId: number, accessToken: string) {
+  return queryDeleteGame(apiUrl, gameId, accessToken);
 }
 
 /* Players */
@@ -86,12 +86,12 @@ export async function createNewPlayer(
   return queryCreateNewPlayer(apiUrl, player, accessToken);
 }
 
-export async function updatePlayer(player: Player) {
-  return queryUpdatePlayer(apiUrl, player);
+export async function updatePlayer(player: Player, accessToken: string) {
+  return queryUpdatePlayer(apiUrl, player, accessToken);
 }
 
-export async function deletePlayer(playerId: number) {
-  return queryDeletePlayer(apiUrl, playerId);
+export async function deletePlayer(playerId: number, accessToken: string) {
+  return queryDeletePlayer(apiUrl, playerId, accessToken);
 }
 
 /* Roles */
@@ -125,17 +125,24 @@ export async function getRoleById(roleId: number) {
 export async function createNewRole(
   roleName: string,
   characterType: CharacterType,
-  alignment: Alignment
+  alignment: Alignment,
+  accessToken: string
 ) {
-  return queryCreateNewRole(apiUrl, roleName, characterType, alignment);
+  return queryCreateNewRole(
+    apiUrl,
+    roleName,
+    characterType,
+    alignment,
+    accessToken
+  );
 }
 
-export async function updateRole(role: Role) {
-  return queryUpdateRole(apiUrl, role);
+export async function updateRole(role: Role, accessToken: string) {
+  return queryUpdateRole(apiUrl, role, accessToken);
 }
 
-export async function deleteRole(roleId: number) {
-  return queryDeleteRole(apiUrl, roleId);
+export async function deleteRole(roleId: number, accessToken: string) {
+  return queryDeleteRole(apiUrl, roleId, accessToken);
 }
 
 /* Edition */
@@ -148,20 +155,25 @@ export async function getEditionById(editionId: number) {
   return queryEditionById(apiUrl, editionId);
 }
 
-export async function createNewEdition(editionName: string, rolesId: number[]) {
-  return queryCreateNewEdition(apiUrl, editionName, rolesId);
+export async function createNewEdition(
+  editionName: string,
+  rolesId: number[],
+  accessToken: string
+) {
+  return queryCreateNewEdition(apiUrl, editionName, rolesId, accessToken);
 }
 
 export async function updateEdition(
   editionId: number,
   name: string,
-  roles: Role[]
+  roles: Role[],
+  accessToken: string
 ) {
   const rolesId = roles.map((r) => r.id);
 
-  return queryUpdateEdition(apiUrl, editionId, name, rolesId);
+  return queryUpdateEdition(apiUrl, editionId, name, rolesId, accessToken);
 }
 
-export async function deleteEdition(editionId: number) {
-  return queryDeleteEdition(apiUrl, editionId);
+export async function deleteEdition(editionId: number, accessToken: string) {
+  return queryDeleteEdition(apiUrl, editionId, accessToken);
 }

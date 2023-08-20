@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import { createNewEdition, getAllEditions } from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
@@ -7,6 +7,7 @@ import { Check, XOctagon } from "react-feather";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
+import AuthContext from "@/stores/authContext";
 
 export default function CreateEdition() {
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
@@ -14,6 +15,9 @@ export default function CreateEdition() {
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
   const [editions, setEditions] = useState<string[]>([]);
+  
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
   useEffect(() => {
     async function initEditions() {
       const tempEditions = (await getAllEditions()).map((edition) => {
@@ -49,7 +53,7 @@ export default function CreateEdition() {
     if (
       await createNewEdition(
         edition.name,
-        edition.roles.map((r) => r.id)
+        edition.roles.map((r) => r.id), accessToken
       )
     ) {
       setEdition(getNewEmptyEdition());

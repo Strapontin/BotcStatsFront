@@ -65,7 +65,8 @@ export async function createNewPlayer(
 
 export async function updatePlayer(
   apiUrl: string,
-  player: Player
+  player: Player,
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players`, {
     method: "PUT",
@@ -74,6 +75,7 @@ export async function updatePlayer(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -96,7 +98,8 @@ export async function updatePlayer(
 
 export async function deletePlayer(
   apiUrl: string,
-  playerId: number
+  playerId: number,
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players/${playerId}`, {
     method: "DELETE",
@@ -105,6 +108,7 @@ export async function deletePlayer(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",

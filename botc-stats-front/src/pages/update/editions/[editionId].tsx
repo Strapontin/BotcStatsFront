@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import {
   updateEdition,
@@ -13,6 +13,7 @@ import EditionCreateEdit from "@/components/create-edit/edition-create-edit/Edit
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import AuthContext from "@/stores/authContext";
 
 export default function UpdateEditionPage() {
   const router = useRouter();
@@ -27,6 +28,8 @@ export default function UpdateEditionPage() {
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
   const [editions, setEditions] = useState<string[]>([]);
+
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   const canUpdateEdition = useCallback(() => {
     if (edition.name === "") {
@@ -85,7 +88,7 @@ export default function UpdateEditionPage() {
   async function btnUpdateEdition() {
     if (!canUpdateEdition()) return;
 
-    if (await updateEdition(edition.id, edition.name, edition.roles)) {
+    if (await updateEdition(edition.id, edition.name, edition.roles, accessToken)) {
       const g = await getEditionById(editionId);
       setEdition(g);
       setEditionCreateEditKey(editionCreateEditKey + 1);
@@ -133,7 +136,7 @@ export default function UpdateEditionPage() {
   async function btnDeletePressed() {
     setDisableBtnDelete(true);
     setTimeout(async () => {
-      if (await deleteEdition(oldEdition.id)) {
+      if (await deleteEdition(oldEdition.id, accessToken)) {
         updateMessage(false, "Le module a été supprimé correctement.");
         closePopupDelete();
       }

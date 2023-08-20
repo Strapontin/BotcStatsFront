@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import Title from "@/components/ui/title";
 import { createNewGame } from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
@@ -8,6 +8,7 @@ import { Alignment, alignmentList } from "@/entities/enums/alignment";
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
+import AuthContext from "@/stores/authContext";
 
 export default function CreateGame() {
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
@@ -16,10 +17,12 @@ export default function CreateGame() {
 
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
 
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
   async function createGame() {
     if (!canCreateGame()) return;
 
-    if (await createNewGame(game)) {
+    if (await createNewGame(game, accessToken)) {
       setGame(getNewEmptyGame());
       setGameCreateEditKey(gameCreateEditKey + 1);
       updateMessage(false, `La partie a été enregistrée correctement.`);

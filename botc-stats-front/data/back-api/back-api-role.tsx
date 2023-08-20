@@ -29,15 +29,17 @@ export async function createNewRole(
   apiUrl: string,
   roleName: string,
   characterType: CharacterType,
-  alignment: Alignment
+  alignment: Alignment,
+  accessToken: string
 ): Promise<boolean> {
-  const response = await fetch(`${apiUrl}/Players/role`, {
+  const response = await fetch(`${apiUrl}/Roles`, {
     method: "POST",
     mode: "cors",
     cache: "no-cache",
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -55,7 +57,11 @@ export async function createNewRole(
   return true;
 }
 
-export async function updateRole(apiUrl: string, role: Role): Promise<boolean> {
+export async function updateRole(
+  apiUrl: string,
+  role: Role,
+  accessToken: string
+): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Roles`, {
     method: "PUT",
     mode: "cors",
@@ -63,6 +69,7 @@ export async function updateRole(apiUrl: string, role: Role): Promise<boolean> {
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -86,7 +93,8 @@ export async function updateRole(apiUrl: string, role: Role): Promise<boolean> {
 
 export async function deleteRole(
   apiUrl: string,
-  roleId: number
+  roleId: number,
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Roles/${roleId}`, {
     method: "DELETE",

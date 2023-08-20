@@ -25,7 +25,8 @@ export async function getGameById(apiUrl: string, id: number) {
 
 export async function createNewGame(
   apiUrl: string,
-  game: Game
+  game: Game,
+  accessToken: string
 ): Promise<boolean> {
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
@@ -41,6 +42,7 @@ export async function createNewGame(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -65,7 +67,11 @@ export async function createNewGame(
   return true;
 }
 
-export async function updateGame(apiUrl: string, game: Game): Promise<boolean> {
+export async function updateGame(
+  apiUrl: string,
+  game: Game,
+  accessToken: string
+): Promise<boolean> {
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
     roleId: pr.role.id,
@@ -80,6 +86,7 @@ export async function updateGame(apiUrl: string, game: Game): Promise<boolean> {
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
@@ -107,7 +114,8 @@ export async function updateGame(apiUrl: string, game: Game): Promise<boolean> {
 
 export async function deleteGame(
   apiUrl: string,
-  gameId: number
+  gameId: number,
+  accessToken: string
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Games/${gameId}`, {
     method: "DELETE",
@@ -116,6 +124,7 @@ export async function deleteGame(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",

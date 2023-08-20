@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
 import {
   updatePlayer,
@@ -25,6 +25,7 @@ import {
 } from "@/entities/Player";
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import AuthContext from "@/stores/authContext";
 
 export default function UpdatePlayerPage() {
   const router = useRouter();
@@ -39,6 +40,8 @@ export default function UpdatePlayerPage() {
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
   const [players, setPlayers] = useState<Player[]>([]);
+
+  const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   const canUpdatePlayer = useCallback(() => {
     if (player.name === "") {
@@ -126,7 +129,7 @@ export default function UpdatePlayerPage() {
   async function btnUpdatePlayer() {
     if (!canUpdatePlayer()) return;
 
-    if (await updatePlayer(player)) {
+    if (await updatePlayer(player, accessToken)) {
       const r = await getPlayerById(playerId);
       setPlayer(r);
       setOldPlayer(r);
@@ -176,7 +179,7 @@ export default function UpdatePlayerPage() {
   async function btnDeletePressed() {
     setDisableBtnDelete(true);
     setTimeout(async () => {
-      if (await deletePlayer(oldPlayer.id)) {
+      if (await deletePlayer(oldPlayer.id, accessToken)) {
         updateMessage(false, "Le joueur a été supprimé correctement.");
         closePopupDelete();
       }
