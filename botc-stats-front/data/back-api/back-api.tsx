@@ -1,4 +1,5 @@
 import { Alignment } from "@/entities/enums/alignment";
+import { getUserHasStoryTellerRights as queryUserHasStoryTellerRights } from "./back-api-auth";
 import {
   getAllGames as queryAllGames,
   getGameById as queryGameById,
@@ -32,19 +33,14 @@ import { Role } from "@/entities/Role";
 import { Player } from "@/entities/Player";
 import { Game } from "@/entities/Game";
 
-// const apiUrl = "http://192.168.1.48:7099";
 const apiUrl =
   process.env.NEXT_PUBLIC_BACKEND_URL! ??
   "https://botcstatsback-zdgyxyd7kq-od.a.run.app";
 
-/* Login/Logout */
+/* Auth */
 
-export function getLoginUrl() {
-  return `${apiUrl}/login`;
-}
-
-export function getLogoutUrl() {
-  return `${apiUrl}/logout`;
+export async function getUserHasStoryTellerRights(accessToken: string) {
+  return queryUserHasStoryTellerRights(apiUrl, accessToken);
 }
 
 /* Games */

@@ -8,7 +8,7 @@ import { AuthContextProvider } from "@/stores/authContext";
 
 export default function App({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { ...pageProps },
 }: AppProps) {
   const { isBrowser } = useSSR();
 
@@ -19,7 +19,7 @@ export default function App({
 
   return (
     isBrowser && (
-      <SessionProvider session={session}>
+      <SessionProvider>
         <AuthContextProvider>
           <NextThemesProvider
             defaultTheme="system"

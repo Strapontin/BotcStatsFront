@@ -166,7 +166,7 @@ export default function UpdateRolePage() {
   const popup = (
     <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
       <Modal.Header>
-        <Text id="modal-title" size={22}>
+        <Text span id="modal-title" size={22}>
           Voulez-vous vraiment supprimer le rôle :{" '"}
           <Text b size={22}>
             {oldRole.name}
