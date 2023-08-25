@@ -66,7 +66,7 @@ export default function SelectionStats() {
           Selection stat
         </Dropdown.Button>
         <Dropdown.Menu
-          disabledKeys={[router.asPath]}
+          disabledKeys={[router.asPath, "/games-role"]}
           onAction={(key) => {
             router.push(key.toString());
           }}
