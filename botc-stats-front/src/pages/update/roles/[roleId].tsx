@@ -77,18 +77,8 @@ export default function UpdateRolePage() {
     )
       return;
 
-    if (toLowerRemoveDiacritics(role.name) === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-    } else if (
-      roles.filter(
-        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(role.name)
-      ).length !== 0
-    ) {
-      updateMessage(true, "Un rôle avec ce nom existe déjà.");
-    } else {
-      setMessage(<Fragment />);
-    }
-  }, [role, roles, oldRole]);
+    canUpdateRole();
+  }, [role, roles, oldRole, canUpdateRole]);
 
   if (role.id === -1) {
     return (
