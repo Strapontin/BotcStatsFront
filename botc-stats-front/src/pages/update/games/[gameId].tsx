@@ -118,10 +118,15 @@ export default function UpdateGamePage() {
       if (await deleteGame(game.id, accessToken)) {
         updateMessage(false, "La partie a été supprimé correctement.");
         closePopupDelete();
+        setTimeout(() => {
+          router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+        }, 1500);
+      }else{
+        updateMessage(
+          true,
+          "Une erreur s'est produite pendant la suppression de la partie."
+        );
       }
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 1500);
 
       setDisableBtnDelete(false);
     }, 0);

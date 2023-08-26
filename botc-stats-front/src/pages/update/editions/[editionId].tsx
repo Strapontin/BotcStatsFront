@@ -88,7 +88,9 @@ export default function UpdateEditionPage() {
   async function btnUpdateEdition() {
     if (!canUpdateEdition()) return;
 
-    if (await updateEdition(edition.id, edition.name, edition.roles, accessToken)) {
+    if (
+      await updateEdition(edition.id, edition.name, edition.roles, accessToken)
+    ) {
       const g = await getEditionById(editionId);
       setEdition(g);
       setEditionCreateEditKey(editionCreateEditKey + 1);
@@ -139,10 +141,17 @@ export default function UpdateEditionPage() {
       if (await deleteEdition(oldEdition.id, accessToken)) {
         updateMessage(false, "Le module a été supprimé correctement.");
         closePopupDelete();
+        setTimeout(() => {
+          router.push(
+            router.asPath.substring(0, router.asPath.lastIndexOf("/"))
+          );
+        }, 1500);
+      } else {
+        updateMessage(
+          true,
+          "Une erreur s'est produite pendant la suppression du module."
+        );
       }
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 1500);
 
       setDisableBtnDelete(false);
     }, 0);

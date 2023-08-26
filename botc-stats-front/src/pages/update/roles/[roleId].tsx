@@ -154,10 +154,18 @@ export default function UpdateRolePage() {
       if (await deleteRole(oldRole.id, accessToken)) {
         updateMessage(false, "Le rôle a été supprimé correctement.");
         closePopupDelete();
+
+        setTimeout(() => {
+          router.push(
+            router.asPath.substring(0, router.asPath.lastIndexOf("/"))
+          );
+        }, 1500);
+      } else {
+        updateMessage(
+          true,
+          "Une erreur s'est produite pendant la suppression du rôle."
+        );
       }
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 1500);
 
       setDisableBtnDelete(false);
     }, 0);

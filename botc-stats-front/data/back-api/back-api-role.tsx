@@ -103,6 +103,7 @@ export async function deleteRole(
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",

@@ -182,10 +182,18 @@ export default function UpdatePlayerPage() {
       if (await deletePlayer(oldPlayer.id, accessToken)) {
         updateMessage(false, "Le joueur a été supprimé correctement.");
         closePopupDelete();
+
+        setTimeout(() => {
+          router.push(
+            router.asPath.substring(0, router.asPath.lastIndexOf("/"))
+          );
+        }, 1500);
+      } else {
+        updateMessage(
+          true,
+          "Une erreur s'est produite pendant la suppression du joueur."
+        );
       }
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 1500);
 
       setDisableBtnDelete(false);
     }, 0);
