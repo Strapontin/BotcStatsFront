@@ -22,7 +22,7 @@ export default function App({
       <SessionProvider>
         <AuthContextProvider>
           <NextThemesProvider
-            defaultTheme="system"
+            defaultTheme="dark"
             attribute="class"
             value={{
               dark: darkTheme.className,
