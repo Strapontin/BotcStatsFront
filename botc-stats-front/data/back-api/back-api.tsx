@@ -33,7 +33,9 @@ import { Role } from "@/entities/Role";
 import { Player } from "@/entities/Player";
 import { Game } from "@/entities/Game";
 
-const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
+const apiUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL! ??
+  "https://botcstatsback-zdgyxyd7kq-od.a.run.app";
 
 /* Auth */
 
@@ -44,7 +46,6 @@ export async function getUserHasStoryTellerRights(accessToken: string) {
 /* Games */
 
 export async function getAllGames() {
-  console.log("apiUrl", apiUrl);
   return queryAllGames(apiUrl);
 }
 
