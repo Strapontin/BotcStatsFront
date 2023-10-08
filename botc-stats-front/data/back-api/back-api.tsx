@@ -33,9 +33,7 @@ import { Role } from "@/entities/Role";
 import { Player } from "@/entities/Player";
 import { Game } from "@/entities/Game";
 
-const apiUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL! ??
-  "https://botcstatsback-zdgyxyd7kq-od.a.run.app";
+const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 /* Auth */
 

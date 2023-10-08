@@ -5,9 +5,12 @@ import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import Container from "@/components/list-stats/Container";
 import { Player } from "@/entities/Player";
 import ListItem from "@/components/list-stats/ListItem";
+import Filter from "@/components/filter/Filter";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function UpdatePlayersPage() {
   const [players, setPlayers] = useState<Player[]>([]);
+  const [filter, setFilter] = useState<string>("");
   const title = <Title>Modifier un joueur</Title>;
 
   useEffect(() => {
@@ -39,7 +42,25 @@ export default function UpdatePlayersPage() {
   return (
     <Fragment>
       {title}
-      <Container>{players.map((player: Player) => line(player))}</Container>
+      <Spacer y={1} />
+      <Filter
+        filterValue={filter}
+        setFilter={setFilter}
+        placeholder="Filtre joueur"
+      ></Filter>
+      <Container>
+        {players
+          .filter(
+            (player) =>
+              toLowerRemoveDiacritics(player.name).includes(
+                toLowerRemoveDiacritics(filter)
+              ) ||
+              toLowerRemoveDiacritics(player.pseudo).includes(
+                toLowerRemoveDiacritics(filter)
+              )
+          )
+          .map((player: Player) => line(player))}
+      </Container>
     </Fragment>
   );
 }

@@ -5,9 +5,12 @@ import Title from "@/components/ui/title";
 import { Link, Loading, Spacer } from "@nextui-org/react";
 import { getAllEditions } from "../../../data/back-api/back-api";
 import ListItem from "@/components/list-stats/ListItem";
+import Filter from "@/components/filter/Filter";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function EditionsPage() {
   const [editions, setEditions] = useState<Edition[]>([]);
+  const [filter, setFilter] = useState<string>("");
   const title = "Liste des modules";
 
   useEffect(() => {
@@ -31,12 +34,28 @@ export default function EditionsPage() {
   return (
     <Fragment>
       <Title>{title}</Title>
+      <Spacer y={1} />
+      <Filter
+        filterValue={filter}
+        setFilter={setFilter}
+        placeholder="Filtre module"
+      ></Filter>
       <Container>
-        {editions.map((edition) => (
-          <Link key={edition.id} href={`/editions/${edition.id}`} color="text">
-            <ListItem name={edition.name} />
-          </Link>
-        ))}
+        {editions
+          .filter((edition) =>
+            toLowerRemoveDiacritics(edition.name).includes(
+              toLowerRemoveDiacritics(filter)
+            )
+          )
+          .map((edition) => (
+            <Link
+              key={edition.id}
+              href={`/editions/${edition.id}`}
+              color="text"
+            >
+              <ListItem name={edition.name} />
+            </Link>
+          ))}
       </Container>
     </Fragment>
   );
