@@ -9,17 +9,8 @@ import { dateToString } from "@/helper/date";
 import { getAllGames } from "../../../data/back-api/back-api";
 import { getPlayerPseudoString } from "@/entities/Player";
 
-export default function GamesListPage() {
-  const [games, setGames] = useState<Game[]>([]);
+export default function GamesListPage({ games }: { games: Game[] }) {
   const title = "Dernières parties jouées";
-
-  useEffect(() => {
-    async function initGames() {
-      const p = await getAllGames();
-      setGames(p);
-    }
-    initGames();
-  }, []);
 
   if (games.length === 0) {
     return (
@@ -59,4 +50,13 @@ export default function GamesListPage() {
       <Container>{games.map((game: Game) => line(game))}</Container>
     </Fragment>
   );
+}
+export async function getStaticProps() {
+  const games = await getAllGames();
+
+  return {
+    props: {
+      games,
+    },
+  };
 }
