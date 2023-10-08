@@ -4,11 +4,13 @@ import { getAllRoles } from "../../../../data/back-api/back-api";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import Container from "@/components/list-stats/Container";
 import { Role } from "@/entities/Role";
-import ListItem from "@/components/list-stats/ListItem";
 import ListItemRole from "@/components/list-stats/ListItemRole";
+import Filter from "@/components/filter/Filter";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function UpdateRolesPage() {
   const [roles, setRoles] = useState<Role[]>([]);
+  const [filter, setFilter] = useState<string>("");
   const title = <Title>Modifier un rôle</Title>;
 
   useEffect(() => {
@@ -43,7 +45,21 @@ export default function UpdateRolesPage() {
   return (
     <Fragment>
       {title}
-      <Container>{roles.map((role: Role) => line(role))}</Container>
+      <Spacer y={1} />
+      <Filter
+        filterValue={filter}
+        setFilter={setFilter}
+        placeholder="Filtre rôle"
+      ></Filter>
+      <Container>
+        {roles
+          .filter((role) =>
+            toLowerRemoveDiacritics(role.name).includes(
+              toLowerRemoveDiacritics(filter)
+            )
+          )
+          .map((role: Role) => line(role))}
+      </Container>
     </Fragment>
   );
 }

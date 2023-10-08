@@ -5,9 +5,12 @@ import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import Container from "@/components/list-stats/Container";
 import { Edition } from "@/entities/Edition";
 import ListItem from "@/components/list-stats/ListItem";
+import Filter from "@/components/filter/Filter";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function UpdateEditionsPage() {
   const [editions, setEditions] = useState<Edition[]>([]);
+  const [filter, setFilter] = useState<string>("");
   const title = <Title>Modifier un module</Title>;
 
   useEffect(() => {
@@ -30,7 +33,11 @@ export default function UpdateEditionsPage() {
 
   function line(edition: Edition) {
     return (
-      <Link key={edition.id} href={`/update/editions/${edition.id}`} color="text">
+      <Link
+        key={edition.id}
+        href={`/update/editions/${edition.id}`}
+        color="text"
+      >
         <ListItem name={edition.name}></ListItem>
       </Link>
     );
@@ -39,7 +46,21 @@ export default function UpdateEditionsPage() {
   return (
     <Fragment>
       {title}
-      <Container>{editions.map((edition: Edition) => line(edition))}</Container>
+      <Spacer y={1} />
+      <Filter
+        filterValue={filter}
+        setFilter={setFilter}
+        placeholder="Filtre module"
+      ></Filter>
+      <Container>
+        {editions
+          .filter((edition) =>
+            toLowerRemoveDiacritics(edition.name).includes(
+              toLowerRemoveDiacritics(filter)
+            )
+          )
+          .map((edition: Edition) => line(edition))}
+      </Container>
     </Fragment>
   );
 }

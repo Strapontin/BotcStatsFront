@@ -1,0 +1,12 @@
+.input {
+  width: 100%;
+}
+
+.filter-container {
+  display: flex;
+  padding: 1rem;
+
+  & div {
+    width: 100%;
+  }
+}
