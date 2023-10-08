@@ -44,6 +44,7 @@ export async function getUserHasStoryTellerRights(accessToken: string) {
 /* Games */
 
 export async function getAllGames() {
+  console.log("apiUrl", apiUrl);
   return queryAllGames(apiUrl);
 }
 
