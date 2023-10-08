@@ -6,20 +6,11 @@ import Title from "@/components/ui/title";
 import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
 import { dateToString } from "@/helper/date";
-import { getAllGames } from "../../../../data/back-api/back-api";
 import { getPlayerPseudoString } from "@/entities/Player";
+import { getAllGames } from "../../../../data/back-api/back-api";
 
-export default function UpdateGamesPage() {
-  const [games, setGames] = useState<Game[]>([]);
+export default function UpdateGamesPage({ games }: { games: Game[] }) {
   const title = <Title>Modifier une partie</Title>;
-
-  useEffect(() => {
-    async function initGames() {
-      const p = await getAllGames();
-      setGames(p);
-    }
-    initGames();
-  }, []);
 
   if (games.length === 0) {
     return (
@@ -59,4 +50,15 @@ export default function UpdateGamesPage() {
       <Container>{games.map((game: Game) => line(game))}</Container>
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const games = await getAllGames();
+
+  return {
+    props: {
+      games,
+    },
+    revalidate: 10,
+  };
 }

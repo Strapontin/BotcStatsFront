@@ -51,6 +51,7 @@ export default function GamesListPage({ games }: { games: Game[] }) {
     </Fragment>
   );
 }
+
 export async function getStaticProps() {
   const games = await getAllGames();
 
@@ -58,5 +59,6 @@ export async function getStaticProps() {
     props: {
       games,
     },
+    revalidate: 10,
   };
 }

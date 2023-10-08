@@ -2,7 +2,6 @@ import { Player } from "@/entities/Player";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Classes from "./PlayerSelector.module.css";
 import { Input, Spacer } from "@nextui-org/react";
-import { getAllPlayers } from "../../../data/back-api/back-api";
 import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
 import { toLowerRemoveDiacritics } from "@/helper/string";
@@ -10,24 +9,16 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 export default function PlayerSelector(props: {
   selectedPlayer: Player;
   setSelectedPlayer: any;
+  allPlayers: Player[];
 }) {
   const inputFilterPlayer = useRef<HTMLInputElement>(null);
   const [showPlayers, setShowPlayers] = useState(false);
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const [visiblePlayers, setVisiblePlayers] = useState<Player[]>([]);
 
   const [filter, setFilter] = useState<string>(props.selectedPlayer.name);
 
-  useEffect(() => {
-    async function initPlayers() {
-      const tempPlayers = await getAllPlayers();
-      setAllPlayers(tempPlayers);
-    }
-    initPlayers();
-  }, []);
-
   function reSetVisiblePlayersFromValue(value: string) {
-    const visiblePlayersToSet = allPlayers.filter(
+    const visiblePlayersToSet = props.allPlayers.filter(
       (e) =>
         toLowerRemoveDiacritics(e.name).includes(
           toLowerRemoveDiacritics(value)
@@ -45,7 +36,7 @@ export default function PlayerSelector(props: {
   }
 
   function onSelectPlayer(idPlayerSelected: number) {
-    const playerSelected = allPlayers.find(
+    const playerSelected = props.allPlayers.find(
       (player) => player.id == idPlayerSelected
     );
 

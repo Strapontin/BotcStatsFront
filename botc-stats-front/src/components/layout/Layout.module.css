@@ -9,6 +9,7 @@
 }
 
 .header {
+  z-index: 500;
   padding-top: 0.5rem;
   background-color: #09080d;
   width: 100%;

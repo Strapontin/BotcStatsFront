@@ -1,16 +1,28 @@
 import { Fragment, useContext, useState } from "react";
 import Title from "@/components/ui/title";
-import { createNewGame } from "../../../../data/back-api/back-api";
+import {
+  createNewGame,
+  getAllEditions,
+  getAllPlayers,
+} from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
-import { Alignment, alignmentList } from "@/entities/enums/alignment";
+import { Alignment } from "@/entities/enums/alignment";
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { dateToString } from "@/helper/date";
 import AuthContext from "@/stores/authContext";
+import { Player } from "@/entities/Player";
+import { Edition } from "@/entities/Edition";
 
-export default function CreateGame() {
+export default function CreateGame({
+  editions,
+  players,
+}: {
+  editions: Edition[];
+  players: Player[];
+}) {
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
   const [game, setGame] = useState<Game>(getNewEmptyGame());
@@ -86,6 +98,21 @@ export default function CreateGame() {
       message={message}
       btnPressed={createGame}
       btnText="Créer une partie"
+      allEditions={editions}
+      allPlayers={players}
     />
   );
+}
+
+export async function getStaticProps() {
+  const editions = await getAllEditions();
+  const players = await getAllPlayers();
+
+  return {
+    props: {
+      editions,
+      players,
+    },
+    revalidate: 10,
+  };
 }
