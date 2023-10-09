@@ -1,6 +1,10 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import Title from "@/components/ui/title";
-import { createNewEdition, getAllEditions } from "../../../../data/back-api/back-api";
+import {
+  createNewEdition,
+  getAllEditions,
+  getAllRoles,
+} from "../../../../data/back-api/back-api";
 import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
@@ -8,25 +12,20 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import AuthContext from "@/stores/authContext";
+import { Role } from "@/entities/Role";
 
-export default function CreateEdition() {
+export default function CreateEdition({
+  editions,
+  roles,
+}: {
+  editions: Edition[];
+  roles: Role[];
+}) {
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
-  const [editions, setEditions] = useState<string[]>([]);
-  
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  useEffect(() => {
-    async function initEditions() {
-      const tempEditions = (await getAllEditions()).map((edition) => {
-        return edition.name;
-      });
-      setEditions(tempEditions);
-    }
-    initEditions();
-  }, []);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -35,8 +34,9 @@ export default function CreateEdition() {
       updateMessage(true, "Un nom est obligatoire.");
     } else if (
       editions.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
+        (e) =>
+          toLowerRemoveDiacritics(e.name) ===
+          toLowerRemoveDiacritics(edition.name)
       ).length !== 0
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
@@ -53,9 +53,11 @@ export default function CreateEdition() {
     if (
       await createNewEdition(
         edition.name,
-        edition.roles.map((r) => r.id), accessToken
+        edition.roles.map((r) => r.id),
+        accessToken
       )
     ) {
+      editions.push(edition);
       setEdition(getNewEmptyEdition());
       setEditionCreateEditKey(editionCreateEditKey + 1);
       updateMessage(false, `Le module a été enregistrée correctement.`);
@@ -94,8 +96,9 @@ export default function CreateEdition() {
 
     if (
       editions.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
+        (e) =>
+          toLowerRemoveDiacritics(e.name) ===
+          toLowerRemoveDiacritics(edition.name)
       ).length !== 0
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
@@ -114,6 +117,20 @@ export default function CreateEdition() {
       message={message}
       btnPressed={createEdition}
       btnText="Créer un module"
+      roles={roles}
     />
   );
+}
+
+export async function getStaticProps() {
+  const editions = await getAllEditions();
+  const roles = await getAllRoles();
+
+  return {
+    props: {
+      editions,
+      roles,
+    },
+    revalidate: 10,
+  };
 }

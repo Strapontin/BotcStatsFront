@@ -5,29 +5,33 @@ import {
   getEditionById,
   getAllEditions,
   deleteEdition,
+  getAllRoles,
 } from "../../../../data/back-api/back-api";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
 import { Check, XOctagon } from "react-feather";
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
-import { Edition, getNewEmptyEdition } from "@/entities/Edition";
+import { Edition } from "@/entities/Edition";
 import { useRouter } from "next/router";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
+import { Role } from "@/entities/Role";
 
-export default function UpdateEditionPage() {
+export default function UpdateEditionPage(props: {
+  edition: Edition;
+  editions: Edition[];
+  roles: Role[];
+}) {
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
 
-  const [oldEdition, setOldEdition] = useState<Edition>(getNewEmptyEdition());
+  const [oldEdition, setOldEdition] = useState<Edition>(props.edition);
   const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
-  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
-
-  const [editions, setEditions] = useState<string[]>([]);
+  const [edition, setEdition] = useState<Edition>(props.edition);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
@@ -36,11 +40,12 @@ export default function UpdateEditionPage() {
       updateMessage(true, "Un nom est obligatoire.");
       return false;
     } else if (
-      editions.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p) !==
+      props.editions.filter(
+        (e) =>
+          toLowerRemoveDiacritics(e.name) !==
             toLowerRemoveDiacritics(oldEdition.name) &&
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(edition.name)
+          toLowerRemoveDiacritics(e.name) ===
+            toLowerRemoveDiacritics(edition.name)
       ).length !== 0
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
@@ -49,24 +54,7 @@ export default function UpdateEditionPage() {
       updateMessage(false, "");
       return true;
     }
-  }, [edition, editions, oldEdition]);
-
-  useEffect(() => {
-    if (editionId === undefined || isNaN(editionId)) return;
-
-    async function initEdition() {
-      const e = await getEditionById(editionId);
-      setEdition(e);
-      setOldEdition(e);
-    }
-    initEdition();
-
-    async function initEditions() {
-      const e = (await getAllEditions()).map((e) => e.name);
-      setEditions(e);
-    }
-    initEditions();
-  }, [editionId]);
+  }, [props, edition, oldEdition]);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -91,8 +79,9 @@ export default function UpdateEditionPage() {
     if (
       await updateEdition(edition.id, edition.name, edition.roles, accessToken)
     ) {
-      const g = await getEditionById(editionId);
-      setEdition(g);
+      props.editions.push(edition);
+      const e = await getEditionById(editionId);
+      setEdition(e);
       setEditionCreateEditKey(editionCreateEditKey + 1);
       setTimeout(
         () =>
@@ -189,6 +178,7 @@ export default function UpdateEditionPage() {
         message={message}
         btnPressed={btnUpdateEdition}
         btnText="Modifier le module"
+        roles={props.roles}
       />
 
       <Button
@@ -205,3 +195,33 @@ export default function UpdateEditionPage() {
     </Fragment>
   );
 }
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { editionId: number };
+}) {
+  const edition = await getEditionById(params.editionId);
+  const editions = await getAllEditions();
+  const roles = await getAllRoles();
+
+  return {
+    props: {
+      edition,
+      editions,
+      roles,
+    },
+    revalidate: 10,
+  };
+}
+
+export const getStaticPaths = async () => {
+  const editions = await getAllEditions();
+
+  const paths = editions.map((edition) => ({
+    params: { editionId: edition.id.toString() },
+  }));
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false };
+};

@@ -8,18 +8,13 @@ import ListItem from "@/components/list-stats/ListItem";
 import Filter from "@/components/filter/Filter";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
-export default function UpdateEditionsPage() {
-  const [editions, setEditions] = useState<Edition[]>([]);
+export default function UpdateEditionsPage({
+  editions,
+}: {
+  editions: Edition[];
+}) {
   const [filter, setFilter] = useState<string>("");
   const title = <Title>Modifier un module</Title>;
-
-  useEffect(() => {
-    async function initEditions() {
-      const tempEditions = await getAllEditions();
-      setEditions(tempEditions);
-    }
-    initEditions();
-  }, []);
 
   if (editions.length === 0) {
     return (
@@ -63,4 +58,15 @@ export default function UpdateEditionsPage() {
       </Container>
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const editions = await getAllEditions();
+
+  return {
+    props: {
+      editions,
+    },
+    revalidate: 10,
+  };
 }

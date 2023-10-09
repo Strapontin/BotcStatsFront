@@ -11,24 +11,12 @@ import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreate
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import AuthContext from "@/stores/authContext";
 
-export default function CreateRole() {
+export default function CreateRole({ roles }: { roles: Role[] }) {
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
   const [role, setRole] = useState<Role>(getNewEmptyRole());
 
-  const [roles, setRoles] = useState<string[]>([]);
-
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  useEffect(() => {
-    async function initRoles() {
-      const tempRoles = (await getAllRoles()).map((role) => {
-        return role.name;
-      });
-      setRoles(tempRoles);
-    }
-    initRoles();
-  }, []);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -43,7 +31,8 @@ export default function CreateRole() {
       updateMessage(true, "Un nom est obligatoire.");
     } else if (
       roles.filter(
-        (p) => toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(role.name)
+        (r) =>
+          toLowerRemoveDiacritics(r.name) === toLowerRemoveDiacritics(role.name)
       ).length !== 0
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
@@ -71,6 +60,7 @@ export default function CreateRole() {
         accessToken
       )
     ) {
+      roles.push(role);
       setRole(getNewEmptyRole());
 
       updateMessage(false, `Rôle "${role.name}" enregistré correctement.`);
@@ -113,4 +103,15 @@ export default function CreateRole() {
       btnText="Créer un rôle"
     />
   );
+}
+
+export async function getStaticProps() {
+  const roles = await getAllRoles();
+
+  return {
+    props: {
+      roles,
+    },
+    revalidate: 10,
+  };
 }
