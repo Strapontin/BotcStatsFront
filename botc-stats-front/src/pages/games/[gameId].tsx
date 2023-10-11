@@ -1,32 +1,23 @@
-import { Fragment, useEffect, useState } from "react";
-import { Game } from "@/entities/Game";
-import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
-import Title from "@/components/ui/title";
-import PlayerName from "@/components/ui/playerName";
-import DateUi from "@/components/ui/date-ui";
 import ListItemLarge from "@/components/list-stats/ListItemLarge";
-import { Link, Spacer, Text } from "@nextui-org/react";
-import { PlayerRole } from "@/entities/PlayerRole";
-import { alignmentToString } from "@/entities/enums/alignment";
-import { getGameById } from "../../../data/back-api/back-api";
 import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
-import { getPlayerPseudoString } from "@/entities/Player";
-import { Role } from "@/entities/Role";
 import ListItemRole from "@/components/list-stats/ListItemRole";
+import DateUi from "@/components/ui/date-ui";
+import PlayerName from "@/components/ui/playerName";
+import Title from "@/components/ui/title";
+import { Game } from "@/entities/Game";
+import { getPlayerPseudoString } from "@/entities/Player";
+import { PlayerRole } from "@/entities/PlayerRole";
+import { Role } from "@/entities/Role";
+import { alignmentToString } from "@/entities/enums/alignment";
+import { Link, Spacer, Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { Fragment } from "react";
+import { getAllGames, getGameById } from "../../../data/back-api/back-api";
 
-export default function GamePage() {
+export default function GamePage({ game }: { game: Game }) {
   const gameId: number = Number(useRouter().query.gameId);
-  const [game, setGame] = useState<Game>();
-
-  useEffect(() => {
-    async function initGame() {
-      const g = await getGameById(gameId);
-      setGame(g);
-    }
-    initGame();
-  }, [gameId]);
 
   if (isNaN(gameId) || !game) {
     return <Title>Chargement {gameId}...</Title>;
@@ -67,7 +58,7 @@ export default function GamePage() {
         <Text b>Liste des rôles des joueurs :</Text>
         {game.playerRoles.map((prg: PlayerRole) => (
           <Link
-            key={prg.player.name}
+            key={prg.player.id}
             href={`/players/${prg.player.id}`}
             color="text"
           >
@@ -93,3 +84,30 @@ export default function GamePage() {
     </Fragment>
   );
 }
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { gameId: number };
+}) {
+  const { gameId } = params;
+  const game = await getGameById(gameId);
+
+  return {
+    props: {
+      game,
+    },
+    revalidate: 10,
+  };
+}
+
+export const getStaticPaths = async () => {
+  const games = await getAllGames();
+
+  const paths = games.map((game) => ({
+    params: { gameId: game.id.toString() },
+  }));
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false };
+};

@@ -6,7 +6,6 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItem from "../list-stats/ListItem";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
-import { getAllPlayers } from "../../../data/back-api/back-api";
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import ListItemRole from "../list-stats/ListItemRole";
@@ -15,11 +14,13 @@ export default function PlayerRolesSelector(props: {
   selectedPlayerRoles: PlayerRole[];
   setSelectedPlayerRoles: any;
   rolesInSelectedEdition: Role[];
+  allPlayers: Player[];
 }) {
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
   const inputFilterPlayer = useRef<HTMLInputElement>(null);
   const [showPlayers, setShowPlayers] = useState(false);
-  const [visiblePlayers, setVisiblePlayers] = useState<Player[]>([]);
+  const [visiblePlayers, setVisiblePlayers] = useState<Player[]>(
+    props.allPlayers
+  );
   const [playerFilter, setPlayerFilter] = useState("");
   const [playerSelected, setPlayerSelected] = useState<Player>(
     getNewEmptyPlayer()
@@ -30,15 +31,6 @@ export default function PlayerRolesSelector(props: {
   const [visibleRoles, setVisibleRoles] = useState<Role[]>([]);
   const [roleFilter, setRoleFilter] = useState("");
   const [roleSelected, setRoleSelected] = useState<Role>(getNewEmptyRole());
-
-  useEffect(() => {
-    async function initPlayers() {
-      const tempPlayers = await getAllPlayers();
-      setAllPlayers(tempPlayers);
-      setVisiblePlayers(tempPlayers);
-    }
-    initPlayers();
-  }, []);
 
   useEffect(() => {
     // Automatically adding a player role if a player and a role are set
@@ -88,7 +80,7 @@ export default function PlayerRolesSelector(props: {
 
     setShowPlayers(true);
     setVisiblePlayers(
-      allPlayers.filter(
+      props.allPlayers.filter(
         (p) =>
           toLowerRemoveDiacritics(p.name).includes(
             toLowerRemoveDiacritics(filter)
@@ -164,7 +156,7 @@ export default function PlayerRolesSelector(props: {
   }
 
   function onSelectPlayer(playerId: number) {
-    const playerSelected = allPlayers.find((p) => p.id === playerId);
+    const playerSelected = props.allPlayers.find((p) => p.id === playerId);
 
     if (playerSelected !== undefined) {
       setPlayerSelected(playerSelected);

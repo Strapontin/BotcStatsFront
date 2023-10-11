@@ -1,34 +1,17 @@
-import { Fragment, useEffect, useState } from "react";
-import {
-  Player,
-  getNewEmptyPlayer,
-  getPlayerPseudoString,
-} from "@/entities/Player";
-import { useRouter } from "next/router";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
-import Title from "@/components/ui/title";
-import { Collapse, Loading } from "@nextui-org/react";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
-import { getPlayerById } from "../../../data/back-api/back-api";
+import Title from "@/components/ui/title";
+import { Player, getPlayerPseudoString } from "@/entities/Player";
+import { Collapse, Loading } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from "react";
+import { getAllPlayers, getPlayerById } from "../../../data/back-api/back-api";
 
-export default function PlayerPage() {
+export default function PlayerPage({ player }: { player: Player }) {
   const playerId = useRouter().query.playerId;
-  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
   const [detailsRolesPlayed, setDetailsRolesPlayed] = useState(<Loading />);
-
-  useEffect(() => {
-    async function initPlayer() {
-      if (playerId === undefined) return;
-
-      const p = await getPlayerById(+playerId);
-      if (p !== undefined) {
-        setPlayer(p);
-      }
-    }
-    initPlayer();
-  }, [playerId]);
 
   useEffect(() => {
     async function initDetailsRolesPlayed() {
@@ -106,3 +89,30 @@ export default function PlayerPage() {
     </Fragment>
   );
 }
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { playerId: number };
+}) {
+  const { playerId } = params;
+  const player = await getPlayerById(playerId);
+
+  return {
+    props: {
+      player,
+    },
+    revalidate: 10,
+  };
+}
+
+export const getStaticPaths = async () => {
+  const players = await getAllPlayers();
+
+  const paths = players.map((player) => ({
+    params: { playerId: player.id.toString() },
+  }));
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false };
+};

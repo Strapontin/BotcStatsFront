@@ -1,25 +1,16 @@
-import { Fragment, useEffect, useState } from "react";
-import Title from "@/components/ui/title";
-import { getAllPlayers } from "../../../../data/back-api/back-api";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
-import Container from "@/components/list-stats/Container";
-import { Player } from "@/entities/Player";
-import ListItem from "@/components/list-stats/ListItem";
 import Filter from "@/components/filter/Filter";
+import Container from "@/components/list-stats/Container";
+import ListItem from "@/components/list-stats/ListItem";
+import Title from "@/components/ui/title";
+import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Fragment, useState } from "react";
+import { getAllPlayers } from "../../../../data/back-api/back-api";
 
-export default function UpdatePlayersPage() {
-  const [players, setPlayers] = useState<Player[]>([]);
+export default function UpdatePlayersPage({ players }: { players: Player[] }) {
   const [filter, setFilter] = useState<string>("");
   const title = <Title>Modifier un joueur</Title>;
-
-  useEffect(() => {
-    async function initPlayers() {
-      const tempPlayers = await getAllPlayers();
-      setPlayers(tempPlayers);
-    }
-    initPlayers();
-  }, []);
 
   if (players.length === 0) {
     return (
@@ -63,4 +54,15 @@ export default function UpdatePlayersPage() {
       </Container>
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const players = await getAllPlayers();
+
+  return {
+    props: {
+      players,
+    },
+    revalidate: 10,
+  };
 }

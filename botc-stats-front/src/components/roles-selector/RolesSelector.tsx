@@ -4,43 +4,27 @@ import Classes from "./RolesSelector.module.css";
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
-import { getAllRoles } from "../../../data/back-api/back-api";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 
 export default function RolesSelector(props: {
   selectedRoles: Role[];
   setSelectedRoles: any;
   placeholderText: string;
-  rolesInSelectedEdition?: Role[];
+  roles: Role[];
 }) {
   const inputFilterRole = useRef<HTMLInputElement>(null);
   const [showRoles, setShowRoles] = useState(false);
-  const [allRoles, setAllRoles] = useState<Role[]>([]);
-  const [visibleRoles, setVisibleRoles] = useState<Role[]>([]);
+  const [visibleRoles, setVisibleRoles] = useState<Role[]>(props.roles);
 
   const [filter, setFilter] = useState<string>("");
 
-  useEffect(() => {
-    async function initRoles() {
-      // if roles are passed in prop, use them
-      if (props.rolesInSelectedEdition !== undefined) {
-        setAllRoles(props.rolesInSelectedEdition);
-        setVisibleRoles(props.rolesInSelectedEdition);
-      } else {
-        const tempRoles = await getAllRoles();
-        setAllRoles(tempRoles);
-        setVisibleRoles(tempRoles);
-      }
-    }
-    initRoles();
-  }, [props.rolesInSelectedEdition]);
 
   function onChangeInput(value: string) {
     reSetVisibleRolesFromValue(value);
   }
 
   function reSetVisibleRolesFromValue(value: string) {
-    const visibleRolesToSet = allRoles.filter(
+    const visibleRolesToSet = props.roles.filter(
       (r) =>
         toLowerRemoveDiacritics(r.name).includes(
           toLowerRemoveDiacritics(value)
@@ -79,7 +63,7 @@ export default function RolesSelector(props: {
       props.setSelectedRoles(allSelectedroles);
 
       setVisibleRoles(
-        allRoles.filter((ar) => !allSelectedroles.some((sr) => sr.id === ar.id))
+        props.roles.filter((ar) => !allSelectedroles.some((sr) => sr.id === ar.id))
       );
     }
   }

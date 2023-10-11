@@ -2,7 +2,6 @@ import { Edition } from "@/entities/Edition";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Classes from "./EditionSelector.module.css";
 import { Input, Spacer } from "@nextui-org/react";
-import { getAllEditions } from "../../../data/back-api/back-api";
 import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
 import { toLowerRemoveDiacritics } from "@/helper/string";
@@ -10,24 +9,16 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 export default function EditionSelector(props: {
   selectedEdition: Edition;
   setSelectedEdition: any;
+  allEditions: Edition[];
 }) {
   const inputFilterEdition = useRef<HTMLInputElement>(null);
   const [showEditions, setShowEditions] = useState(false);
-  const [allEditions, setAllEditions] = useState<Edition[]>([]);
   const [visibleEditions, setVisibleEditions] = useState<Edition[]>([]);
 
   const [filter, setFilter] = useState<string>(props.selectedEdition.name);
 
-  useEffect(() => {
-    async function initEditions() {
-      const tempEditions = await getAllEditions();
-      setAllEditions(tempEditions);
-    }
-    initEditions();
-  }, []);
-
   function reSetVisibleEditionsFromValue(value: string) {
-    const visibleEditionsToSet = allEditions.filter((e) =>
+    const visibleEditionsToSet = props.allEditions.filter((e) =>
       toLowerRemoveDiacritics(e.name).includes(toLowerRemoveDiacritics(value))
     );
     setVisibleEditions(visibleEditionsToSet);
@@ -39,7 +30,7 @@ export default function EditionSelector(props: {
   }
 
   function onSelectEdition(idEditionSelected: number) {
-    const editionSelected = allEditions.find(
+    const editionSelected = props.allEditions.find(
       (edition) => edition.id == idEditionSelected
     );
 

@@ -20,6 +20,8 @@ export default function GameCreateEdit(props: {
   message: JSX.Element;
   btnPressed: any;
   btnText: string;
+  allEditions: Edition[];
+  allPlayers: Player[];
 }) {
   const [rolesInSelectedEdition, setRolesInSelectedEdition] = useState<Role[]>(
     []
@@ -88,11 +90,13 @@ export default function GameCreateEdit(props: {
         <EditionSelector
           selectedEdition={props.game.edition}
           setSelectedEdition={(edition: Edition) => editionSelected(edition)}
+          allEditions={props.allEditions}
         />
         <Spacer y={1.75} />
         <PlayerSelector
           selectedPlayer={props.game.storyTeller}
           setSelectedPlayer={storyTellerSelected}
+          allPlayers={props.allPlayers}
         />
         <Spacer y={0.6} />
         <Input
@@ -123,6 +127,7 @@ export default function GameCreateEdit(props: {
           selectedPlayerRoles={props.game.playerRoles}
           setSelectedPlayerRoles={selectedPlayerRolesChanged}
           rolesInSelectedEdition={rolesInSelectedEdition}
+          allPlayers={props.allPlayers}
         />
         <Spacer y={3} />
         <RolesSelector

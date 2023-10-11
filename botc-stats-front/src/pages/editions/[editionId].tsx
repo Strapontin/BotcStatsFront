@@ -1,24 +1,23 @@
+import Container from "@/components/list-stats/Container";
+import ListItemRole from "@/components/list-stats/ListItemRole";
+import Title from "@/components/ui/title";
 import { Edition } from "@/entities/Edition";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { Fragment, useEffect, useState } from "react";
-import { getEditionById } from "../../../data/back-api/back-api";
 import { useRouter } from "next/router";
-import Title from "@/components/ui/title";
-import ListItemRole from "@/components/list-stats/ListItemRole";
-import Container from "@/components/list-stats/Container";
+import { Fragment, useEffect, useState } from "react";
+import {
+  getAllEditions,
+  getEditionById,
+} from "../../../data/back-api/back-api";
 
-export default function EditionIdPage() {
+export default function EditionIdPage({
+  editionLoaded,
+}: {
+  editionLoaded: Edition;
+}) {
   const editionId: number = Number(useRouter().query.editionId);
-  const [edition, setEdition] = useState<Edition>();
+  const [edition, setEdition] = useState<Edition>(editionLoaded);
   var title = "Rôles du module...";
-
-  useEffect(() => {
-    async function initEditions() {
-      const e = await getEditionById(editionId);
-      setEdition(e);
-    }
-    initEditions();
-  }, [editionId]);
 
   if (edition === undefined) {
     return (
@@ -49,3 +48,30 @@ export default function EditionIdPage() {
     </Fragment>
   );
 }
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { editionId: number };
+}) {
+  const { editionId } = params;
+  const editionLoaded = await getEditionById(editionId);
+
+  return {
+    props: {
+      editionLoaded,
+    },
+    revalidate: 10,
+  };
+}
+
+export const getStaticPaths = async () => {
+  const editions = await getAllEditions();
+
+  const paths = editions.map((edition) => ({
+    params: { editionId: edition.id.toString() },
+  }));
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false };
+};

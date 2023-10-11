@@ -1,13 +1,13 @@
-import { Fragment, useEffect, useState } from "react";
-import { Game } from "@/entities/Game";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
-import Title from "@/components/ui/title";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
-import { dateToString } from "@/helper/date";
-import { getAllGames } from "../../../data/back-api/back-api";
+import Title from "@/components/ui/title";
+import { Game } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
+import { dateToString } from "@/helper/date";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Fragment } from "react";
+import { getAllGames } from "../../../data/back-api/back-api";
 
 export default function GamesListPage({ games }: { games: Game[] }) {
   const title = "Dernières parties jouées";
@@ -51,6 +51,7 @@ export default function GamesListPage({ games }: { games: Game[] }) {
     </Fragment>
   );
 }
+
 export async function getStaticProps() {
   const games = await getAllGames();
 
@@ -58,5 +59,6 @@ export async function getStaticProps() {
     props: {
       games,
     },
+    revalidate: 10,
   };
 }

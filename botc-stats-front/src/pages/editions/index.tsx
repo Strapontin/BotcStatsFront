@@ -1,25 +1,16 @@
-import { Fragment, useEffect, useState } from "react";
-import { Edition } from "@/entities/Edition";
-import Container from "@/components/list-stats/Container";
-import Title from "@/components/ui/title";
-import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getAllEditions } from "../../../data/back-api/back-api";
-import ListItem from "@/components/list-stats/ListItem";
 import Filter from "@/components/filter/Filter";
+import Container from "@/components/list-stats/Container";
+import ListItem from "@/components/list-stats/ListItem";
+import Title from "@/components/ui/title";
+import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Fragment, useState } from "react";
+import { getAllEditions } from "../../../data/back-api/back-api";
 
-export default function EditionsPage() {
-  const [editions, setEditions] = useState<Edition[]>([]);
+export default function EditionsPage({ editions }: { editions: Edition[] }) {
   const [filter, setFilter] = useState<string>("");
   const title = "Liste des modules";
-
-  useEffect(() => {
-    async function initEditions() {
-      const r = await getAllEditions();
-      setEditions(r);
-    }
-    initEditions();
-  }, []);
 
   if (editions.length === 0) {
     return (
@@ -59,4 +50,15 @@ export default function EditionsPage() {
       </Container>
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const editions = await getAllEditions();
+
+  return {
+    props: {
+      editions,
+    },
+    revalidate: 10,
+  };
 }

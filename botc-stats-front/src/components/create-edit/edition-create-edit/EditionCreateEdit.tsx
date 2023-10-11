@@ -1,9 +1,7 @@
 import { Edition } from "@/entities/Edition";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
 import { Role } from "@/entities/Role";
-import { getAllEditions } from "../../../../data/back-api/back-api";
-import { toLowerRemoveDiacritics } from "@/helper/string";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 
 export default function EditionCreateEdit(props: {
@@ -13,6 +11,7 @@ export default function EditionCreateEdit(props: {
   message: JSX.Element;
   btnPressed: any;
   btnText: string;
+  roles: Role[];
 }) {
   function editionNameChanged(editionName: string) {
     const newEdition = { ...props.edition, name: editionName };
@@ -51,6 +50,7 @@ export default function EditionCreateEdit(props: {
           selectedRoles={props.edition.roles}
           setSelectedRoles={rolesInEditionChanged}
           placeholderText="Rôles"
+          roles={props.roles}
         />
         <Spacer y={3} />
       </Container>
