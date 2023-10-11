@@ -1,26 +1,20 @@
-import { Fragment, useEffect, useState } from "react";
-import { Player } from "@/entities/Player";
+import Filter from "@/components/filter/Filter";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
-import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getAllPlayers } from "../../../data/back-api/back-api";
-import Filter from "@/components/filter/Filter";
+import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Fragment, useState } from "react";
+import { getAllPlayers } from "../../../data/back-api/back-api";
 
-export default function GamesPlayedByPlayerPage() {
-  const [players, setPlayers] = useState<Player[]>([]);
+export default function GamesPlayedByPlayerPage({
+  players,
+}: {
+  players: Player[];
+}) {
   const [filter, setFilter] = useState<string>("");
   const title = "Nombre de parties/joueur";
-
-  useEffect(() => {
-    async function initPlayers() {
-      const p = await getAllPlayers();
-      p.sort((a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed);
-      setPlayers(p);
-    }
-    initPlayers();
-  }, []);
 
   if (players.length === 0) {
     return (
@@ -64,4 +58,17 @@ export default function GamesPlayedByPlayerPage() {
       </Container>
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const players = (await getAllPlayers()).sort(
+    (a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed
+  );
+
+  return {
+    props: {
+      players,
+    },
+    revalidate: 10,
+  };
 }

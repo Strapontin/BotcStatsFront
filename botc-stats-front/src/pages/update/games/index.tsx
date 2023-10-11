@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
-import { Game } from "@/entities/Game";
 import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
-import Title from "@/components/ui/title";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
 import PlayerName from "@/components/ui/playerName";
-import { dateToString } from "@/helper/date";
+import Title from "@/components/ui/title";
+import { Game } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
+import { dateToString } from "@/helper/date";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Fragment } from "react";
 import { getAllGames } from "../../../../data/back-api/back-api";
 
 export default function UpdateGamesPage({ games }: { games: Game[] }) {

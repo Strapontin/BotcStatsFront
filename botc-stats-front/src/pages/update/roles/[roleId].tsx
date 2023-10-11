@@ -1,33 +1,37 @@
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
-import Title from "@/components/ui/title";
-import {
-  updateRole,
-  getRoleById,
-  getAllRoles,
-  deleteRole,
-} from "../../../../data/back-api/back-api";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
-import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
 import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
-import { Role, getNewEmptyRole } from "@/entities/Role";
-import { useRouter } from "next/router";
+import Title from "@/components/ui/title";
+import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
+import {
+  deleteRole,
+  getAllRoles,
+  getRoleById,
+  updateRole,
+} from "../../../../data/back-api/back-api";
+import classes from "../index.module.css";
 
-export default function UpdateRolePage() {
+export default function UpdateRolePage({
+  roles,
+  roleLoaded,
+}: {
+  roles: Role[];
+  roleLoaded: Role;
+}) {
   const router = useRouter();
   const roleId: number = Number(router.query.roleId);
 
-  const [oldRole, setOldRole] = useState<Role>(getNewEmptyRole());
+  const [oldRole, setOldRole] = useState<Role>(roleLoaded);
   const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
-  const [role, setRole] = useState<Role>(getNewEmptyRole());
-
-  const [roles, setRoles] = useState<string[]>([]);
+  const [role, setRole] = useState<Role>(roleLoaded);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
@@ -37,10 +41,10 @@ export default function UpdateRolePage() {
       return false;
     } else if (
       roles.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p) !==
+        (r) =>
+          toLowerRemoveDiacritics(r.name) !==
             toLowerRemoveDiacritics(oldRole.name) &&
-          toLowerRemoveDiacritics(p) === toLowerRemoveDiacritics(role.name)
+          toLowerRemoveDiacritics(r.name) === toLowerRemoveDiacritics(role.name)
       ).length !== 0
     ) {
       updateMessage(true, "Un rôle avec ce nom existe déjà.");
@@ -50,23 +54,6 @@ export default function UpdateRolePage() {
       return true;
     }
   }, [role, roles, oldRole]);
-
-  useEffect(() => {
-    if (roleId === undefined || isNaN(roleId)) return;
-
-    async function initRole() {
-      const e = await getRoleById(roleId);
-      setRole(e);
-      setOldRole(e);
-    }
-    initRole();
-
-    async function initRoles() {
-      const e = (await getAllRoles()).map((e) => e.name);
-      setRoles(e);
-    }
-    initRoles();
-  }, [roleId]);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -96,6 +83,7 @@ export default function UpdateRolePage() {
     if (await updateRole(role, accessToken)) {
       const r = await getRoleById(roleId);
       setRole(r);
+      setOldRole(r);
       setRoleCreateEditKey(roleCreateEditKey + 1);
       setTimeout(
         () =>
@@ -216,3 +204,29 @@ export default function UpdateRolePage() {
     </Fragment>
   );
 }
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { roleId: number };
+}) {
+  const { roleId } = params;
+  const roleLoaded = await getRoleById(roleId);
+  const roles = await getAllRoles();
+
+  return {
+    props: { roles, roleLoaded },
+    revalidate: 10,
+  };
+}
+
+export const getStaticPaths = async () => {
+  const roles = await getAllRoles();
+
+  const paths = roles.map((role) => ({
+    params: { roleId: role.id.toString() },
+  }));
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false };
+};

@@ -1,33 +1,23 @@
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
 import Title from "@/components/ui/title";
+import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import { toLowerRemoveDiacritics } from "@/helper/string";
+import AuthContext from "@/stores/authContext";
+import { Text } from "@nextui-org/react";
+import { Fragment, useContext, useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
 import {
   createNewPlayer,
   getAllPlayers,
 } from "../../../../data/back-api/back-api";
-import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
-import { Player, getNewEmptyPlayer } from "@/entities/Player";
-import AuthContext from "@/stores/authContext";
 
-export default function CreatePlayer() {
+export default function CreatePlayer({ players }: { players: Player[] }) {
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<Fragment />);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
-  const [players, setPlayers] = useState<Player[]>([]);
-
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  useEffect(() => {
-    async function initPlayers() {
-      const tempPlayers = await getAllPlayers();
-      setPlayers(tempPlayers);
-    }
-    initPlayers();
-  }, [playerCreateEditKey]);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -105,4 +95,15 @@ export default function CreatePlayer() {
       btnText="Créer un joueur"
     />
   );
+}
+
+export async function getStaticProps() {
+  const players = await getAllPlayers();
+
+  return {
+    props: {
+      players,
+    },
+    revalidate: 10,
+  };
 }

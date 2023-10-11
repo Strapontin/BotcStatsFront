@@ -1,45 +1,37 @@
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
-import Title from "@/components/ui/title";
-import {
-  updatePlayer,
-  getPlayerById,
-  getAllPlayers,
-  deletePlayer,
-} from "../../../../data/back-api/back-api";
-import {
-  Button,
-  Checkbox,
-  Loading,
-  Modal,
-  Row,
-  Spacer,
-  Text,
-} from "@nextui-org/react";
-import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
-import {
-  Player,
-  getNewEmptyPlayer,
-  getPlayerPseudoString,
-} from "@/entities/Player";
-import { useRouter } from "next/router";
+import Title from "@/components/ui/title";
+import { Player, getPlayerPseudoString } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
+import {
+  deletePlayer,
+  getAllPlayers,
+  getPlayerById,
+  updatePlayer,
+} from "../../../../data/back-api/back-api";
+import classes from "../index.module.css";
 
-export default function UpdatePlayerPage() {
+export default function UpdatePlayerPage({
+  players,
+  playerLoaded,
+}: {
+  players: Player[];
+  playerLoaded: Player;
+}) {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
-  const [oldPlayer, setOldPlayer] = useState<Player>(getNewEmptyPlayer());
+  const [oldPlayer, setOldPlayer] = useState<Player>(playerLoaded);
   const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
-  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
-
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [player, setPlayer] = useState<Player>(playerLoaded);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
@@ -67,23 +59,6 @@ export default function UpdatePlayerPage() {
       return true;
     }
   }, [player, players]);
-
-  useEffect(() => {
-    if (playerId === undefined || isNaN(playerId)) return;
-
-    async function initPlayer() {
-      const p = await getPlayerById(playerId);
-      setPlayer(p);
-      setOldPlayer(p);
-    }
-    initPlayer();
-
-    async function initPlayers() {
-      const e = await getAllPlayers();
-      setPlayers(e);
-    }
-    initPlayers();
-  }, [playerId]);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -130,9 +105,9 @@ export default function UpdatePlayerPage() {
     if (!canUpdatePlayer()) return;
 
     if (await updatePlayer(player, accessToken)) {
-      const r = await getPlayerById(playerId);
-      setPlayer(r);
-      setOldPlayer(r);
+      const p = await getPlayerById(playerId);
+      setPlayer(p);
+      setOldPlayer(p);
       setPlayerCreateEditKey(playerCreateEditKey + 1);
       const pseudoMsg = player.pseudo ? " (" + player.pseudo + ")" : "";
       setTimeout(
@@ -248,3 +223,29 @@ export default function UpdatePlayerPage() {
     </Fragment>
   );
 }
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { playerId: number };
+}) {
+  const { playerId } = params;
+  const playerLoaded = await getPlayerById(playerId);
+  const players = await getAllPlayers();
+
+  return {
+    props: { players, playerLoaded },
+    revalidate: 10,
+  };
+}
+
+export const getStaticPaths = async () => {
+  const players = await getAllPlayers();
+
+  const paths = players.map((player) => ({
+    params: { playerId: player.id.toString() },
+  }));
+
+  // { fallback: false } means other routes should 404
+  return { paths, fallback: false };
+};

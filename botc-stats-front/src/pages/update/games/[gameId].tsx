@@ -1,24 +1,24 @@
-import { Fragment, useContext, useState } from "react";
+import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import Title from "@/components/ui/title";
+import { Edition } from "@/entities/Edition";
+import { Game } from "@/entities/Game";
+import { Player, getPlayerPseudoString } from "@/entities/Player";
+import { Alignment } from "@/entities/enums/alignment";
+import { dateToString } from "@/helper/date";
+import AuthContext from "@/stores/authContext";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { Fragment, useContext, useState } from "react";
+import { Check, XOctagon } from "react-feather";
 import {
-  updateGame,
-  getGameById,
   deleteGame,
-  getAllPlayers,
   getAllEditions,
   getAllGames,
+  getAllPlayers,
+  getGameById,
+  updateGame,
 } from "../../../../data/back-api/back-api";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
-import { Alignment } from "@/entities/enums/alignment";
-import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
-import { Game } from "@/entities/Game";
-import { dateToString } from "@/helper/date";
-import { useRouter } from "next/router";
-import { Player, getPlayerPseudoString } from "@/entities/Player";
-import AuthContext from "@/stores/authContext";
-import { Edition } from "@/entities/Edition";
 
 export default function UpdateGamePage({
   allPlayers,

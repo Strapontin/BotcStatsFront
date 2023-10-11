@@ -1,25 +1,16 @@
-import { Fragment, useEffect, useState } from "react";
-import Title from "@/components/ui/title";
-import { getAllRoles } from "../../../../data/back-api/back-api";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
-import Container from "@/components/list-stats/Container";
-import { Role } from "@/entities/Role";
-import ListItemRole from "@/components/list-stats/ListItemRole";
 import Filter from "@/components/filter/Filter";
+import Container from "@/components/list-stats/Container";
+import ListItemRole from "@/components/list-stats/ListItemRole";
+import Title from "@/components/ui/title";
+import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Fragment, useState } from "react";
+import { getAllRoles } from "../../../../data/back-api/back-api";
 
-export default function UpdateRolesPage() {
-  const [roles, setRoles] = useState<Role[]>([]);
+export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
   const [filter, setFilter] = useState<string>("");
   const title = <Title>Modifier un rôle</Title>;
-
-  useEffect(() => {
-    async function initRoles() {
-      const tempRoles = await getAllRoles();
-      setRoles(tempRoles);
-    }
-    initRoles();
-  }, []);
 
   if (roles.length === 0) {
     return (
@@ -62,4 +53,15 @@ export default function UpdateRolesPage() {
       </Container>
     </Fragment>
   );
+}
+
+export async function getStaticProps() {
+  const roles = await getAllRoles();
+
+  return {
+    props: {
+      roles,
+    },
+    revalidate: 10,
+  };
 }
