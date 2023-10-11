@@ -133,8 +133,8 @@ export default function GameCreateEdit(props: {
         <RolesSelector
           selectedRoles={props.game.demonBluffs}
           setSelectedRoles={selectedDemonBluffsChanged}
-          rolesInSelectedEdition={rolesInSelectedEdition}
           placeholderText="Demon bluffs"
+          roles={rolesInSelectedEdition}
         />
         <Spacer y={3} />
       </Container>
