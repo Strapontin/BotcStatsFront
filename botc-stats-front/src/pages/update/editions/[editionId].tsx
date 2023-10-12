@@ -216,12 +216,5 @@ export async function getStaticProps({
 }
 
 export const getStaticPaths = async () => {
-  const editions = await getAllEditions();
-
-  const paths = editions.map((edition) => ({
-    params: { editionId: edition.id.toString() },
-  }));
-
-  // { fallback: false } means other routes should 404
-  return { paths, fallback: false };
+  return { paths: [], fallback: true };
 };

@@ -59,6 +59,6 @@ export async function getStaticProps() {
     props: {
       editions,
     },
-    revalidate: 10,
+    revalidate: 3,
   };
 }

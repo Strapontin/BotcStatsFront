@@ -58,6 +58,6 @@ export async function getStaticProps() {
     props: {
       roles,
     },
-    revalidate: 10,
+    revalidate: 3,
   };
 }

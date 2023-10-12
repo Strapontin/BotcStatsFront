@@ -240,12 +240,5 @@ export async function getStaticProps({
 }
 
 export const getStaticPaths = async () => {
-  const players = await getAllPlayers();
-
-  const paths = players.map((player) => ({
-    params: { playerId: player.id.toString() },
-  }));
-
-  // { fallback: false } means other routes should 404
-  return { paths, fallback: false };
+  return { paths: [], fallback: true };
 };

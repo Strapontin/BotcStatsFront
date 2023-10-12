@@ -27,12 +27,5 @@ export async function getStaticProps({
 }
 
 export const getStaticPaths = async () => {
-  const roles = await getAllRoles();
-
-  const paths = roles.map((role) => ({
-    params: { roleId: role.id.toString() },
-  }));
-
-  // { fallback: false } means other routes should 404
-  return { paths, fallback: false };
+  return { paths: [], fallback: true };
 };
