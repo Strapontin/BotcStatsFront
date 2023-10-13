@@ -6,7 +6,6 @@ import { Game } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { Fragment } from "react";
 import { getAllGames } from "../../../data/back-api/back-api";
 
 export default function GamesListPage({ games }: { games: Game[] }) {
@@ -14,11 +13,11 @@ export default function GamesListPage({ games }: { games: Game[] }) {
 
   if (games.length === 0) {
     return (
-      <Fragment>
+      <>
         <Title>{title}</Title>
         <Spacer y={3} />
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -28,7 +27,7 @@ export default function GamesListPage({ games }: { games: Game[] }) {
         <ListItem
           name={dateToString(game.datePlayed)}
           value={
-            <Fragment>
+            <>
               Contée par{" "}
               {
                 <PlayerName
@@ -37,7 +36,7 @@ export default function GamesListPage({ games }: { games: Game[] }) {
                   )}`}
                 />
               }
-            </Fragment>
+            </>
           }
         ></ListItem>
       </Link>
@@ -45,10 +44,10 @@ export default function GamesListPage({ games }: { games: Game[] }) {
   }
 
   return (
-    <Fragment>
+    <>
       <Title>{title}</Title>
       <Container>{games.map((game: Game) => line(game))}</Container>
-    </Fragment>
+    </>
   );
 }
 

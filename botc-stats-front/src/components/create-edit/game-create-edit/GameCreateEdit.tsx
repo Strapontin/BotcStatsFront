@@ -1,17 +1,17 @@
+import RolesSelector from "@/components/roles-selector/RolesSelector";
 import { Edition } from "@/entities/Edition";
-import { Fragment, useEffect, useState } from "react";
-import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
+import { Game } from "@/entities/Game";
 import { Player } from "@/entities/Player";
-import { Alignment } from "@/entities/enums/alignment";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
-import EditionSelector from "../../edition-selector/EditionSelector";
-import PlayerSelector from "../../player-selector/PlayerSelector";
-import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
-import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
-import { Game } from "@/entities/Game";
+import { Alignment } from "@/entities/enums/alignment";
 import { dateToStringOrderByFormat } from "@/helper/date";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
+import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
+import EditionSelector from "../../edition-selector/EditionSelector";
+import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
+import PlayerSelector from "../../player-selector/PlayerSelector";
 
 export default function GameCreateEdit(props: {
   title: JSX.Element;
@@ -81,7 +81,7 @@ export default function GameCreateEdit(props: {
   }
 
   return (
-    <Fragment>
+    <>
       {props.title}
       <Spacer y={2} />
       {props.message}
@@ -149,6 +149,6 @@ export default function GameCreateEdit(props: {
         {props.btnText}
       </Button>
       <Spacer y={3} />
-    </Fragment>
+    </>
   );
 }

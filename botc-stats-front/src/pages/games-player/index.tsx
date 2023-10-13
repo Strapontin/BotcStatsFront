@@ -5,7 +5,7 @@ import Title from "@/components/ui/title";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { getAllPlayers } from "../../../data/back-api/back-api";
 
 export default function GamesPlayedByPlayerPage({
@@ -18,16 +18,16 @@ export default function GamesPlayedByPlayerPage({
 
   if (players.length === 0) {
     return (
-      <Fragment>
+      <>
         <Title>{title}</Title>
         <Spacer y={3} />
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
   return (
-    <Fragment>
+    <>
       <Title>{title}</Title>
       <Spacer y={1} />
       <Filter
@@ -56,7 +56,7 @@ export default function GamesPlayedByPlayerPage({
             </Link>
           ))}
       </Container>
-    </Fragment>
+    </>
   );
 }
 

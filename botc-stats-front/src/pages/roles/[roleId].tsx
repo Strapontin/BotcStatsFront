@@ -1,13 +1,12 @@
-import { Link } from "@nextui-org/react";
-import { Fragment } from "react";
-import { getAllRoles, getRoleById } from "../../../data/back-api/back-api";
 import { Role } from "@/entities/Role";
+import { Link } from "@nextui-org/react";
+import { getRoleById } from "../../../data/back-api/back-api";
 
 export default function RoleIdPage({ roleLoaded }: { roleLoaded: Role }) {
   return (
-    <Fragment>
+    <>
       TODO !!! Suggestions ?<Link href="/roles">Go to roles</Link>
-    </Fragment>
+    </>
   );
 }
 

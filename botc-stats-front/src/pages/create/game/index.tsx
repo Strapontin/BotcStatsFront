@@ -1,20 +1,20 @@
-import { Fragment, useContext, useState } from "react";
+import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import Title from "@/components/ui/title";
+import { Edition } from "@/entities/Edition";
+import { Game, getNewEmptyGame } from "@/entities/Game";
+import { Player } from "@/entities/Player";
+import { Alignment } from "@/entities/enums/alignment";
+import { dateToString } from "@/helper/date";
+import AuthContext from "@/stores/authContext";
+import { Text } from "@nextui-org/react";
+import { useContext, useState } from "react";
+import { Check, XOctagon } from "react-feather";
 import {
   createNewGame,
   getAllEditions,
   getAllPlayers,
 } from "../../../../data/back-api/back-api";
-import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
-import { Alignment } from "@/entities/enums/alignment";
-import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
-import { Game, getNewEmptyGame } from "@/entities/Game";
-import { dateToString } from "@/helper/date";
-import AuthContext from "@/stores/authContext";
-import { Player } from "@/entities/Player";
-import { Edition } from "@/entities/Edition";
 
 export default function CreateGame({
   editions,
@@ -24,7 +24,7 @@ export default function CreateGame({
   players: Player[];
 }) {
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [game, setGame] = useState<Game>(getNewEmptyGame());
 
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;

@@ -8,7 +8,7 @@ import { dateToString } from "@/helper/date";
 import AuthContext from "@/stores/authContext";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
 import {
   deleteGame,
@@ -33,7 +33,7 @@ export default function UpdateGamePage({
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
   const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [game, setGame] = useState<Game>(getNewEmptyGame());
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -50,9 +50,9 @@ export default function UpdateGamePage({
 
   if (game.id === -1) {
     return (
-      <Fragment>
+      <>
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -171,7 +171,7 @@ export default function UpdateGamePage({
   );
 
   return (
-    <Fragment>
+    <>
       <GameCreateEdit
         key={gameCreateEditKey}
         title={title}
@@ -195,7 +195,7 @@ export default function UpdateGamePage({
       </Button>
       <Spacer y={3} />
       {popup}
-    </Fragment>
+    </>
   );
 }
 

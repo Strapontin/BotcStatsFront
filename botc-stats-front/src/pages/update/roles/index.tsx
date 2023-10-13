@@ -5,7 +5,7 @@ import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { getAllRoles } from "../../../../data/back-api/back-api";
 
 export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
@@ -14,11 +14,11 @@ export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
 
   if (roles.length === 0) {
     return (
-      <Fragment>
+      <>
         {title}
         <Spacer y={3} />
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -34,7 +34,7 @@ export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
   }
 
   return (
-    <Fragment>
+    <>
       {title}
       <Spacer y={1} />
       <Filter
@@ -51,7 +51,7 @@ export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
           )
           .map((role: Role) => line(role))}
       </Container>
-    </Fragment>
+    </>
   );
 }
 

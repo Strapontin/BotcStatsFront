@@ -1,10 +1,10 @@
 import { Player } from "@/entities/Player";
-import { Fragment, useEffect, useRef, useState } from "react";
-import Classes from "./PlayerSelector.module.css";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Input, Spacer } from "@nextui-org/react";
+import { Fragment, useRef, useState } from "react";
 import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import Classes from "./PlayerSelector.module.css";
 
 export default function PlayerSelector(props: {
   selectedPlayer: Player;
@@ -89,7 +89,7 @@ export default function PlayerSelector(props: {
   }
 
   return (
-    <Fragment>
+    <>
       <div className={Classes["input-container"]}>
         <Input
           css={{ flex: 1 }}
@@ -120,6 +120,6 @@ export default function PlayerSelector(props: {
           </Container>
         </div>
       )}
-    </Fragment>
+    </>
   );
 }

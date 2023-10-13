@@ -1,10 +1,9 @@
-import { Dropdown } from "@nextui-org/react";
-import { Fragment, useState } from "react";
 import {
   CharacterType,
   characterTypeList,
   getCharacterTypeTextById,
 } from "@/entities/enums/characterType";
+import { Dropdown } from "@nextui-org/react";
 
 export default function DropdownCharacterType(props: {
   setCharacterType: any;
@@ -25,7 +24,7 @@ export default function DropdownCharacterType(props: {
   }
 
   return (
-    <Fragment>
+    <>
       <Dropdown type="menu">
         <Dropdown.Button
           id="selection-stat"
@@ -44,6 +43,6 @@ export default function DropdownCharacterType(props: {
           ))}
         </Dropdown.Menu>
       </Dropdown>
-    </Fragment>
+    </>
   );
 }

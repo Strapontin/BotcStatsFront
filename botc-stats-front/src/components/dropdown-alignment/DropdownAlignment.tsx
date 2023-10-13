@@ -4,7 +4,6 @@ import {
   getAlignmentTextById,
 } from "@/entities/enums/alignment";
 import { Dropdown } from "@nextui-org/react";
-import { Fragment, useState } from "react";
 
 export default function DropdownAlignment(props: {
   setAlignment: any;
@@ -21,7 +20,7 @@ export default function DropdownAlignment(props: {
   }
 
   return (
-    <Fragment>
+    <>
       <Dropdown type="menu">
         <Dropdown.Button
           id="selection-stat"
@@ -40,6 +39,6 @@ export default function DropdownAlignment(props: {
           ))}
         </Dropdown.Menu>
       </Dropdown>
-    </Fragment>
+    </>
   );
 }

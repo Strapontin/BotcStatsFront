@@ -6,7 +6,7 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
 import {
   deleteEdition,
@@ -30,7 +30,7 @@ export default function UpdateEditionPage(props: {
 
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [edition, setEdition] = useState<Edition>(props.edition);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -65,9 +65,9 @@ export default function UpdateEditionPage(props: {
 
   if (edition.id === -1) {
     return (
-      <Fragment>
+      <>
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -103,7 +103,7 @@ export default function UpdateEditionPage(props: {
 
   function updateMessage(isError: boolean, message: string) {
     if (message === "") {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     } else if (isError) {
       setMessage(
         <Text span className={classes.red}>
@@ -170,7 +170,7 @@ export default function UpdateEditionPage(props: {
   );
 
   return (
-    <Fragment>
+    <>
       <EditionCreateEdit
         key={editionCreateEditKey}
         title={title}
@@ -193,7 +193,7 @@ export default function UpdateEditionPage(props: {
       </Button>
       <Spacer y={3} />
       {popup}
-    </Fragment>
+    </>
   );
 }
 

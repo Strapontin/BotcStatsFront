@@ -5,7 +5,7 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
 import {
   deletePlayer,
@@ -30,7 +30,7 @@ export default function UpdatePlayerPage({
 
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [players] = useState<Player[]>(allPlayers);
   const [player, setPlayer] = useState<Player>(playerLoaded);
 
@@ -88,15 +88,15 @@ export default function UpdatePlayerPage({
         `Le joueur "${player.name}${pseudoMsg}" existe déjà.`
       );
     } else {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     }
   }, [player, players, oldPlayer]);
 
   if (player.id === -1) {
     return (
-      <Fragment>
+      <>
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -130,7 +130,7 @@ export default function UpdatePlayerPage({
 
   function updateMessage(isError: boolean, message: string) {
     if (message === "") {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     } else if (isError) {
       setMessage(
         <Text span className={classes.red}>
@@ -199,7 +199,7 @@ export default function UpdatePlayerPage({
   );
 
   return (
-    <Fragment>
+    <>
       <PlayerCreateEdit
         key={playerCreateEditKey}
         title={title}
@@ -221,7 +221,7 @@ export default function UpdatePlayerPage({
       </Button>
       <Spacer y={3} />
       {popup}
-    </Fragment>
+    </>
   );
 }
 

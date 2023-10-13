@@ -12,7 +12,6 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { Link, Spacer, Text } from "@nextui-org/react";
-import { Fragment } from "react";
 import { getGameById } from "../../../data/back-api/back-api";
 
 export default function GamePage({ game }: { game: Game }) {
@@ -28,7 +27,7 @@ export default function GamePage({ game }: { game: Game }) {
   );
 
   return (
-    <Fragment>
+    <>
       {title}
       <Container>
         <ListItem name="Module" value={game.edition.name} />
@@ -74,7 +73,7 @@ export default function GamePage({ game }: { game: Game }) {
           />
         ))}
       </Container>
-    </Fragment>
+    </>
   );
 }
 
