@@ -5,88 +5,70 @@ import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
 import Title from "@/components/ui/title";
 import { Player, getPlayerPseudoString } from "@/entities/Player";
 import { Collapse, Loading } from "@nextui-org/react";
-import { useRouter } from "next/router";
-import { Fragment, useEffect, useState } from "react";
-import { getAllPlayers, getPlayerById } from "../../../data/back-api/back-api";
+import { getPlayerById } from "../../../data/back-api/back-api";
 
-export default function PlayerPage({ player }: { player: Player }) {
-  const playerId = useRouter().query.playerId;
-  const [detailsRolesPlayed, setDetailsRolesPlayed] = useState(<Loading />);
-
-  useEffect(() => {
-    async function initDetailsRolesPlayed() {
-      if (player.id === -1) return;
-
-      setDetailsRolesPlayed(
-        <Collapse expanded title="Détails des rôles joués">
-          <Container>
-            {player.timesPlayedRole.map((tpr) => (
-              <ListItemRole
-                key={tpr.id}
-                id={tpr.id}
-                image={tpr.name}
-                characterType={tpr.characterType}
-                nbWins={tpr.timesWonByPlayer}
-                nbLoses={tpr.timesLostByPlayer}
-                nbGamesPlayed={tpr.timesPlayedByPlayer}
-              />
-            ))}
-          </Container>
-        </Collapse>
-      );
-    }
-    initDetailsRolesPlayed();
-  }, [player]);
-
-  if (!playerId) {
-    <Loading />;
-    return;
-  }
-
+export default function PlayerPage({ playerLoaded }: { playerLoaded: Player }) {
   const title = (
     <Title>
-      Détails {player.name}
-      {getPlayerPseudoString(player.pseudo)}
+      Détails {playerLoaded.name}
+      {getPlayerPseudoString(playerLoaded.pseudo)}
     </Title>
   );
 
-  const playerComponent = player ? (
+  const playerComponent = playerLoaded ? (
     <Collapse expanded title="Détails généraux">
       <Container>
-        <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
-        <ListItemTwoValues
-          key1="Gagnées"
-          key2="Perdues"
-          value1={player.nbGamesWon}
-          value2={player.nbGamesLost}
-          classKey1="green"
-          classKey2="red"
-          classValue1="green"
-          classValue2="red"
-        />
-
+        <ListItem name="Parties jouées" value={playerLoaded.nbGamesPlayed} />
         <ListItemTwoValues
           key1="Gentil"
           key2="Maléfique"
-          value1={player.nbGamesGood}
-          value2={player.nbGamesEvil}
+          value1={playerLoaded.nbGamesGood}
+          value2={playerLoaded.nbGamesEvil}
           classKey1="townsfolk"
           classKey2="red"
           classValue1="townsfolk"
           classValue2="red"
         />
+        <ListItemTwoValues
+          key1="Victoires"
+          key2="Défaites"
+          value1={playerLoaded.nbGamesWon}
+          value2={playerLoaded.nbGamesLost}
+          classKey1="green"
+          classKey2="red"
+          classValue1="green"
+          classValue2="red"
+        />
       </Container>
     </Collapse>
   ) : (
-    <Fragment />
+    <></>
+  );
+
+  const detailsRolesPlayed = (
+    <Collapse expanded title="Détails des rôles joués">
+      <Container>
+        {playerLoaded.timesPlayedRole.map((tpr) => (
+          <ListItemRole
+            key={tpr.id}
+            id={tpr.id}
+            image={tpr.name}
+            characterType={tpr.characterType}
+            nbWins={tpr.timesWonByPlayer}
+            nbLoses={tpr.timesLostByPlayer}
+            nbGamesPlayed={tpr.timesPlayedByPlayer}
+          />
+        ))}
+      </Container>
+    </Collapse>
   );
 
   return (
-    <Fragment>
+    <>
       {title}
       <Collapse.Group css={{ w: "100%" }}>{playerComponent}</Collapse.Group>
       <Collapse.Group css={{ w: "100%" }}>{detailsRolesPlayed}</Collapse.Group>
-    </Fragment>
+    </>
   );
 }
 
@@ -95,17 +77,20 @@ export async function getStaticProps({
 }: {
   params: { playerId: number };
 }) {
-  const { playerId } = params;
-  const player = await getPlayerById(playerId);
+  const playerLoaded = await getPlayerById(params.playerId);
+
+  if (!playerLoaded || playerLoaded.status === 404) {
+    return { notFound: true };
+  }
 
   return {
     props: {
-      player,
+      playerLoaded,
     },
-    revalidate: 10,
+    revalidate: 5,
   };
 }
 
 export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
+  return { paths: [], fallback: "blocking" };
 };
