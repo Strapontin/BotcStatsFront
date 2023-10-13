@@ -16,10 +16,10 @@ import {
 import classes from "../index.module.css";
 
 export default function UpdatePlayerPage({
-  players,
+  allPlayers,
   playerLoaded,
 }: {
-  players: Player[];
+  allPlayers: Player[];
   playerLoaded: Player;
 }) {
   const router = useRouter();
@@ -31,6 +31,7 @@ export default function UpdatePlayerPage({
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
+  const [players] = useState<Player[]>(allPlayers);
   const [player, setPlayer] = useState<Player>(playerLoaded);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -224,21 +225,17 @@ export default function UpdatePlayerPage({
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { playerId: number };
 }) {
-  const { playerId } = params;
-  const playerLoaded = await getPlayerById(playerId);
-  const players = await getAllPlayers();
+  const allPlayers = await getAllPlayers();
+  const playerLoaded = allPlayers.find((r) => r.id == params.playerId);
 
-  return {
-    props: { players, playerLoaded },
-    revalidate: 10,
-  };
+  if (!playerLoaded) {
+    return { notFound: true };
+  }
+
+  return { props: { allPlayers, playerLoaded } };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};

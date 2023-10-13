@@ -16,10 +16,10 @@ import {
 import classes from "../index.module.css";
 
 export default function UpdateRolePage({
-  roles,
+  allRoles,
   roleLoaded,
 }: {
-  roles: Role[];
+  allRoles: Role[];
   roleLoaded: Role;
 }) {
   const router = useRouter();
@@ -31,6 +31,7 @@ export default function UpdateRolePage({
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<Fragment />);
+  const [roles] = useState<Role[]>(allRoles);
   const [role, setRole] = useState<Role>(roleLoaded);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -205,21 +206,17 @@ export default function UpdateRolePage({
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { roleId: number };
 }) {
-  const { roleId } = params;
-  const roleLoaded = await getRoleById(roleId);
-  const roles = await getAllRoles();
+  const allRoles = await getAllRoles();
+  const roleLoaded = allRoles.find((r) => r.id == params.roleId);
 
-  return {
-    props: { roles, roleLoaded },
-    revalidate: 10,
-  };
+  if (!roleLoaded) {
+    return { notFound: true };
+  }
+
+  return { props: { allRoles, roleLoaded } };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};

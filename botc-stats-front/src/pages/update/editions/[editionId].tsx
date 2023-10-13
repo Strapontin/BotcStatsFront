@@ -1,21 +1,21 @@
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
-import Title from "@/components/ui/title";
-import {
-  updateEdition,
-  getEditionById,
-  getAllEditions,
-  deleteEdition,
-  getAllRoles,
-} from "../../../../data/back-api/back-api";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
-import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
+import Title from "@/components/ui/title";
 import { Edition } from "@/entities/Edition";
-import { useRouter } from "next/router";
+import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
-import { Role } from "@/entities/Role";
+import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
+import {
+  deleteEdition,
+  getAllEditions,
+  getAllRoles,
+  getEditionById,
+  updateEdition,
+} from "../../../../data/back-api/back-api";
+import classes from "../index.module.css";
 
 export default function UpdateEditionPage(props: {
   edition: Edition;
@@ -82,6 +82,7 @@ export default function UpdateEditionPage(props: {
       props.editions.push(edition);
       const e = await getEditionById(editionId);
       setEdition(e);
+      setOldEdition(e);
       setEditionCreateEditKey(editionCreateEditKey + 1);
       setTimeout(
         () =>
@@ -196,25 +197,19 @@ export default function UpdateEditionPage(props: {
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { editionId: number };
 }) {
-  const edition = await getEditionById(params.editionId);
-  const editions = await getAllEditions();
+  const allEditions = await getAllEditions();
+  const editionLoaded = allEditions.find((r) => r.id == params.editionId);
+
+  if (!editionLoaded) {
+    return { notFound: true };
+  }
+
   const roles = await getAllRoles();
 
-  return {
-    props: {
-      edition,
-      editions,
-      roles,
-    },
-    revalidate: 10,
-  };
+  return { props: { allEditions, editionLoaded, roles } };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};
