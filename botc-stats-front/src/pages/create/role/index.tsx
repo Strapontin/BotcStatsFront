@@ -1,19 +1,19 @@
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
 import Title from "@/components/ui/title";
-import { createNewRole, getAllRoles } from "../../../../data/back-api/back-api";
-import { Text } from "@nextui-org/react";
-import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
-import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
-import { Role, getNewEmptyRole } from "@/entities/Role";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
+import { Text } from "@nextui-org/react";
+import { useContext, useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
+import { createNewRole, getAllRoles } from "../../../../data/back-api/back-api";
+import classes from "../index.module.css";
 
 export default function CreateRole({ roles }: { roles: Role[] }) {
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [role, setRole] = useState<Role>(getNewEmptyRole());
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -37,7 +37,7 @@ export default function CreateRole({ roles }: { roles: Role[] }) {
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
     } else {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     }
   }, [role, roles]);
 
@@ -105,13 +105,12 @@ export default function CreateRole({ roles }: { roles: Role[] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const roles = await getAllRoles();
 
   return {
     props: {
       roles,
     },
-    revalidate: 10,
   };
 }

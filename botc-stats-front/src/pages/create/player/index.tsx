@@ -4,7 +4,7 @@ import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import { Text } from "@nextui-org/react";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
 import {
   createNewPlayer,
@@ -14,7 +14,7 @@ import classes from "../index.module.css";
 
 export default function CreatePlayer({ players }: { players: Player[] }) {
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -40,7 +40,7 @@ export default function CreatePlayer({ players }: { players: Player[] }) {
         `Le joueur "${player.name}${pseudoMsg}" existe déjà.`
       );
     } else {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     }
   }, [player, players]);
 
@@ -97,13 +97,12 @@ export default function CreatePlayer({ players }: { players: Player[] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const players = await getAllPlayers();
 
   return {
     props: {
       players,
     },
-    revalidate: 10,
   };
 }

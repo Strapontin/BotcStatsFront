@@ -12,17 +12,9 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { Link, Spacer, Text } from "@nextui-org/react";
-import { useRouter } from "next/router";
-import { Fragment } from "react";
-import { getAllGames, getGameById } from "../../../data/back-api/back-api";
+import { getGameById } from "../../../data/back-api/back-api";
 
 export default function GamePage({ game }: { game: Game }) {
-  const gameId: number = Number(useRouter().query.gameId);
-
-  if (isNaN(gameId) || !game) {
-    return <Title>Chargement {gameId}...</Title>;
-  }
-
   const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
 
   const title = (
@@ -35,7 +27,7 @@ export default function GamePage({ game }: { game: Game }) {
   );
 
   return (
-    <Fragment>
+    <>
       {title}
       <Container>
         <ListItem name="Module" value={game.edition.name} />
@@ -81,26 +73,24 @@ export default function GamePage({ game }: { game: Game }) {
           />
         ))}
       </Container>
-    </Fragment>
+    </>
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { gameId: number };
 }) {
-  const { gameId } = params;
-  const game = await getGameById(gameId);
+  const game = await getGameById(params.gameId);
+
+  if (!game || game.status === 404) {
+    return { notFound: true };
+  }
 
   return {
     props: {
       game,
     },
-    revalidate: 10,
   };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};

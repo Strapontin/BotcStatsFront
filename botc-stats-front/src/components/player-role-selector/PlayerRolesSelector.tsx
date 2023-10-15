@@ -1,14 +1,14 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import Classes from "./PlayerRolesSelector.module.css";
-import { Button, Input, Spacer } from "@nextui-org/react";
-import { X } from "react-feather";
-import { PlayerRole } from "@/entities/PlayerRole";
-import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
-import ListItem from "../list-stats/ListItem";
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import { PlayerRole } from "@/entities/PlayerRole";
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Button, Input, Spacer } from "@nextui-org/react";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { X } from "react-feather";
+import ListItem from "../list-stats/ListItem";
+import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItemRole from "../list-stats/ListItemRole";
+import Classes from "./PlayerRolesSelector.module.css";
 
 export default function PlayerRolesSelector(props: {
   selectedPlayerRoles: PlayerRole[];
@@ -178,7 +178,7 @@ export default function PlayerRolesSelector(props: {
   }
 
   return (
-    <Fragment>
+    <>
       <div className={Classes["players-roles-selected"]}>
         {props.selectedPlayerRoles.map((pr, index) => (
           <Fragment key={pr.player.id + "-" + pr.role.id + index}>
@@ -260,6 +260,6 @@ export default function PlayerRolesSelector(props: {
           ))}
         </div>
       )}
-    </Fragment>
+    </>
   );
 }

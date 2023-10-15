@@ -5,7 +5,7 @@ import Title from "@/components/ui/title";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { getAllPlayers } from "../../../../data/back-api/back-api";
 
 export default function UpdatePlayersPage({ players }: { players: Player[] }) {
@@ -14,11 +14,11 @@ export default function UpdatePlayersPage({ players }: { players: Player[] }) {
 
   if (players.length === 0) {
     return (
-      <Fragment>
+      <>
         {title}
         <Spacer y={3} />
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -31,7 +31,7 @@ export default function UpdatePlayersPage({ players }: { players: Player[] }) {
   }
 
   return (
-    <Fragment>
+    <>
       {title}
       <Spacer y={1} />
       <Filter
@@ -52,17 +52,16 @@ export default function UpdatePlayersPage({ players }: { players: Player[] }) {
           )
           .map((player: Player) => line(player))}
       </Container>
-    </Fragment>
+    </>
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const players = await getAllPlayers();
 
   return {
     props: {
       players,
     },
-    revalidate: 3,
   };
 }

@@ -1,10 +1,10 @@
 import { Role } from "@/entities/Role";
-import { Fragment, useEffect, useRef, useState } from "react";
-import Classes from "./RolesSelector.module.css";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
+import { Fragment, useRef, useState } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import Classes from "./RolesSelector.module.css";
 
 export default function RolesSelector(props: {
   selectedRoles: Role[];
@@ -17,7 +17,6 @@ export default function RolesSelector(props: {
   const [visibleRoles, setVisibleRoles] = useState<Role[]>(props.roles);
 
   const [filter, setFilter] = useState<string>("");
-
 
   function onChangeInput(value: string) {
     reSetVisibleRolesFromValue(value);
@@ -63,7 +62,9 @@ export default function RolesSelector(props: {
       props.setSelectedRoles(allSelectedroles);
 
       setVisibleRoles(
-        props.roles.filter((ar) => !allSelectedroles.some((sr) => sr.id === ar.id))
+        props.roles.filter(
+          (ar) => !allSelectedroles.some((sr) => sr.id === ar.id)
+        )
       );
     }
   }
@@ -101,7 +102,7 @@ export default function RolesSelector(props: {
   }
 
   return (
-    <Fragment>
+    <>
       <div className={Classes["roles-selected"]}>
         {props.selectedRoles.map((role) => (
           <Fragment key={role.id}>
@@ -152,6 +153,6 @@ export default function RolesSelector(props: {
           ))}
         </div>
       )}
-    </Fragment>
+    </>
   );
 }

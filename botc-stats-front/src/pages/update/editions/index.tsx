@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
-import Title from "@/components/ui/title";
-import { getAllEditions } from "../../../../data/back-api/back-api";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
-import Container from "@/components/list-stats/Container";
-import { Edition } from "@/entities/Edition";
-import ListItem from "@/components/list-stats/ListItem";
 import Filter from "@/components/filter/Filter";
+import Container from "@/components/list-stats/Container";
+import ListItem from "@/components/list-stats/ListItem";
+import Title from "@/components/ui/title";
+import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Link, Loading, Spacer } from "@nextui-org/react";
+import { useState } from "react";
+import { getAllEditions } from "../../../../data/back-api/back-api";
 
 export default function UpdateEditionsPage({
   editions,
@@ -18,11 +18,11 @@ export default function UpdateEditionsPage({
 
   if (editions.length === 0) {
     return (
-      <Fragment>
+      <>
         {title}
         <Spacer y={3} />
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -39,7 +39,7 @@ export default function UpdateEditionsPage({
   }
 
   return (
-    <Fragment>
+    <>
       {title}
       <Spacer y={1} />
       <Filter
@@ -56,17 +56,16 @@ export default function UpdateEditionsPage({
           )
           .map((edition: Edition) => line(edition))}
       </Container>
-    </Fragment>
+    </>
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const editions = await getAllEditions();
 
   return {
     props: {
       editions,
     },
-    revalidate: 3,
   };
 }

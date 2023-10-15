@@ -1,18 +1,18 @@
-import { Fragment, useContext, useEffect, useState } from "react";
+import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
 import Title from "@/components/ui/title";
+import { Edition, getNewEmptyEdition } from "@/entities/Edition";
+import { Role } from "@/entities/Role";
+import { toLowerRemoveDiacritics } from "@/helper/string";
+import AuthContext from "@/stores/authContext";
+import { Text } from "@nextui-org/react";
+import { useContext, useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
 import {
   createNewEdition,
   getAllEditions,
   getAllRoles,
 } from "../../../../data/back-api/back-api";
-import { Text } from "@nextui-org/react";
 import classes from "../index.module.css";
-import { Check, XOctagon } from "react-feather";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
-import { Edition, getNewEmptyEdition } from "@/entities/Edition";
-import AuthContext from "@/stores/authContext";
-import { Role } from "@/entities/Role";
 
 export default function CreateEdition({
   editions,
@@ -22,7 +22,7 @@ export default function CreateEdition({
   roles: Role[];
 }) {
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -41,7 +41,7 @@ export default function CreateEdition({
     ) {
       updateMessage(true, "Un module avec ce nom existe déjà.");
     } else {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     }
   }, [edition, editions]);
 
@@ -122,7 +122,7 @@ export default function CreateEdition({
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const editions = await getAllEditions();
   const roles = await getAllRoles();
 
@@ -131,6 +131,5 @@ export async function getStaticProps() {
       editions,
       roles,
     },
-    revalidate: 10,
   };
 }

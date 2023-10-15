@@ -1,10 +1,10 @@
 import { Edition } from "@/entities/Edition";
-import { Fragment, useEffect, useRef, useState } from "react";
-import Classes from "./EditionSelector.module.css";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Input, Spacer } from "@nextui-org/react";
+import { Fragment, useRef, useState } from "react";
 import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import Classes from "./EditionSelector.module.css";
 
 export default function EditionSelector(props: {
   selectedEdition: Edition;
@@ -82,7 +82,7 @@ export default function EditionSelector(props: {
   }
 
   return (
-    <Fragment>
+    <>
       <div className={Classes["input-container"]}>
         <Input
           css={{ flex: 1 }}
@@ -112,6 +112,6 @@ export default function EditionSelector(props: {
           </Container>
         </div>
       )}
-    </Fragment>
+    </>
   );
 }

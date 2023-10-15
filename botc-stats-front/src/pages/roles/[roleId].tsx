@@ -1,31 +1,29 @@
+import { Role } from "@/entities/Role";
 import { Link } from "@nextui-org/react";
-import { Fragment } from "react";
-import { getAllRoles, getRoleById } from "../../../data/back-api/back-api";
+import { getRoleById } from "../../../data/back-api/back-api";
 
-export default function RoleIdPage() {
+export default function RoleIdPage({ roleLoaded }: { roleLoaded: Role }) {
   return (
-    <Fragment>
+    <>
       TODO !!! Suggestions ?<Link href="/roles">Go to roles</Link>
-    </Fragment>
+    </>
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { roleId: number };
 }) {
-  const { roleId } = params;
-  const roleLoaded = await getRoleById(roleId);
+  const roleLoaded = await getRoleById(params.roleId);
+
+  if (!roleLoaded || roleLoaded.status === 404) {
+    return { notFound: true };
+  }
 
   return {
     props: {
       roleLoaded,
     },
-    revalidate: 10,
   };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};

@@ -1,10 +1,9 @@
-import { Role } from "@/entities/Role";
-import { Fragment, useEffect, useState } from "react";
-import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
-import DropdownCharacterType from "@/components/dropdown-character-type/DropdownCharacterType";
 import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment";
-import { CharacterType } from "@/entities/enums/characterType";
+import DropdownCharacterType from "@/components/dropdown-character-type/DropdownCharacterType";
+import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
+import { CharacterType } from "@/entities/enums/characterType";
+import { Button, Container, Input, Spacer } from "@nextui-org/react";
 
 export default function RoleCreateEdit(props: {
   title: JSX.Element;
@@ -37,7 +36,7 @@ export default function RoleCreateEdit(props: {
   }
 
   return (
-    <Fragment>
+    <>
       {props.title}
       <Spacer y={2} />
       {props.message}
@@ -76,6 +75,6 @@ export default function RoleCreateEdit(props: {
         {props.btnText}
       </Button>
       <Spacer y={3} />
-    </Fragment>
+    </>
   );
 }

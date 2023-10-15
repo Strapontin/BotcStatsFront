@@ -5,7 +5,7 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
 import {
   deleteRole,
@@ -16,10 +16,10 @@ import {
 import classes from "../index.module.css";
 
 export default function UpdateRolePage({
-  roles,
+  allRoles,
   roleLoaded,
 }: {
-  roles: Role[];
+  allRoles: Role[];
   roleLoaded: Role;
 }) {
   const router = useRouter();
@@ -30,7 +30,8 @@ export default function UpdateRolePage({
 
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
-  const [message, setMessage] = useState(<Fragment />);
+  const [message, setMessage] = useState(<></>);
+  const [roles] = useState<Role[]>(allRoles);
   const [role, setRole] = useState<Role>(roleLoaded);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
@@ -69,9 +70,9 @@ export default function UpdateRolePage({
 
   if (role.id === -1) {
     return (
-      <Fragment>
+      <>
         <Loading />
-      </Fragment>
+      </>
     );
   }
 
@@ -104,7 +105,7 @@ export default function UpdateRolePage({
 
   function updateMessage(isError: boolean, message: string) {
     if (message === "") {
-      setMessage(<Fragment />);
+      setMessage(<></>);
     } else if (isError) {
       setMessage(
         <Text span className={classes.red}>
@@ -177,7 +178,7 @@ export default function UpdateRolePage({
   );
 
   return (
-    <Fragment>
+    <>
       <div className="toto">
         <RoleCreateEdit
           key={roleCreateEditKey}
@@ -201,25 +202,21 @@ export default function UpdateRolePage({
       </div>
       <Spacer y={3} />
       {popup}
-    </Fragment>
+    </>
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { roleId: number };
 }) {
-  const { roleId } = params;
-  const roleLoaded = await getRoleById(roleId);
-  const roles = await getAllRoles();
+  const allRoles = await getAllRoles();
+  const roleLoaded = allRoles.find((r) => r.id == params.roleId);
 
-  return {
-    props: { roles, roleLoaded },
-    revalidate: 10,
-  };
+  if (!roleLoaded) {
+    return { notFound: true };
+  }
+
+  return { props: { allRoles, roleLoaded } };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};

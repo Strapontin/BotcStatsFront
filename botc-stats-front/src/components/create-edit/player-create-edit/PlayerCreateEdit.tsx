@@ -1,10 +1,5 @@
 import { Player } from "@/entities/Player";
-import { Fragment, useEffect, useState } from "react";
-import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
-import DropdownCharacterType from "@/components/dropdown-character-type/DropdownCharacterType";
-import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment";
-import { CharacterType } from "@/entities/enums/characterType";
-import { Alignment } from "@/entities/enums/alignment";
+import { Button, Container, Input, Spacer } from "@nextui-org/react";
 
 export default function PlayerCreateEdit(props: {
   title: JSX.Element;
@@ -32,7 +27,7 @@ export default function PlayerCreateEdit(props: {
   }
 
   return (
-    <Fragment>
+    <>
       {props.title}
       <Spacer y={2} />
       {props.message}
@@ -68,6 +63,6 @@ export default function PlayerCreateEdit(props: {
         {props.btnText}
       </Button>
       <Spacer y={3} />
-    </Fragment>
+    </>
   );
 }
