@@ -122,7 +122,7 @@ export default function CreateEdition({
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const editions = await getAllEditions();
   const roles = await getAllRoles();
 
@@ -131,6 +131,5 @@ export async function getStaticProps() {
       editions,
       roles,
     },
-    revalidate: 10,
   };
 }

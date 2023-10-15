@@ -52,13 +52,12 @@ export default function EditionsPage({ editions }: { editions: Edition[] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const editions = await getAllEditions();
 
   return {
     props: {
       editions,
     },
-    revalidate: 3,
   };
 }

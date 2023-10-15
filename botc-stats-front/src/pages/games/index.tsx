@@ -51,13 +51,12 @@ export default function GamesListPage({ games }: { games: Game[] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const games = await getAllGames();
 
   return {
     props: {
       games,
     },
-    revalidate: 3,
   };
 }

@@ -55,13 +55,12 @@ export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const roles = await getAllRoles();
 
   return {
     props: {
       roles,
     },
-    revalidate: 3,
   };
 }

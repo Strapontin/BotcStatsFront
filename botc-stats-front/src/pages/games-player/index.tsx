@@ -60,7 +60,7 @@ export default function GamesPlayedByPlayerPage({
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const players = (await getAllPlayers()).sort(
     (a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed
   );
@@ -69,6 +69,5 @@ export async function getStaticProps() {
     props: {
       players,
     },
-    revalidate: 3,
   };
 }

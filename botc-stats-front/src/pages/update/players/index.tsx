@@ -56,13 +56,12 @@ export default function UpdatePlayersPage({ players }: { players: Player[] }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const players = await getAllPlayers();
 
   return {
     props: {
       players,
     },
-    revalidate: 3,
   };
 }

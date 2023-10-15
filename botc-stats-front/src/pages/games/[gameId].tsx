@@ -77,7 +77,7 @@ export default function GamePage({ game }: { game: Game }) {
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { gameId: number };
@@ -92,10 +92,5 @@ export async function getStaticProps({
     props: {
       game,
     },
-    revalidate: 5,
   };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: "blocking" };
-};

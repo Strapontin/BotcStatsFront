@@ -72,7 +72,7 @@ export default function PlayerPage({ playerLoaded }: { playerLoaded: Player }) {
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { playerId: number };
@@ -87,10 +87,5 @@ export async function getStaticProps({
     props: {
       playerLoaded,
     },
-    revalidate: 5,
   };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: "blocking" };
-};

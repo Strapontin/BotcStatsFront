@@ -31,7 +31,7 @@ export default function EditionIdPage({
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { editionId: number };
@@ -46,10 +46,5 @@ export async function getStaticProps({
     props: {
       editionLoaded,
     },
-    revalidate: 5,
   };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: "blocking" };
-};

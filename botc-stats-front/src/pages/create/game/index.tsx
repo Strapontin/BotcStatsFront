@@ -104,7 +104,7 @@ export default function CreateGame({
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const editions = await getAllEditions();
   const players = await getAllPlayers();
 
@@ -113,6 +113,5 @@ export async function getStaticProps() {
       editions,
       players,
     },
-    revalidate: 10,
   };
 }

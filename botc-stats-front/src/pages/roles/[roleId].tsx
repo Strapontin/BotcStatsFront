@@ -10,7 +10,7 @@ export default function RoleIdPage({ roleLoaded }: { roleLoaded: Role }) {
   );
 }
 
-export async function getStaticProps({
+export async function getServerSideProps({
   params,
 }: {
   params: { roleId: number };
@@ -25,10 +25,5 @@ export async function getStaticProps({
     props: {
       roleLoaded,
     },
-    revalidate: 5,
   };
 }
-
-export const getStaticPaths = async () => {
-  return { paths: [], fallback: "blocking" };
-};
