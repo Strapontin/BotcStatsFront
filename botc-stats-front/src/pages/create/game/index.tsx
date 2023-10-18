@@ -104,6 +104,7 @@ export default function CreateGame({
   );
 }
 
+// Must keep getServerSideProps here so the user can select edition quickly
 export async function getServerSideProps() {
   const editions = await getAllEditions();
   const players = await getAllPlayers();

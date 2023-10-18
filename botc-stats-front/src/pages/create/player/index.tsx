@@ -12,12 +12,17 @@ import {
 } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function CreatePlayer({ players }: { players: Player[] }) {
+export default function CreatePlayer() {
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<></>);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
+  const [players, setPlayers] = useState<Player[]>([]);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
+  useEffect(() => {
+    getAllPlayers().then((p) => setPlayers(p));
+  }, []);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -95,14 +100,4 @@ export default function CreatePlayer({ players }: { players: Player[] }) {
       btnText="Créer un joueur"
     />
   );
-}
-
-export async function getServerSideProps() {
-  const players = await getAllPlayers();
-
-  return {
-    props: {
-      players,
-    },
-  };
 }

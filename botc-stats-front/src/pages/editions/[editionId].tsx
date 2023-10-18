@@ -1,23 +1,37 @@
 import Container from "@/components/list-stats/Container";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import Title from "@/components/ui/title";
-import { Edition } from "@/entities/Edition";
-import { Link, Spacer } from "@nextui-org/react";
+import { Edition, getNewEmptyEdition } from "@/entities/Edition";
+import { Link, Loading, Spacer } from "@nextui-org/react";
 import { getEditionById } from "../../../data/back-api/back-api";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function EditionIdPage({
-  editionLoaded,
-}: {
-  editionLoaded: Edition;
-}) {
-  const title = `Rôles du module '${editionLoaded.name}'`;
+export default function EditionIdPage() {
+  const router = useRouter();
+  const editionId: number = Number(router.query.editionId);
+  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
+
+  useEffect(() => {
+    if (!editionId || isNaN(editionId)) return;
+
+    getEditionById(editionId).then((p) => setEdition(p));
+  }, [editionId]);
+
+  if (edition.id <= 0) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
 
   return (
     <>
-      <Title>{title}</Title>
+      <Title>{`Rôles du module '${edition.name}'`}</Title>
       <Spacer y={3} />
       <Container>
-        {editionLoaded.roles.map((r) => (
+        {edition.roles.map((r) => (
           <Link key={r.id} href={`/roles/${r.id}`} color="text">
             <ListItemRole
               key={r.id}
@@ -29,22 +43,4 @@ export default function EditionIdPage({
       </Container>
     </>
   );
-}
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { editionId: number };
-}) {
-  const editionLoaded = await getEditionById(params.editionId);
-
-  if (!editionLoaded || editionLoaded.status === 404) {
-    return { notFound: true };
-  }
-
-  return {
-    props: {
-      editionLoaded,
-    },
-  };
 }

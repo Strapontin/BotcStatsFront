@@ -1,7 +1,7 @@
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
 import Classes from "./RolesSelector.module.css";
@@ -17,6 +17,11 @@ export default function RolesSelector(props: {
   const [visibleRoles, setVisibleRoles] = useState<Role[]>(props.roles);
 
   const [filter, setFilter] = useState<string>("");
+
+  // If roles take time to load, set them then
+  useEffect(() => {
+    setVisibleRoles(props.roles);
+  }, [props.roles]);
 
   function onChangeInput(value: string) {
     reSetVisibleRolesFromValue(value);

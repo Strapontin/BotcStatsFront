@@ -7,9 +7,17 @@ import { getPlayerPseudoString } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import { Link, Loading, Spacer } from "@nextui-org/react";
 import { getAllGames } from "../../../data/back-api/back-api";
+import { useEffect, useState } from "react";
 
-export default function GamesListPage({ games }: { games: Game[] }) {
+export default function GamesListPage() {
+  const [games, setGames] = useState<Game[]>([]);
   const title = "Dernières parties jouées";
+
+  useEffect(() => {
+    getAllGames().then((g) => {
+      setGames(g);
+    });
+  }, []);
 
   if (games.length === 0) {
     return (
@@ -49,14 +57,4 @@ export default function GamesListPage({ games }: { games: Game[] }) {
       <Container>{games.map((game: Game) => line(game))}</Container>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const games = await getAllGames();
-
-  return {
-    props: {
-      games,
-    },
-  };
 }
