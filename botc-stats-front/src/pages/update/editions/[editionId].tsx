@@ -1,6 +1,6 @@
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
 import Title from "@/components/ui/title";
-import { Edition } from "@/entities/Edition";
+import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
@@ -17,30 +17,39 @@ import {
 } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function UpdateEditionPage(props: {
-  edition: Edition;
-  editions: Edition[];
-  roles: Role[];
-}) {
+export default function UpdateEditionPage() {
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
 
-  const [oldEdition, setOldEdition] = useState<Edition>(props.edition);
+  const [oldEdition, setOldEdition] = useState<Edition>(getNewEmptyEdition());
   const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<></>);
-  const [edition, setEdition] = useState<Edition>(props.edition);
+  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
+  const [editions, setEditions] = useState<Edition[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
+  useEffect(() => {
+    if (editionId === undefined || isNaN(editionId)) return;
+
+    getEditionById(editionId).then((e) => {
+      setOldEdition(e);
+      setEdition(e);
+    });
+    getAllEditions().then((e) => setEditions(e));
+    getAllRoles().then((r) => setRoles(r));
+  }, [editionId]);
 
   const canUpdateEdition = useCallback(() => {
     if (edition.name === "") {
       updateMessage(true, "Un nom est obligatoire.");
       return false;
     } else if (
-      props.editions.filter(
+      editions.filter(
         (e) =>
           toLowerRemoveDiacritics(e.name) !==
             toLowerRemoveDiacritics(oldEdition.name) &&
@@ -54,7 +63,7 @@ export default function UpdateEditionPage(props: {
       updateMessage(false, "");
       return true;
     }
-  }, [props, edition, oldEdition]);
+  }, [edition, editions, oldEdition]);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -79,8 +88,8 @@ export default function UpdateEditionPage(props: {
     if (
       await updateEdition(edition.id, edition.name, edition.roles, accessToken)
     ) {
-      props.editions.push(edition);
       const e = await getEditionById(editionId);
+      setEditions([...editions, edition]);
       setEdition(e);
       setOldEdition(e);
       setEditionCreateEditKey(editionCreateEditKey + 1);
@@ -179,7 +188,7 @@ export default function UpdateEditionPage(props: {
         message={message}
         btnPressed={btnUpdateEdition}
         btnText="Modifier le module"
-        roles={props.roles}
+        roles={roles}
       />
 
       <Button
@@ -195,21 +204,4 @@ export default function UpdateEditionPage(props: {
       {popup}
     </>
   );
-}
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { editionId: number };
-}) {
-  const allEditions = await getAllEditions();
-  const editionLoaded = allEditions.find((r) => r.id == params.editionId);
-
-  if (!editionLoaded) {
-    return { notFound: true };
-  }
-
-  const roles = await getAllRoles();
-
-  return { props: { allEditions, editionLoaded, roles } };
 }

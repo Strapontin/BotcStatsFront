@@ -5,12 +5,19 @@ import Title from "@/components/ui/title";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllPlayers } from "../../../../data/back-api/back-api";
 
-export default function UpdatePlayersPage({ players }: { players: Player[] }) {
+export default function UpdatePlayersPage() {
   const [filter, setFilter] = useState<string>("");
+  const [players, setPlayers] = useState<Player[]>([]);
   const title = <Title>Modifier un joueur</Title>;
+
+  useEffect(() => {
+    getAllPlayers().then((p) => {
+      setPlayers(p);
+    });
+  }, []);
 
   if (players.length === 0) {
     return (
@@ -54,14 +61,4 @@ export default function UpdatePlayersPage({ players }: { players: Player[] }) {
       </Container>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const players = await getAllPlayers();
-
-  return {
-    props: {
-      players,
-    },
-  };
 }

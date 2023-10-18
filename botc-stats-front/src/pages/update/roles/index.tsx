@@ -5,13 +5,20 @@ import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllRoles } from "../../../../data/back-api/back-api";
 
-export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
+export default function UpdateRolesPage() {
   const [filter, setFilter] = useState<string>("");
+  const [roles, setRoles] = useState<Role[]>([]);
   const title = <Title>Modifier un rôle</Title>;
 
+  useEffect(() => {
+    getAllRoles().then((r) => {
+      setRoles(r);
+    });
+  }, []);
+  
   if (roles.length === 0) {
     return (
       <>
@@ -53,14 +60,4 @@ export default function UpdateRolesPage({ roles }: { roles: Role[] }) {
       </Container>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const roles = await getAllRoles();
-
-  return {
-    props: {
-      roles,
-    },
-  };
 }

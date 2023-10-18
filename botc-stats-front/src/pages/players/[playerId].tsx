@@ -3,27 +3,51 @@ import ListItem from "@/components/list-stats/ListItem";
 import ListItemRole from "@/components/list-stats/ListItemRole";
 import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
 import Title from "@/components/ui/title";
-import { Player, getPlayerPseudoString } from "@/entities/Player";
+import {
+  Player,
+  getNewEmptyPlayer,
+  getPlayerPseudoString,
+} from "@/entities/Player";
 import { Collapse, Loading } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { getPlayerById } from "../../../data/back-api/back-api";
 
-export default function PlayerPage({ playerLoaded }: { playerLoaded: Player }) {
+export default function PlayerPage() {
+  const router = useRouter();
+  const playerId: number = Number(router.query.playerId);
+  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
+
+  useEffect(() => {
+    if (!playerId || isNaN(playerId)) return;
+
+    getPlayerById(playerId).then((p) => setPlayer(p));
+  }, [playerId]);
+  
+  if (player.id < 0) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
+
   const title = (
     <Title>
-      Détails {playerLoaded.name}
-      {getPlayerPseudoString(playerLoaded.pseudo)}
+      Détails {player.name}
+      {getPlayerPseudoString(player.pseudo)}
     </Title>
   );
 
-  const playerComponent = playerLoaded ? (
+  const playerComponent = player ? (
     <Collapse expanded title="Détails généraux">
       <Container>
-        <ListItem name="Parties jouées" value={playerLoaded.nbGamesPlayed} />
+        <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
         <ListItemTwoValues
           key1="Gentil"
           key2="Maléfique"
-          value1={playerLoaded.nbGamesGood}
-          value2={playerLoaded.nbGamesEvil}
+          value1={player.nbGamesGood}
+          value2={player.nbGamesEvil}
           classKey1="townsfolk"
           classKey2="red"
           classValue1="townsfolk"
@@ -32,8 +56,8 @@ export default function PlayerPage({ playerLoaded }: { playerLoaded: Player }) {
         <ListItemTwoValues
           key1="Victoires"
           key2="Défaites"
-          value1={playerLoaded.nbGamesWon}
-          value2={playerLoaded.nbGamesLost}
+          value1={player.nbGamesWon}
+          value2={player.nbGamesLost}
           classKey1="green"
           classKey2="red"
           classValue1="green"
@@ -48,7 +72,7 @@ export default function PlayerPage({ playerLoaded }: { playerLoaded: Player }) {
   const detailsRolesPlayed = (
     <Collapse expanded title="Détails des rôles joués">
       <Container>
-        {playerLoaded.timesPlayedRole.map((tpr) => (
+        {player.timesPlayedRole.map((tpr) => (
           <ListItemRole
             key={tpr.id}
             id={tpr.id}
@@ -70,22 +94,4 @@ export default function PlayerPage({ playerLoaded }: { playerLoaded: Player }) {
       <Collapse.Group css={{ w: "100%" }}>{detailsRolesPlayed}</Collapse.Group>
     </>
   );
-}
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { playerId: number };
-}) {
-  const playerLoaded = await getPlayerById(params.playerId);
-
-  if (!playerLoaded || playerLoaded.status === 404) {
-    return { notFound: true };
-  }
-
-  return {
-    props: {
-      playerLoaded,
-    },
-  };
 }

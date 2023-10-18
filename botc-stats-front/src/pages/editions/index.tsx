@@ -5,12 +5,19 @@ import Title from "@/components/ui/title";
 import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Loading, Spacer } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllEditions } from "../../../data/back-api/back-api";
 
-export default function EditionsPage({ editions }: { editions: Edition[] }) {
+export default function EditionsPage() {
   const [filter, setFilter] = useState<string>("");
+  const [editions, setEditions] = useState<Edition[]>([]);
   const title = "Liste des modules";
+
+  useEffect(() => {
+    getAllEditions().then((r) => {
+      setEditions(r);
+    });
+  }, []);
 
   if (editions.length === 0) {
     return (
@@ -50,14 +57,4 @@ export default function EditionsPage({ editions }: { editions: Edition[] }) {
       </Container>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const editions = await getAllEditions();
-
-  return {
-    props: {
-      editions,
-    },
-  };
 }

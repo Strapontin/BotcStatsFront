@@ -11,10 +11,15 @@ import { Check, XOctagon } from "react-feather";
 import { createNewRole, getAllRoles } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function CreateRole({ roles }: { roles: Role[] }) {
+export default function CreateRole() {
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<></>);
   const [role, setRole] = useState<Role>(getNewEmptyRole());
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  useEffect(() => {
+    getAllRoles().then((r) => setRoles(r));
+  }, []);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
@@ -103,14 +108,4 @@ export default function CreateRole({ roles }: { roles: Role[] }) {
       btnText="Créer un rôle"
     />
   );
-}
-
-export async function getServerSideProps() {
-  const roles = await getAllRoles();
-
-  return {
-    props: {
-      roles,
-    },
-  };
 }

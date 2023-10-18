@@ -6,16 +6,35 @@ import ListItemRole from "@/components/list-stats/ListItemRole";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
-import { Game } from "@/entities/Game";
+import { Game, getNewEmptyGame } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { Link, Spacer, Text } from "@nextui-org/react";
+import { Link, Loading, Spacer, Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { getGameById } from "../../../data/back-api/back-api";
 
-export default function GamePage({ game }: { game: Game }) {
+export default function GamePage() {
+  const router = useRouter();
+  const gameId: number = Number(router.query.gameId);
+  const [game, setGame] = useState<Game>(getNewEmptyGame());
   const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
+
+  useEffect(() => {
+    if (!gameId || isNaN(gameId)) return;
+
+    getGameById(gameId).then((g) => setGame(g));
+  }, [gameId]);
+
+  if (game.id <= 0) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
 
   const title = (
     <Title>
@@ -50,7 +69,7 @@ export default function GamePage({ game }: { game: Game }) {
         <Text b>Liste des rôles des joueurs :</Text>
         {game.playerRoles.map((prg: PlayerRole) => (
           <Link
-            key={prg.player.id}
+            key={`${prg.player.id}-${prg.role.id}`}
             href={`/players/${prg.player.id}`}
             color="text"
           >
@@ -75,22 +94,4 @@ export default function GamePage({ game }: { game: Game }) {
       </Container>
     </>
   );
-}
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { gameId: number };
-}) {
-  const game = await getGameById(params.gameId);
-
-  if (!game || game.status === 404) {
-    return { notFound: true };
-  }
-
-  return {
-    props: {
-      game,
-    },
-  };
 }

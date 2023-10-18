@@ -1,6 +1,10 @@
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
 import Title from "@/components/ui/title";
-import { Player, getPlayerPseudoString } from "@/entities/Player";
+import {
+  Player,
+  getNewEmptyPlayer,
+  getPlayerPseudoString,
+} from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
@@ -15,26 +19,32 @@ import {
 } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function UpdatePlayerPage({
-  allPlayers,
-  playerLoaded,
-}: {
-  allPlayers: Player[];
-  playerLoaded: Player;
-}) {
+export default function UpdatePlayerPage() {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
-  const [oldPlayer, setOldPlayer] = useState<Player>(playerLoaded);
+  const [oldPlayer, setOldPlayer] = useState<Player>(getNewEmptyPlayer());
   const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<></>);
-  const [players] = useState<Player[]>(allPlayers);
-  const [player, setPlayer] = useState<Player>(playerLoaded);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
+  useEffect(() => {
+    if (!playerId) return;
+
+    getAllPlayers().then((p) => {
+      setPlayers(p);
+    });
+    getPlayerById(playerId).then((p) => {
+      setOldPlayer(p);
+      setPlayer(p);
+    });
+  }, [playerId]);
 
   const canUpdatePlayer = useCallback(() => {
     if (player.name === "") {
@@ -223,19 +233,4 @@ export default function UpdatePlayerPage({
       {popup}
     </>
   );
-}
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { playerId: number };
-}) {
-  const allPlayers = await getAllPlayers();
-  const playerLoaded = allPlayers.find((r) => r.id == params.playerId);
-
-  if (!playerLoaded) {
-    return { notFound: true };
-  }
-
-  return { props: { allPlayers, playerLoaded } };
 }

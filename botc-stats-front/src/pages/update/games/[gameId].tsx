@@ -19,13 +19,7 @@ import {
 } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function UpdateGamePage({
-  allEditions,
-  allPlayers,
-}: {
-  allEditions: Edition[];
-  allPlayers: Player[];
-}) {
+export default function UpdateGamePage() {
   const router = useRouter();
   const gameId: number = Number(router.query.gameId);
 
@@ -36,16 +30,17 @@ export default function UpdateGamePage({
   const [message, setMessage] = useState(<></>);
   const [game, setGame] = useState<Game>(getNewEmptyGame());
 
+  const [allEditions, setAllEditions] = useState<Edition[]>([]);
+  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
 
   useEffect(() => {
     if (gameId === undefined || isNaN(gameId)) return;
 
-    async function initGame() {
-      const g = await getGameById(gameId);
-      setGame(g);
-    }
-    initGame();
+    getGameById(gameId).then((g) => setGame(g));
+    getAllEditions().then((e) => setAllEditions(e));
+    getAllPlayers().then((p) => setAllPlayers(p));
   }, [gameId]);
 
   if (game.id === -1) {
@@ -198,10 +193,3 @@ export default function UpdateGamePage({
     </>
   );
 }
-
-export const getServerSideProps = async () => {
-  const allEditions = await getAllEditions();
-  const allPlayers = await getAllPlayers();
-
-  return { props: { allEditions, allPlayers } };
-};

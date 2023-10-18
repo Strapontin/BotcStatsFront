@@ -14,18 +14,19 @@ import {
 } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function CreateEdition({
-  editions,
-  roles,
-}: {
-  editions: Edition[];
-  roles: Role[];
-}) {
+export default function CreateEdition() {
   const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<></>);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
+  const [editions, setEditions] = useState<Edition[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
+  useEffect(() => {
+    getAllEditions().then((e) => setEditions(e));
+    getAllRoles().then((r) => setRoles(r));
+  }, []);
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -120,16 +121,4 @@ export default function CreateEdition({
       roles={roles}
     />
   );
-}
-
-export async function getServerSideProps() {
-  const editions = await getAllEditions();
-  const roles = await getAllRoles();
-
-  return {
-    props: {
-      editions,
-      roles,
-    },
-  };
 }

@@ -1,6 +1,6 @@
 import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
 import Title from "@/components/ui/title";
-import { Role } from "@/entities/Role";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
@@ -15,26 +15,30 @@ import {
 } from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
-export default function UpdateRolePage({
-  allRoles,
-  roleLoaded,
-}: {
-  allRoles: Role[];
-  roleLoaded: Role;
-}) {
+export default function UpdateRolePage() {
   const router = useRouter();
   const roleId: number = Number(router.query.roleId);
 
-  const [oldRole, setOldRole] = useState<Role>(roleLoaded);
+  const [oldRole, setOldRole] = useState<Role>(getNewEmptyRole());
   const [disableBtnDelete, setDisableBtnDelete] = useState(false);
 
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
   const [message, setMessage] = useState(<></>);
-  const [roles] = useState<Role[]>(allRoles);
-  const [role, setRole] = useState<Role>(roleLoaded);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [role, setRole] = useState<Role>(getNewEmptyRole());
 
   const accessToken = useContext(AuthContext)?.accessToken ?? "";
+
+  useEffect(() => {
+    if (!roleId) return;
+
+    getAllRoles().then((r) => setRoles(r));
+    getRoleById(roleId).then((r) => {
+      setOldRole(r);
+      setRole(r);
+    });
+  }, [roleId]);
 
   const canUpdateRole = useCallback(() => {
     if (role.name === "") {
@@ -204,19 +208,4 @@ export default function UpdateRolePage({
       {popup}
     </>
   );
-}
-
-export async function getServerSideProps({
-  params,
-}: {
-  params: { roleId: number };
-}) {
-  const allRoles = await getAllRoles();
-  const roleLoaded = allRoles.find((r) => r.id == params.roleId);
-
-  if (!roleLoaded) {
-    return { notFound: true };
-  }
-
-  return { props: { allRoles, roleLoaded } };
 }
