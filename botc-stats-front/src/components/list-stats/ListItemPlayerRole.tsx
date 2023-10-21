@@ -1,8 +1,6 @@
 import { CharacterType } from "@/entities/enums/characterType";
-import classes from "./ListItem.module.css";
-import { Text } from "@nextui-org/react";
-import ListItem from "./ListItem";
 import ImageIconName from "../ui/image-role-name";
+import ListItem from "./ListItem";
 
 export default function ListItemPlayerRole(props: {
   playerName: string;
@@ -29,7 +27,7 @@ export default function ListItemPlayerRole(props: {
 
   return (
     <ListItem
-      name={props.playerName}
+      left={props.playerName}
       subName={props.pseudo}
       value={
         <ImageIconName

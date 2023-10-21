@@ -112,7 +112,7 @@ export default function PlayerSelector(props: {
               <Fragment key={player.id}>
                 <ListItem
                   onPress={() => onSelectPlayer(player.id)}
-                  name={player.name}
+                  left={player.name}
                   subName={player.pseudo}
                 />
               </Fragment>

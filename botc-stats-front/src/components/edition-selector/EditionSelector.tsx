@@ -105,7 +105,7 @@ export default function EditionSelector(props: {
               <Fragment key={edition.id}>
                 <ListItem
                   onPress={() => onSelectEdition(edition.id)}
-                  name={edition.name}
+                  left={edition.name}
                 />
               </Fragment>
             ))}

@@ -55,7 +55,7 @@ export default function GamesPlayedByPlayerPage() {
           .map((player) => (
             <Link key={player.id} href={`/players/${player.id}`} color="text">
               <ListItem
-                name={player.name}
+                left={player.name}
                 subName={player.pseudo}
                 value={player.nbGamesPlayed}
               />

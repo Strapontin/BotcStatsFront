@@ -236,7 +236,7 @@ export default function PlayerRolesSelector(props: {
           {visiblePlayers.map((p) => (
             <div tabIndex={1} key={p.id} className={Classes["player-item"]}>
               <ListItem
-                name={p.name}
+                left={p.name}
                 subName={p.pseudo}
                 onPress={() => onSelectPlayer(p.id)}
               />

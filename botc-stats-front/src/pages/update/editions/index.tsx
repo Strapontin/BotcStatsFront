@@ -36,7 +36,7 @@ export default function UpdateEditionsPage() {
         href={`/update/editions/${edition.id}`}
         color="text"
       >
-        <ListItem name={edition.name}></ListItem>
+        <ListItem left={edition.name}></ListItem>
       </Link>
     );
   }

@@ -30,23 +30,22 @@ export default function UpdateGamesPage() {
   }
 
   function line(game: Game) {
+    const storyTelledBy = (
+      <>
+        {dateToString(game.datePlayed)} - Contée par{" "}
+        {
+          <PlayerName
+            name={`${game.storyTeller.name}${getPlayerPseudoString(
+              game.storyTeller.pseudo
+            )}`}
+          />
+        }
+      </>
+    );
+
     return (
       <Link key={game.id} href={`/update/games/${game.id}`} color="text">
-        <ListItem
-          name={dateToString(game.datePlayed)}
-          value={
-            <>
-              Contée par{" "}
-              {
-                <PlayerName
-                  name={`${game.storyTeller.name}${getPlayerPseudoString(
-                    game.storyTeller.pseudo
-                  )}`}
-                />
-              }
-            </>
-          }
-        ></ListItem>
+        <ListItem left={storyTelledBy}></ListItem>
       </Link>
     );
   }

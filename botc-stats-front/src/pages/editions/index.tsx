@@ -51,7 +51,7 @@ export default function EditionsPage() {
               href={`/editions/${edition.id}`}
               color="text"
             >
-              <ListItem name={edition.name} />
+              <ListItem left={edition.name} />
             </Link>
           ))}
       </Container>
