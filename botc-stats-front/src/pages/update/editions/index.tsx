@@ -49,7 +49,7 @@ export default function UpdateEditionsPage() {
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre module"
-      ></Filter>
+      />
       <Container>
         {editions
           .filter((edition) =>

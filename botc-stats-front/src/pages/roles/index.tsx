@@ -37,7 +37,7 @@ export default function RolesPage() {
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre rôle"
-      ></Filter>
+      />
       <Container>
         {roles
           .filter((edition) =>

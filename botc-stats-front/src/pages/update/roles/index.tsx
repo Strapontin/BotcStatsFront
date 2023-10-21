@@ -18,7 +18,7 @@ export default function UpdateRolesPage() {
       setRoles(r);
     });
   }, []);
-  
+
   if (roles.length === 0) {
     return (
       <>
@@ -48,7 +48,7 @@ export default function UpdateRolesPage() {
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre rôle"
-      ></Filter>
+      />
       <Container>
         {roles
           .filter((role) =>

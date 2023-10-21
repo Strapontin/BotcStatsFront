@@ -41,17 +41,15 @@ html {
   color: #f8533a;
 }
 
-.flex {
-  display: flex;
-}
-.ai-center {
-  align-items: center;
-}
-
 .h-auto {
   height: auto;
 }
 
 svg {
   stroke-width: 3;
+}
+
+/* Forces no zoom on input click on phones */
+input[type="text"] {
+  font-size: 16px;
 }

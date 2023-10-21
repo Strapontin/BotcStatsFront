@@ -45,7 +45,7 @@ export default function UpdatePlayersPage() {
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre joueur"
-      ></Filter>
+      />
       <Container>
         {players
           .filter(

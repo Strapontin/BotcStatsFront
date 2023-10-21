@@ -1,7 +1,7 @@
 import { CharacterType } from "@/entities/enums/characterType";
 import { Text } from "@nextui-org/react";
 import Link from "next/link";
-import ImageIconName from "../ui/image-icon-name";
+import ImageIconName from "../ui/image-role-name";
 import Classes from "./ListItem.module.css";
 
 export default function ListItemRole(props: {
