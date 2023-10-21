@@ -162,6 +162,7 @@ export default function PlayerRolesSelector(props: {
       setPlayerSelected(playerSelected);
       setPlayerFilter(playerSelected.name);
       setShowPlayers(false);
+      inputFilterRole.current?.focus();
     }
   }
 
@@ -174,6 +175,7 @@ export default function PlayerRolesSelector(props: {
       setRoleSelected(roleSelected);
       setRoleFilter(roleSelected.name);
       setShowRoles(false);
+      inputFilterPlayer.current?.focus();
     }
   }
 
