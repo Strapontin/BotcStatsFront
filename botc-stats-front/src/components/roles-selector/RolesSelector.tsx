@@ -54,6 +54,7 @@ export default function RolesSelector(props: {
 
       setShowRoles(false);
       setFilter("");
+      inputFilterRole.current?.focus();
     }
   }
 
