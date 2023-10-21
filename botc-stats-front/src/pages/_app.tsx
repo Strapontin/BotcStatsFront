@@ -1,5 +1,5 @@
 import Layout from "@/components/layout/Layout";
-import "@/styles/globals.css";
+import "@/styles/globals.scss";
 import type { AppProps } from "next/app";
 import { NextUIProvider, createTheme, useSSR } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";

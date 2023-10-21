@@ -5,7 +5,7 @@ import style from "./Filter.module.scss";
 export default function inputFilterPlayer(props: {
   filterValue: string;
   setFilter: Dispatch<SetStateAction<string>>;
-  placeholder: string
+  placeholder: string;
 }) {
   return (
     <div className={style["filter-container"]}>

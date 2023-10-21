@@ -37,7 +37,7 @@ export default function EditionsPage() {
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre module"
-      ></Filter>
+      />
       <Container>
         {editions
           .filter((edition) =>
