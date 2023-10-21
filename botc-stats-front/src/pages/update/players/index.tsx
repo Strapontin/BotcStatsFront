@@ -32,7 +32,7 @@ export default function UpdatePlayersPage() {
   function line(player: Player) {
     return (
       <Link key={player.id} href={`/update/players/${player.id}`} color="text">
-        <ListItem name={player.name} subName={player.pseudo}></ListItem>
+        <ListItem left={player.name} subName={player.pseudo}></ListItem>
       </Link>
     );
   }

@@ -23,7 +23,7 @@ export default function PlayerPage() {
 
     getPlayerById(playerId).then((p) => setPlayer(p));
   }, [playerId]);
-  
+
   if (player.id < 0) {
     return (
       <>
@@ -42,7 +42,7 @@ export default function PlayerPage() {
   const playerComponent = player ? (
     <Collapse expanded title="Détails généraux">
       <Container>
-        <ListItem name="Parties jouées" value={player.nbGamesPlayed} />
+        <ListItem left="Parties jouées" value={player.nbGamesPlayed} />
         <ListItemTwoValues
           key1="Gentil"
           key2="Maléfique"

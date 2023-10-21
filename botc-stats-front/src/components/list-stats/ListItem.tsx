@@ -2,7 +2,7 @@ import classes from "./ListItem.module.css";
 import { Text } from "@nextui-org/react";
 
 export default function ListItem(props: {
-  name: string;
+  left: any;
   value?: any;
   subName?: string;
   onPress?: any;
@@ -34,7 +34,7 @@ export default function ListItem(props: {
       onTouchMove={onTouchMove}
     >
       <div className={classes["left-side"]}>
-        <Text span>{props.name}</Text>
+        <Text span>{props.left}</Text>
         <Text span className={classes["subname"]} size={13}>
           {props.subName}
         </Text>
