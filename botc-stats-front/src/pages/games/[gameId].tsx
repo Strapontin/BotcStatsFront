@@ -49,19 +49,19 @@ export default function GamePage() {
     <>
       {title}
       <Container>
-        <ListItem name="Module" value={game.edition.name} />
+        <ListItem left="Module" value={game.edition.name} />
         <ListItem
-          name="Conteur"
+          left="Conteur"
           value={
             <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
           }
         />
         <ListItem
-          name="Date de la partie"
+          left="Date de la partie"
           value={<DateUi date={game.datePlayed} />}
         />
         <ListItem
-          name="Alignement gagnant"
+          left="Alignement gagnant"
           value={alignmentToString(game.winningAlignment)}
         />
         <ListItemLarge name="Notes" value={game.notes} />
