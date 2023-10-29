@@ -35,7 +35,7 @@ import { Game } from "@/entities/Game";
 
 const apiUrl =
   process.env.NEXT_PUBLIC_BACKEND_URL! ??
-  "https://botcstatsback-zdgyxyd7kq-od.a.run.app";
+  "https://botcstatsback-recette-zdgyxyd7kq-od.a.run.app";
 
 /* Auth */
 
