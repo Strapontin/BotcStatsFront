@@ -1,7 +1,7 @@
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
 import Classes from "./RolesSelector.module.css";
@@ -18,24 +18,26 @@ export default function RolesSelector(props: {
 
   const [filter, setFilter] = useState<string>("");
 
-  // If roles take time to load, set them then
+  const reSetVisibleRolesFromValue = useCallback(
+    (value: string) => {
+      const visibleRolesToSet = props.roles.filter(
+        (r) =>
+          toLowerRemoveDiacritics(r.name).includes(
+            toLowerRemoveDiacritics(value)
+          ) && !props.selectedRoles.some((sr) => sr.id === r.id)
+      );
+      setVisibleRoles(visibleRolesToSet);
+      setFilter(value);
+    },
+    [props.roles, props.selectedRoles]
+  );
+
   useEffect(() => {
-    setVisibleRoles(props.roles);
-  }, [props.roles]);
+    reSetVisibleRolesFromValue(filter);
+  }, [filter, reSetVisibleRolesFromValue]);
 
   function onChangeInput(value: string) {
     reSetVisibleRolesFromValue(value);
-  }
-
-  function reSetVisibleRolesFromValue(value: string) {
-    const visibleRolesToSet = props.roles.filter(
-      (r) =>
-        toLowerRemoveDiacritics(r.name).includes(
-          toLowerRemoveDiacritics(value)
-        ) && !props.selectedRoles.map((sr) => sr.id).includes(r.id)
-    );
-    setVisibleRoles(visibleRolesToSet);
-    setFilter(value);
   }
 
   function onSelectRole(idRoleSelected: number) {
@@ -43,35 +45,26 @@ export default function RolesSelector(props: {
       (role) => role.id === idRoleSelected
     );
 
-    if (roleSelected !== undefined) {
-      const roles = props.selectedRoles;
-      roles.push(roleSelected);
-      props.setSelectedRoles(roles);
+    if (roleSelected) {
+      props.selectedRoles.push(roleSelected);
+      props.setSelectedRoles(props.selectedRoles);
 
-      setVisibleRoles(
-        visibleRoles.filter((role) => role.id !== idRoleSelected)
-      );
-
-      setShowRoles(false);
-      setFilter("");
       inputFilterRole.current?.focus();
+
+      setTimeout(() => {
+        setFilter("");
+      }, 0);
     }
   }
 
   function removeSelectedRole(id: number) {
     const roleSelected = props.selectedRoles.find((role) => role.id == id);
 
-    if (roleSelected !== undefined) {
-      const allSelectedroles = props.selectedRoles.filter(
+    if (roleSelected) {
+      const allSelectedRoles = props.selectedRoles.filter(
         (role) => role.id !== id
       );
-      props.setSelectedRoles(allSelectedroles);
-
-      setVisibleRoles(
-        props.roles.filter(
-          (ar) => !allSelectedroles.some((sr) => sr.id === ar.id)
-        )
-      );
+      props.setSelectedRoles(allSelectedRoles);
     }
   }
 
@@ -91,6 +84,7 @@ export default function RolesSelector(props: {
       event.relatedTarget.classList === null ||
       (!event.relatedTarget.classList.contains(Classes["role-item"]) &&
         !event.relatedTarget.classList.contains("nextui-input-clear-button") &&
+        !event.relatedTarget.classList.contains(Classes.delete) &&
         !event.relatedTarget.classList.contains(
           Classes["container-roles-values"]
         ))
@@ -101,9 +95,14 @@ export default function RolesSelector(props: {
     ) {
       onChangeInput("");
     } else if (
-      event.relatedTarget.classList.contains(Classes["container-roles-values"])
+      event.relatedTarget.classList.contains(
+        Classes["container-roles-values"]
+      ) ||
+      event.relatedTarget.classList.contains(Classes.delete)
     ) {
-      inputFilterRole.current?.focus();
+      setTimeout(() => {
+        inputFilterRole.current?.focus();
+      }, 0);
     }
   }
 
@@ -118,6 +117,7 @@ export default function RolesSelector(props: {
                 characterType={role.characterType}
               />
               <X
+                tabIndex={0}
                 className={Classes.delete}
                 onClick={() => removeSelectedRole(role.id)}
               />
@@ -126,6 +126,7 @@ export default function RolesSelector(props: {
           </Fragment>
         ))}
       </div>
+      {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
       <div className={Classes["input-container"]}>
         <Input
           css={{ flex: 1 }}
