@@ -31,6 +31,7 @@ export async function createNewGame(
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
     roleId: pr.role.id,
+    finalAlignment: pr.finalAlignment,
   }));
 
   const demonBluffsId = game.demonBluffs.map((db) => db.id);
@@ -75,6 +76,7 @@ export async function updateGame(
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
     roleId: pr.role.id,
+    finalAlignment: pr.finalAlignment,
   }));
 
   const demonBluffsId = game.demonBluffs.map((db) => db.id);

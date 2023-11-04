@@ -67,18 +67,13 @@ export default function GamePage() {
         <ListItemLarge name="Notes" value={game.notes} />
         <Spacer y={2} />
         <Text b>Liste des rôles des joueurs :</Text>
-        {game.playerRoles.map((prg: PlayerRole) => (
+        {game.playerRoles.map((prg: PlayerRole, index) => (
           <Link
-            key={`${prg.player.id}-${prg.role.id}`}
+            key={`${prg.player.id}-${prg.role.id}-${index}`}
             href={`/players/${prg.player.id}`}
             color="text"
           >
-            <ListItemPlayerRole
-              playerName={prg.player.name}
-              pseudo={prg.player.pseudo}
-              roleName={prg.role.name}
-              characterType={prg.role.characterType}
-            />
+            <ListItemPlayerRole playerRole={prg} />
           </Link>
         ))}
         <Spacer y={2} />

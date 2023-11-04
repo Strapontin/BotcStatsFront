@@ -1,39 +1,32 @@
-import { CharacterType } from "@/entities/enums/characterType";
+import { PlayerRole } from "@/entities/PlayerRole";
+import IconAlignment from "../ui/icon-alignment";
 import ImageIconName from "../ui/image-role-name";
 import ListItem from "./ListItem";
 
-export default function ListItemPlayerRole(props: {
-  playerName: string;
-  pseudo?: string;
-  roleName: string;
-  characterType: CharacterType;
-  onPress?: any;
+export default function ListItemPlayerRole({
+  playerRole,
+  iconAlignmentClicked,
+}: {
+  playerRole: PlayerRole;
+  iconAlignmentClicked?: () => void;
 }) {
-  var timeStamp: number;
-
-  function onTouchStart(e: any) {
-    timeStamp = e.timeStamp;
-  }
-
-  function onTouchMove(e: any) {
-    timeStamp = NaN;
-  }
-
-  function onTouchEnd(e: any) {
-    if (e.timeStamp - timeStamp < 500) {
-      props.onPress();
-    }
-  }
-
   return (
     <ListItem
-      left={props.playerName}
-      subName={props.pseudo}
+      left={playerRole.player.name}
+      subName={playerRole.player.pseudo}
       value={
-        <ImageIconName
-          name={props.roleName}
-          characterType={props.characterType}
-        />
+        <>
+          <ImageIconName
+            name={playerRole.role.name}
+            characterType={playerRole.role.characterType}
+          />
+          <div onClick={iconAlignmentClicked}>
+            <IconAlignment
+              editable={true}
+              alignment={playerRole.finalAlignment}
+            />
+          </div>
+        </>
       }
     />
   );

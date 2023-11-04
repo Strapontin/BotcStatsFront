@@ -9,6 +9,7 @@ import ListItem from "../list-stats/ListItem";
 import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItemRole from "../list-stats/ListItemRole";
 import Classes from "./PlayerRolesSelector.module.css";
+import { Alignment } from "@/entities/enums/alignment";
 
 export default function PlayerRolesSelector(props: {
   selectedPlayerRoles: PlayerRole[];
@@ -39,6 +40,7 @@ export default function PlayerRolesSelector(props: {
       const playerRole: PlayerRole = {
         player: playerSelected,
         role: roleSelected,
+        finalAlignment: roleSelected.alignment,
       };
 
       allSelectedPlayerRoles.push(playerRole);
@@ -181,17 +183,27 @@ export default function PlayerRolesSelector(props: {
     }
   }
 
+  function iconAlignmentClicked(playerRole: PlayerRole) {
+    props.selectedPlayerRoles.map((pr) => {
+      if (pr.player === playerRole.player && pr.role === playerRole.role) {
+        pr.finalAlignment =
+          pr.finalAlignment === Alignment.Good
+            ? Alignment.Evil
+            : Alignment.Good;
+      }
+      props.setSelectedPlayerRoles(props.selectedPlayerRoles);
+    });
+  }
+
   return (
     <>
       <div className={Classes["players-roles-selected"]}>
         {props.selectedPlayerRoles.map((pr, index) => (
-          <Fragment key={pr.player.id + "-" + pr.role.id + index}>
+          <Fragment key={pr.player.id + "-" + pr.role.id + "-" + index}>
             <div className={Classes["player-role-selected"]}>
               <ListItemPlayerRole
-                playerName={pr.player.name}
-                pseudo={pr.player.pseudo}
-                roleName={pr.role.name}
-                characterType={pr.role.characterType}
+                playerRole={pr}
+                iconAlignmentClicked={() => iconAlignmentClicked(pr)}
               />
               <X
                 className={Classes.delete}
