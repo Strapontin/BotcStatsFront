@@ -39,7 +39,7 @@ export default function ListItem(props: {
           {props.subName}
         </Text>
       </div>
-      <Text span>{props.value}</Text>
+      <div className={classes["right-element"]}>{props.value}</div>
     </div>
   );
 }
