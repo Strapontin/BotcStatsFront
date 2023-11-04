@@ -49,7 +49,7 @@ export async function getAllGames() {
   return queryAllGames(apiUrl);
 }
 
-export async function getGameById(id: number) {
+export async function getGameById(id: number): Promise<Game> {
   return queryGameById(apiUrl, id);
 }
 
