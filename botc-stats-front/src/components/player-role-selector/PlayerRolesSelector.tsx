@@ -36,6 +36,13 @@ export default function PlayerRolesSelector(props: {
   useEffect(() => {
     // Automatically adding a player role if a player and a role are set
     if (playerSelected.id !== -1 && roleSelected.id !== -1) {
+      setPlayerFilter("");
+      setRoleFilter("");
+      setPlayerSelected(getNewEmptyPlayer());
+      setRoleSelected(getNewEmptyRole());
+      setVisiblePlayers(props.allPlayers);
+      setVisibleRoles(props.rolesInSelectedEdition);
+
       var allSelectedPlayerRoles = props.selectedPlayerRoles;
       const playerRole: PlayerRole = {
         player: playerSelected,
@@ -45,15 +52,6 @@ export default function PlayerRolesSelector(props: {
 
       allSelectedPlayerRoles.push(playerRole);
       props.setSelectedPlayerRoles(allSelectedPlayerRoles);
-
-      setTimeout(() => {
-        setPlayerFilter("");
-        setRoleFilter("");
-        setPlayerSelected(getNewEmptyPlayer());
-        setRoleSelected(getNewEmptyRole());
-        setVisiblePlayers(props.allPlayers);
-        setVisibleRoles(props.rolesInSelectedEdition);
-      }, 0);
     }
   }, [playerSelected, roleSelected, props]);
 
