@@ -8,7 +8,7 @@ import {
   getNewEmptyPlayer,
   getPlayerPseudoString,
 } from "@/entities/Player";
-import { Accordion, AccordionItem, Spinner } from "@nextui-org/react";
+import { Accordion, AccordionItem, CircularProgress } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getPlayerById } from "../../../data/back-api/back-api";
@@ -27,7 +27,7 @@ export default function PlayerPage() {
   if (player.id < 0) {
     return (
       <>
-        <Spinner />
+        <CircularProgress />
       </>
     );
   }

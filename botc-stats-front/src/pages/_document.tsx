@@ -14,7 +14,10 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head>{/* {CssBaseline.flush()} */}</Head>
+        <Head>
+          {/* {CssBaseline.flush()} */}
+          <link href="/dist/output.css" rel="stylesheet" />
+        </Head>
         <body>
           <Main />
           <NextScript />

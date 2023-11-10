@@ -33,7 +33,7 @@ export default function DropdownAlignment(props: {
         </DropdownTrigger>
         <DropdownMenu
           aria-label="Static Actions"
-          onAction={(key) => selectAlignment(+key)}
+          onAction={(key: string | number) => selectAlignment(+key)}
         >
           {alignmentList().map((item) => (
             <DropdownItem key={item.key}>{item.value}</DropdownItem>
