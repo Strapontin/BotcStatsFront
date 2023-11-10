@@ -6,7 +6,7 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToStringOrderByFormat } from "@/helper/date";
-import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
+import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
 import EditionSelector from "../../edition-selector/EditionSelector";
@@ -86,37 +86,36 @@ export default function GameCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
+      <div
+      // fluid css={{ display: "flex", flexDirection: "column" }}
+      >
         <EditionSelector
           selectedEdition={props.game.edition}
           setSelectedEdition={(edition: Edition) => editionSelected(edition)}
           allEditions={props.allEditions}
         />
-        <Spacer y={1.75} />
+        <Spacer y={1.5} />
         <PlayerSelector
           selectedPlayer={props.game.storyTeller}
           setSelectedPlayer={storyTellerSelected}
           allPlayers={props.allPlayers}
         />
-        <Spacer y={0.6} />
+        <Spacer y={0.5} />
         <Input
-          css={{ textAlign: "left" }} // Usefull so the label isn't centered
           type="date"
-          bordered
           label="Date à laquelle la partie a été jouée"
           aria-label="Date à laquelle la partie a été jouée"
-          initialValue={dateToStringOrderByFormat(props.game.datePlayed)}
+          value={dateToStringOrderByFormat(props.game.datePlayed)}
           onChange={(event) => datePlayedSelected(event.target.value)}
         />
-        <Spacer y={1.75} />
+        <Spacer y={1.5} />
         <Textarea
-          bordered
-          labelPlaceholder="Notes"
+          label="Notes"
           aria-label="Notes"
-          initialValue={props.game.notes}
+          value={props.game.notes}
           onChange={(event) => notesChanged(event.target.value)}
         />
-        <Spacer y={1.75} />
+        <Spacer y={1.5} />
         <DropdownAlignment
           alignment={props.game.winningAlignment}
           setAlignment={winningAlignmentChanged}
@@ -137,11 +136,9 @@ export default function GameCreateEdit(props: {
           roles={rolesInSelectedEdition}
         />
         <Spacer y={3} />
-      </Container>
+      </div>
 
       <Button
-        shadow
-        ghost
         color="success"
         onPress={props.btnPressed}
         disabled={!btnEnabled()}

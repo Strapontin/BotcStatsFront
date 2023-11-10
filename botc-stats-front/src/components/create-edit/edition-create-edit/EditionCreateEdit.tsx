@@ -1,8 +1,8 @@
-import { Edition } from "@/entities/Edition";
-import { Fragment } from "react";
-import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
-import { Role } from "@/entities/Role";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
+import { Edition } from "@/entities/Edition";
+import { Role } from "@/entities/Role";
+import { Button, Input, Spacer } from "@nextui-org/react";
+import { Fragment } from "react";
 
 export default function EditionCreateEdit(props: {
   title: JSX.Element;
@@ -36,13 +36,11 @@ export default function EditionCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
+      <div>
         <Input
-          clearable
-          bordered
-          labelPlaceholder="Nom"
+          label="Nom"
           aria-label="Nom"
-          initialValue={props.edition.name}
+          value={props.edition.name}
           onChange={(event) => editionNameChanged(event.target.value)}
         />
         <Spacer y={3} />
@@ -53,11 +51,9 @@ export default function EditionCreateEdit(props: {
           roles={props.roles}
         />
         <Spacer y={3} />
-      </Container>
+      </div>
 
       <Button
-        shadow
-        ghost
         color="success"
         onPress={props.btnPressed}
         disabled={!canPressButton()}

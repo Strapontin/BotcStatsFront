@@ -1,12 +1,12 @@
+import { Spacer } from "@nextui-org/react";
 import classes from "./ListItemLarge.module.css";
-import { Spacer, Text } from "@nextui-org/react";
 
 export default function ListItemLarge(props: { name: string; value: any }) {
   return (
     <div className={classes["list-item-large"]}>
-      <Text span>{props.name}</Text>
+      <span>{props.name}</span>
       <Spacer y={1} />
-      <Text span>{props.value}</Text>
+      <span>{props.value}</span>
     </div>
   );
 }

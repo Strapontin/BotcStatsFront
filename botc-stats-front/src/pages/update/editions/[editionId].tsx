@@ -4,7 +4,15 @@ import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import {
+  Button,
+  Spinner,
+  Modal,
+  Spacer,
+  ModalHeader,
+  ModalContent,
+  ModalFooter,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
@@ -75,7 +83,7 @@ export default function UpdateEditionPage() {
   if (edition.id === -1) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -115,17 +123,17 @@ export default function UpdateEditionPage() {
       setMessage(<></>);
     } else if (isError) {
       setMessage(
-        <Text span className={classes.red}>
+        <span className={classes.red}>
           <XOctagon className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     } else {
       setMessage(
-        <Text span className={classes.green}>
+        <span className={classes.green}>
           <Check className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     }
   }
@@ -157,24 +165,26 @@ export default function UpdateEditionPage() {
   }
 
   const popup = (
-    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
-      <Modal.Header>
-        <Text id="modal-title" size={22}>
-          Voulez-vous vraiment supprimer le module :{" '"}
-          <Text b size={22}>
-            {oldEdition.name}
-          </Text>
-          {"' "}?
-        </Text>
-      </Modal.Header>
-      <Modal.Footer css={{ justifyContent: "space-around" }}>
-        <Button auto flat color="error" onPress={btnDeletePressed}>
-          Confirmer
-        </Button>
-        <Button auto onPress={closePopupDelete}>
-          Annuler
-        </Button>
-      </Modal.Footer>
+    <Modal
+      backdrop="blur"
+      isOpen={popupDeleteVisible}
+      onClose={closePopupDelete}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <span id="modal-title">
+            Voulez-vous vraiment supprimer le module :{" '"}
+            <span>{oldEdition.name}</span>
+            {"' "}?
+          </span>
+        </ModalHeader>
+        <ModalFooter>
+          <Button variant="flat" color="danger" onPress={btnDeletePressed}>
+            Confirmer
+          </Button>
+          <Button onPress={closePopupDelete}>Annuler</Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 
@@ -192,9 +202,7 @@ export default function UpdateEditionPage() {
       />
 
       <Button
-        shadow
-        ghost
-        color="error"
+        color="danger"
         onPress={() => setPopupDeleteVisible(true)}
         disabled={disableBtnDelete}
       >

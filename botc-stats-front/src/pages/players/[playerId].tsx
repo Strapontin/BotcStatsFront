@@ -8,7 +8,7 @@ import {
   getNewEmptyPlayer,
   getPlayerPseudoString,
 } from "@/entities/Player";
-import { Collapse, Loading } from "@nextui-org/react";
+import { Accordion, AccordionItem, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getPlayerById } from "../../../data/back-api/back-api";
@@ -27,7 +27,7 @@ export default function PlayerPage() {
   if (player.id < 0) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -40,7 +40,12 @@ export default function PlayerPage() {
   );
 
   const playerComponent = player ? (
-    <Collapse expanded title="Détails généraux">
+    <AccordionItem
+      key="1"
+      aria-label="Détails généraux"
+      subtitle="Press to expand"
+      title="Détails généraux"
+    >
       <Container>
         <ListItem left="Parties jouées" value={player.nbGamesPlayed} />
         <ListItemTwoValues
@@ -64,13 +69,18 @@ export default function PlayerPage() {
           classValue2="red"
         />
       </Container>
-    </Collapse>
+    </AccordionItem>
   ) : (
     <></>
   );
 
   const detailsRolesPlayed = (
-    <Collapse expanded title="Détails des rôles joués">
+    <AccordionItem
+      key="2"
+      aria-label="Détails des rôles joués"
+      subtitle="Press to expand"
+      title="Détails des rôles joués"
+    >
       <Container>
         {player.timesPlayedRole.map((tpr) => (
           <ListItemRole
@@ -84,14 +94,16 @@ export default function PlayerPage() {
           />
         ))}
       </Container>
-    </Collapse>
+    </AccordionItem>
   );
 
   return (
     <>
       {title}
-      <Collapse.Group css={{ w: "100%" }}>{playerComponent}</Collapse.Group>
-      <Collapse.Group css={{ w: "100%" }}>{detailsRolesPlayed}</Collapse.Group>
+      <Accordion selectionMode={"multiple"} defaultExpandedKeys={["1", "2"]}>
+        {playerComponent}
+        {detailsRolesPlayed}
+      </Accordion>
     </>
   );
 }

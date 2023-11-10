@@ -4,7 +4,7 @@ import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Link, Spinner, Spacer } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllPlayers } from "../../../../data/back-api/back-api";
 
@@ -24,14 +24,14 @@ export default function UpdatePlayersPage() {
       <>
         {title}
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
 
   function line(player: Player) {
     return (
-      <Link key={player.id} href={`/update/players/${player.id}`} color="text">
+      <Link key={player.id} href={`/update/players/${player.id}`} >
         <ListItem left={player.name} subName={player.pseudo}></ListItem>
       </Link>
     );

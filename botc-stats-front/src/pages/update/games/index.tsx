@@ -5,7 +5,7 @@ import Title from "@/components/ui/title";
 import { Game } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
-import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Link, Spinner, Spacer } from "@nextui-org/react";
 import { getAllGames } from "../../../../data/back-api/back-api";
 import { useState, useEffect } from "react";
 
@@ -24,7 +24,7 @@ export default function UpdateGamesPage() {
       <>
         {title}
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -44,7 +44,7 @@ export default function UpdateGamesPage() {
     );
 
     return (
-      <Link key={game.id} href={`/update/games/${game.id}`} color="text">
+      <Link key={game.id} href={`/update/games/${game.id}`}>
         <ListItem left={storyTelledBy}></ListItem>
       </Link>
     );

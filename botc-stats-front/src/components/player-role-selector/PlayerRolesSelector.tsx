@@ -210,18 +210,15 @@ export default function PlayerRolesSelector(props: {
                 }
               />
             </div>
-            <Spacer x={1.25} />
+            <Spacer x={1.5} />
           </Fragment>
         ))}
       </div>
       <Spacer x={2} />
       <div className={Classes["inputs-container"]}>
         <Input
-          css={{ flex: 1 }}
-          labelPlaceholder="Joueur"
+          label="Joueur"
           aria-label="Joueur"
-          clearable
-          bordered
           value={playerFilter}
           onChange={(event) => playerFilterChanged(event.target.value)}
           onFocus={(event) => setTimeout(() => onFocusPlayerInput(), 0)}
@@ -229,11 +226,8 @@ export default function PlayerRolesSelector(props: {
           ref={inputFilterPlayer}
         ></Input>
         <Input
-          css={{ flex: 1 }}
-          labelPlaceholder="Rôle"
+          label="Rôle"
           aria-label="Rôle"
-          clearable
-          bordered
           value={roleFilter}
           onChange={(event) => roleFilterChanged(event.target.value)}
           onFocus={(event) => setTimeout(() => onFocusRoleInput(), 0)}
@@ -241,7 +235,7 @@ export default function PlayerRolesSelector(props: {
           ref={inputFilterRole}
         ></Input>
       </div>
-      {(showPlayers || showRoles) && <Spacer y={0.75} />}
+      {(showPlayers || showRoles) && <Spacer y={1} />}
       {showPlayers && (
         // tabIndex are necessary to catch the class in the blur event of the inputs
         <div tabIndex={0} className={Classes["container-players-values"]}>

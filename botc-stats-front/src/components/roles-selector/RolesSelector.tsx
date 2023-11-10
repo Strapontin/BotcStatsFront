@@ -122,18 +122,16 @@ export default function RolesSelector(props: {
                 onClick={() => removeSelectedRole(role.id)}
               />
             </div>
-            <Spacer x={1.25} />
+            <Spacer x={1.5} />
           </Fragment>
         ))}
       </div>
       {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
       <div className={Classes["input-container"]}>
         <Input
-          css={{ flex: 1 }}
-          labelPlaceholder={props.placeholderText}
+          // css={{ flex: 1 }}
+          label={props.placeholderText}
           aria-label={props.placeholderText}
-          clearable
-          bordered
           value={filter}
           onChange={(event) => onChangeInput(event.target.value)}
           onFocus={(event) => setTimeout(() => onFocusInput(), 0)}
@@ -141,7 +139,7 @@ export default function RolesSelector(props: {
           ref={inputFilterRole}
         ></Input>
       </div>
-      {showRoles && <Spacer y={0.75} />}
+      {showRoles && <Spacer y={1} />}
       {showRoles && (
         <div tabIndex={0} className={Classes["container-roles-values"]}>
           {visibleRoles.map((role) => (
@@ -155,7 +153,7 @@ export default function RolesSelector(props: {
                   characterType={role.characterType}
                 />
               </Button>
-              <Spacer y={0.75} />
+              <Spacer y={1} />
             </Fragment>
           ))}
         </div>

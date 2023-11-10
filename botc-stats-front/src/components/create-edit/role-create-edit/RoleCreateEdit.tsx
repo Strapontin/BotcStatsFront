@@ -3,7 +3,7 @@ import DropdownCharacterType from "@/components/dropdown-character-type/Dropdown
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
-import { Button, Container, Input, Spacer } from "@nextui-org/react";
+import { Button, Input, Spacer } from "@nextui-org/react";
 
 export default function RoleCreateEdit(props: {
   title: JSX.Element;
@@ -41,33 +41,31 @@ export default function RoleCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
+      <div
+      //  css={{ display: "flex", flexDirection: "column" }}
+      >
         <Input
-          clearable
-          bordered
-          labelPlaceholder="Nom"
+          label="Nom"
           aria-label="Nom"
-          initialValue={props.role.name}
+          value={props.role.name}
           onChange={(event) => roleNameChanged(event.target.value)}
         />
-        <Spacer y={1.75} />
+        <Spacer y={1.5} />
         <DropdownCharacterType
           setCharacterType={characterTypeChanged}
           characterType={props.role.characterType}
           defaultText="Type de personnage"
         />
-        <Spacer y={1.75} />
+        <Spacer y={1.5} />
         <DropdownAlignment
           setAlignment={alignmentChanged}
           alignment={props.role.alignment}
           defaultText="Alignement"
         />
         <Spacer y={3} />
-      </Container>
+      </div>
 
       <Button
-        shadow
-        ghost
         color="success"
         onPress={props.btnPressed}
         disabled={!canPressButton()}

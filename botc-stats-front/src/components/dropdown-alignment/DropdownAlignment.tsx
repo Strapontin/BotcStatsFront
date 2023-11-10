@@ -3,7 +3,13 @@ import {
   alignmentList,
   getAlignmentTextById,
 } from "@/entities/enums/alignment";
-import { Dropdown } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 
 export default function DropdownAlignment(props: {
   setAlignment: any;
@@ -22,22 +28,17 @@ export default function DropdownAlignment(props: {
   return (
     <>
       <Dropdown type="menu">
-        <Dropdown.Button
-          id="selection-stat"
-          ghost
-          iconRight
-          css={{ display: "flex", justifyContent: "left" }}
-        >
-          {alignmentText}
-        </Dropdown.Button>
-        <Dropdown.Menu
+        <DropdownTrigger>
+          <Button>{alignmentText}</Button>
+        </DropdownTrigger>
+        <DropdownMenu
           aria-label="Static Actions"
           onAction={(key) => selectAlignment(+key)}
         >
           {alignmentList().map((item) => (
-            <Dropdown.Item key={item.key}>{item.value}</Dropdown.Item>
+            <DropdownItem key={item.key}>{item.value}</DropdownItem>
           ))}
-        </Dropdown.Menu>
+        </DropdownMenu>
       </Dropdown>
     </>
   );

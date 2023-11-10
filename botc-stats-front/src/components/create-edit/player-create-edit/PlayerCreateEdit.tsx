@@ -1,5 +1,5 @@
 import { Player } from "@/entities/Player";
-import { Button, Container, Input, Spacer } from "@nextui-org/react";
+import { Button, Input, Spacer } from "@nextui-org/react";
 
 export default function PlayerCreateEdit(props: {
   title: JSX.Element;
@@ -32,30 +32,26 @@ export default function PlayerCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
+      <div
+      //  css={{ display: "flex", flexDirection: "column" }}
+      >
         <Input
-          clearable
-          bordered
-          labelPlaceholder="Nom"
+          label="Nom"
           aria-label="Nom"
-          initialValue={props.player.name}
+          value={props.player.name}
           onChange={(event) => playerNameChanged(event.target.value)}
         />
-        <Spacer y={1.75} />
+        <Spacer y={1.5} />
         <Input
-          clearable
-          bordered
-          labelPlaceholder="pseudo"
+          label="pseudo"
           aria-label="pseudo"
-          initialValue={props.player.pseudo}
+          value={props.player.pseudo}
           onChange={(event) => pseudoChanged(event.target.value)}
         />
         <Spacer y={3} />
-      </Container>
+      </div>
 
       <Button
-        shadow
-        ghost
         color="success"
         onPress={props.btnPressed}
         disabled={!canPressButton()}

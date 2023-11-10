@@ -7,7 +7,15 @@ import {
 } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
@@ -105,7 +113,7 @@ export default function UpdatePlayerPage() {
   if (player.id === -1) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -143,17 +151,17 @@ export default function UpdatePlayerPage() {
       setMessage(<></>);
     } else if (isError) {
       setMessage(
-        <Text span className={classes.red}>
+        <span className={classes.red}>
           <XOctagon className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     } else {
       setMessage(
-        <Text span className={classes.green}>
+        <span className={classes.green}>
           <Check className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     }
   }
@@ -186,25 +194,29 @@ export default function UpdatePlayerPage() {
   }
 
   const popup = (
-    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
-      <Modal.Header>
-        <Text id="modal-title" size={22}>
-          Voulez-vous vraiment supprimer le joueur :{" '"}
-          <Text b size={22}>
-            {oldPlayer.name}
-            {getPlayerPseudoString(oldPlayer.pseudo)}
-          </Text>
-          {"' "}?
-        </Text>
-      </Modal.Header>
-      <Modal.Footer css={{ justifyContent: "space-around" }}>
-        <Button auto flat color="error" onPress={btnDeletePressed}>
-          Confirmer
-        </Button>
-        <Button auto onPress={closePopupDelete}>
-          Annuler
-        </Button>
-      </Modal.Footer>
+    <Modal
+      backdrop="blur"
+      isOpen={popupDeleteVisible}
+      onClose={closePopupDelete}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <span id="modal-title">
+            Voulez-vous vraiment supprimer le joueur :{" '"}
+            <span>
+              {oldPlayer.name}
+              {getPlayerPseudoString(oldPlayer.pseudo)}
+            </span>
+            {"' "}?
+          </span>
+        </ModalHeader>
+        <ModalFooter>
+          <Button variant="flat" color="danger" onPress={btnDeletePressed}>
+            Confirmer
+          </Button>
+          <Button onPress={closePopupDelete}>Annuler</Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 
@@ -221,9 +233,7 @@ export default function UpdatePlayerPage() {
       />
 
       <Button
-        shadow
-        ghost
-        color="error"
+        color="danger"
         onPress={() => setPopupDeleteVisible(true)}
         disabled={disableBtnDelete}
       >

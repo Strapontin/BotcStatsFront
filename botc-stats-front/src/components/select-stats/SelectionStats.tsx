@@ -1,4 +1,10 @@
-import { Dropdown } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+} from "@nextui-org/react";
 import classes from "./SelectionStats.module.css";
 import { useRouter } from "next/router";
 import { useContext } from "react";
@@ -9,63 +15,51 @@ export default function SelectionStats() {
 
   const user = useContext(AuthContext);
 
-  let connexionBlock = (
-    <Dropdown.Item css={{ display: "none" }}>
-      null
-    </Dropdown.Item>
-  );
-  let storyTellerAuthorize = (
-    <Dropdown.Item css={{ display: "none" }}>
-      null
-    </Dropdown.Item>
-  );
+  let connexionBlock = <DropdownItem>null</DropdownItem>;
+  let storyTellerAuthorize = <DropdownItem>null</DropdownItem>;
 
   if (user && user.accessToken) {
     storyTellerAuthorize = (
-      <Dropdown.Item key="/api/auth/signout">Se déconnecter</Dropdown.Item>
+      <DropdownItem key="/api/auth/signout">Se déconnecter</DropdownItem>
     );
 
     if (user.isStoryTeller) {
       connexionBlock = (
-        <Dropdown.Section>
-          <Dropdown.Item key="/create/game">
+        <DropdownSection title="Actions de conteur">
+          <DropdownItem key="/create/game">
             Ajouter une nouvelle partie
-          </Dropdown.Item>
-          <Dropdown.Item key="/create/edition">
+          </DropdownItem>
+          <DropdownItem key="/create/edition">
             Ajouter un nouveau module
-          </Dropdown.Item>
-          <Dropdown.Item key="/create/role">
+          </DropdownItem>
+          <DropdownItem key="/create/role">
             Ajouter un nouveau rôle
-          </Dropdown.Item>
-          <Dropdown.Item key="/create/player">
+          </DropdownItem>
+          <DropdownItem key="/create/player">
             Ajouter un nouveau joueur
-          </Dropdown.Item>
-          <Dropdown.Item withDivider key="/update/games">
+          </DropdownItem>
+          <DropdownItem showDivider key="/update/games">
             Modifier une partie
-          </Dropdown.Item>
-          <Dropdown.Item key="/update/editions">
-            Modifier un module
-          </Dropdown.Item>
-          <Dropdown.Item key="/update/roles">Modifier un rôle</Dropdown.Item>
-          <Dropdown.Item key="/update/players">
-            Modifier un joueur
-          </Dropdown.Item>
-        </Dropdown.Section>
+          </DropdownItem>
+          <DropdownItem key="/update/editions">Modifier un module</DropdownItem>
+          <DropdownItem key="/update/roles">Modifier un rôle</DropdownItem>
+          <DropdownItem key="/update/players">Modifier un joueur</DropdownItem>
+        </DropdownSection>
       );
     }
   } else {
     connexionBlock = (
-      <Dropdown.Item key="/api/auth/signin">Se connecter</Dropdown.Item>
+      <DropdownItem key="/api/auth/signin">Se connecter</DropdownItem>
     );
   }
 
   return (
     <div className={classes.SelectionStats}>
       <Dropdown type="menu">
-        <Dropdown.Button id="selection-stat" flat>
+        <Button id="selection-stat" variant="flat">
           Selection stat
-        </Dropdown.Button>
-        <Dropdown.Menu
+        </Button>
+        <DropdownMenu
           disabledKeys={[router.asPath, "/games-role"]}
           onAction={(key) => {
             router.push(key.toString());
@@ -74,18 +68,18 @@ export default function SelectionStats() {
         >
           {storyTellerAuthorize}
           {connexionBlock}
-          <Dropdown.Item withDivider key="/games-player">
+          <DropdownItem showDivider key="/games-player">
             Nombre de parties par joueur
-          </Dropdown.Item>
-          <Dropdown.Item key="/games-role">
+          </DropdownItem>
+          <DropdownItem key="/games-role">
             Nombre de parties par rôle
-          </Dropdown.Item>
-          <Dropdown.Item withDivider key="/games">
+          </DropdownItem>
+          <DropdownItem showDivider key="/games">
             Liste des parties
-          </Dropdown.Item>
-          <Dropdown.Item key="/editions">Liste des modules</Dropdown.Item>
-          <Dropdown.Item key="/roles">Liste des rôles</Dropdown.Item>
-        </Dropdown.Menu>
+          </DropdownItem>
+          <DropdownItem key="/editions">Liste des modules</DropdownItem>
+          <DropdownItem key="/roles">Liste des rôles</DropdownItem>
+        </DropdownMenu>
       </Dropdown>
     </div>
   );
