@@ -4,6 +4,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownSection,
+  DropdownTrigger,
 } from "@nextui-org/react";
 import classes from "./SelectionStats.module.css";
 import { useRouter } from "next/router";
@@ -20,7 +21,9 @@ export default function SelectionStats() {
 
   if (user && user.accessToken) {
     storyTellerAuthorize = (
-      <DropdownItem key="/api/auth/signout">Se déconnecter</DropdownItem>
+      <DropdownItem key="/api/auth/signout" showDivider>
+        Se déconnecter
+      </DropdownItem>
     );
 
     if (user.isStoryTeller) {
@@ -49,16 +52,18 @@ export default function SelectionStats() {
     }
   } else {
     connexionBlock = (
-      <DropdownItem key="/api/auth/signin">Se connecter</DropdownItem>
+      <DropdownItem key="/api/auth/signin" showDivider>
+        Se connecter
+      </DropdownItem>
     );
   }
 
   return (
     <div className={classes.SelectionStats}>
       <Dropdown type="menu">
-        <Button id="selection-stat" variant="flat">
-          Selection stat
-        </Button>
+        <DropdownTrigger>
+          <Button id="selection-stat">Selection stat</Button>
+        </DropdownTrigger>
         <DropdownMenu
           disabledKeys={[router.asPath, "/games-role"]}
           onAction={(key) => {
