@@ -14,19 +14,17 @@ export default function ImageIconName(props: {
     .replaceAll("'", "");
   const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png?&a=1`;
 
-  var roleName = props.name;
-
   if (props.setNameAtLeftOfImage) {
     return (
       <div className={classes["image-role-container"]}>
         <Image width={50} height={50} src={imgPath} alt={props.name} />
-        <RoleColored name={roleName} characterType={props.characterType} />
+        <RoleColored name={props.name} characterType={props.characterType} />
       </div>
     );
   } else {
     return (
       <div className={classes["image-role-container"]}>
-        <RoleColored name={roleName} characterType={props.characterType} />
+        <RoleColored name={props.name} characterType={props.characterType} />
         <Image width={50} height={50} src={imgPath} alt={props.name} />
       </div>
     );
