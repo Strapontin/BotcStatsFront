@@ -33,7 +33,7 @@ export default function DropdownCharacterType(props: {
     <>
       <Dropdown type="menu">
         <DropdownTrigger>
-          <Button id="selection-stat">{characterTypeText}</Button>
+          <Button className="w-full">{characterTypeText}</Button>
         </DropdownTrigger>
         <DropdownMenu
           aria-label="Static Actions"
