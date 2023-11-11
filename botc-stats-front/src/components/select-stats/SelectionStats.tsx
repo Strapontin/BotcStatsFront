@@ -6,7 +6,6 @@ import {
   DropdownSection,
   DropdownTrigger,
 } from "@nextui-org/react";
-import classes from "./SelectionStats.module.css";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import AuthContext from "../../stores/authContext";
@@ -16,19 +15,19 @@ export default function SelectionStats() {
 
   const user = useContext(AuthContext);
 
-  let connexionBlock = <DropdownItem>null</DropdownItem>;
-  let storyTellerAuthorize = <DropdownItem>null</DropdownItem>;
+  let connexion: JSX.Element = <DropdownItem className="hidden"></DropdownItem>;
+  let storyTeller: JSX.Element = <DropdownItem className="hidden"></DropdownItem>;
 
   if (user && user.accessToken) {
-    storyTellerAuthorize = (
+    connexion = (
       <DropdownItem key="/api/auth/signout" showDivider>
         Se déconnecter
       </DropdownItem>
     );
 
     if (user.isStoryTeller) {
-      connexionBlock = (
-        <DropdownSection title="Actions de conteur">
+      storyTeller = (
+        <DropdownSection title="Espace conteur" className="mb-0">
           <DropdownItem key="/create/game">
             Ajouter une nouvelle partie
           </DropdownItem>
@@ -41,17 +40,17 @@ export default function SelectionStats() {
           <DropdownItem key="/create/player">
             Ajouter un nouveau joueur
           </DropdownItem>
-          <DropdownItem showDivider key="/update/games">
-            Modifier une partie
-          </DropdownItem>
+          <DropdownItem key="/update/games">Modifier une partie</DropdownItem>
           <DropdownItem key="/update/editions">Modifier un module</DropdownItem>
           <DropdownItem key="/update/roles">Modifier un rôle</DropdownItem>
-          <DropdownItem key="/update/players">Modifier un joueur</DropdownItem>
+          <DropdownItem key="/update/players" showDivider>
+            Modifier un joueur
+          </DropdownItem>
         </DropdownSection>
       );
     }
   } else {
-    connexionBlock = (
+    connexion = (
       <DropdownItem key="/api/auth/signin" showDivider>
         Se connecter
       </DropdownItem>
@@ -59,10 +58,10 @@ export default function SelectionStats() {
   }
 
   return (
-    <div className={classes.SelectionStats}>
+    <div className="mb-2.5">
       <Dropdown type="menu">
         <DropdownTrigger>
-          <Button id="selection-stat">Selection stat</Button>
+          <Button>Selection stat</Button>
         </DropdownTrigger>
         <DropdownMenu
           disabledKeys={[router.asPath, "/games-role"]}
@@ -71,9 +70,9 @@ export default function SelectionStats() {
           }}
           aria-label="Static Actions"
         >
-          {storyTellerAuthorize}
-          {connexionBlock}
-          <DropdownItem showDivider key="/games-player">
+          {connexion}
+          {storyTeller}
+          <DropdownItem key="/games-player">
             Nombre de parties par joueur
           </DropdownItem>
           <DropdownItem key="/games-role">

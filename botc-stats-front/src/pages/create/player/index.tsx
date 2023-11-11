@@ -58,7 +58,7 @@ export default function CreatePlayer() {
 
       updateMessage(
         false,
-        `Le joueur "${player.name}" enregistré correctement.`
+        `Le joueur "${player.name}" a été enregistré correctement.`
       );
       setPlayerCreateEditKey(playerCreateEditKey + 1);
     } else {
@@ -73,14 +73,14 @@ export default function CreatePlayer() {
   function updateMessage(isError: boolean, message: string) {
     if (isError) {
       setMessage(
-        <span className={classes.red}>
+        <span className={classes.red + " flex justify-center"}>
           <XOctagon className={classes.icon} />
           {message}
         </span>
       );
     } else {
       setMessage(
-        <span className={classes.green}>
+        <span className={classes.green + " flex justify-center"}>
           <Check className={classes.icon} />
           {message}
         </span>
