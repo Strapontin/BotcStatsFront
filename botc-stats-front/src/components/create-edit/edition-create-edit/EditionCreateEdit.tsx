@@ -31,7 +31,7 @@ export default function EditionCreateEdit(props: {
   }
 
   return (
-    <Fragment>
+    <>
       {props.title}
       <Spacer y={2} />
       {props.message}
@@ -63,6 +63,6 @@ export default function EditionCreateEdit(props: {
         {props.btnText}
       </Button>
       <Spacer y={3} />
-    </Fragment>
+    </>
   );
 }

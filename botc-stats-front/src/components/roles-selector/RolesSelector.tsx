@@ -8,11 +8,13 @@ import {
   Autocomplete,
   AutocompleteItem,
   AutocompleteSection,
+  Avatar,
   Spacer,
 } from "@nextui-org/react";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
+import { getRoleIconPath } from "../ui/image-role-name";
 
 export default function RolesSelector(props: {
   selectedRoles: Role[];
@@ -50,27 +52,55 @@ export default function RolesSelector(props: {
     }
   }
 
-  function getHeaderClassFromCharacterType(characterType: CharacterType) {
-    const headingAutocompleteClasses =
+  function getCssClassesFromCharacterType(characterType: CharacterType): {
+    headerClass: string;
+    ringColorClass: string;
+  } {
+    let headingAutocompleteClasses =
       "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small text-slate-800 text-sm font-bold";
+    let bgColorClass = "bg-";
+    let ringColorClass = "ring-";
 
     switch (characterType) {
       case CharacterType.Townsfolk:
-        return headingAutocompleteClasses + " bg-townsfolk text-slate-700";
+        headingAutocompleteClasses =
+          headingAutocompleteClasses + " text-slate-700 bg-townsfolk";
+        ringColorClass = "ring-townsfolk";
+        break;
       case CharacterType.Outsider:
-        return headingAutocompleteClasses + " bg-outsider text-slate-300";
+        headingAutocompleteClasses =
+          headingAutocompleteClasses + " text-slate-300 bg-outsider";
+        ringColorClass = "ring-outsider";
+        break;
       case CharacterType.Minion:
-        return headingAutocompleteClasses + " bg-minion text-slate-300";
+        headingAutocompleteClasses =
+          headingAutocompleteClasses + " text-slate-300 bg-minion";
+        ringColorClass = "ring-minion";
+        break;
       case CharacterType.Demon:
-        return headingAutocompleteClasses + " bg-demon text-slate-300";
+        headingAutocompleteClasses =
+          headingAutocompleteClasses + " text-slate-300 bg-demon";
+        ringColorClass = "ring-demon";
+        break;
       case CharacterType.Fabled:
-        return headingAutocompleteClasses + " bg-fabled text-slate-300";
+        headingAutocompleteClasses =
+          headingAutocompleteClasses + " text-slate-300 bg-fabled";
+        ringColorClass = "ring-fabled";
+        break;
       case CharacterType.Traveller:
-        return headingAutocompleteClasses + " bg-traveller text-slate-300";
+        headingAutocompleteClasses =
+          headingAutocompleteClasses + " text-slate-300 bg-traveller";
+        ringColorClass = "ring-traveller";
+        break;
 
       default:
-        return headingAutocompleteClasses;
+        break;
     }
+
+    return {
+      headerClass: headingAutocompleteClasses,
+      ringColorClass: ringColorClass,
+    };
   }
 
   const rolesGroupedByCharacterType = groupRolesByCharacterType(props.roles);
@@ -93,15 +123,17 @@ export default function RolesSelector(props: {
       </div>
       {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
       <Autocomplete
+        classNames={{ listboxWrapper: "max-h-64" }}
         label="Rôles du module"
         variant="bordered"
         placeholder="Sélectionner un rôle"
         scrollShadowProps={{
-          isEnabled: true,
-          visibility: "bottom",
+          visibility: "none",
         }}
       >
         {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
+          const cssClasses = getCssClassesFromCharacterType(+characterType);
+
           return (
             <AutocompleteSection
               key={characterType}
@@ -109,12 +141,24 @@ export default function RolesSelector(props: {
                 characterTypeList().find((c) => c.key === +characterType)?.value
               }
               classNames={{
-                heading: getHeaderClassFromCharacterType(+characterType),
+                heading: cssClasses.headerClass,
               }}
             >
               {rolesGroupedByCharacterType[characterType].map((role) => {
                 return (
-                  <AutocompleteItem key={role.id}>{role.name}</AutocompleteItem>
+                  <AutocompleteItem
+                    key={role.id}
+                    startContent={
+                      <Avatar
+                        isBordered
+                        classNames={{ base: cssClasses.ringColorClass }}
+                        radius="sm"
+                        src={getRoleIconPath(role.name)}
+                      />
+                    }
+                  >
+                    {role.name}
+                  </AutocompleteItem>
                 );
               })}
             </AutocompleteSection>

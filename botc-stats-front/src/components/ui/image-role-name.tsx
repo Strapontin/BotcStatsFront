@@ -9,10 +9,7 @@ export default function ImageIconName(props: {
   characterType: CharacterType;
   setNameAtLeftOfImage?: boolean;
 }) {
-  const imgFileName = removeDiacritics(props.name)
-    .replaceAll(" ", "-")
-    .replaceAll("'", "");
-  const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png?&a=1`;
+  const imgPath = getRoleIconPath(props.name);
 
   if (props.setNameAtLeftOfImage) {
     return (
@@ -29,4 +26,13 @@ export default function ImageIconName(props: {
       </div>
     );
   }
+}
+
+export function getRoleIconPath(roleName: string) {
+  const imgFileName = removeDiacritics(roleName)
+    .replaceAll(" ", "-")
+    .replaceAll("'", "");
+  const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png`;
+
+  return imgPath;
 }
