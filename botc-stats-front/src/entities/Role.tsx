@@ -30,8 +30,17 @@ export function getNewEmptyRole() {
   return role;
 }
 
-// export enum RoleOrderBy {
-//   None = 0,
-//   Name = 1 << 0,
-//   CharacterType = 1 << 1,
-// }
+interface GroupedRoles {
+  [key: string]: Role[];
+}
+
+export function groupRolesByCharacterType(array: Role[]): GroupedRoles {
+  return array.reduce((acc: GroupedRoles, current: Role) => {
+    const key = current.characterType;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(current);
+    return acc;
+  }, {});
+}

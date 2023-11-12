@@ -41,7 +41,9 @@ export default function EditionCreateEdit(props: {
           label="Nom"
           aria-label="Nom"
           value={props.edition.name}
-          onChange={(event) => editionNameChanged(event.target.value)}
+          onChange={(event: { target: { value: string } }) =>
+            editionNameChanged(event.target.value)
+          }
         />
         <Spacer y={3} />
         <RolesSelector
