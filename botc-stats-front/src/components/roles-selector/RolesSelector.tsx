@@ -3,7 +3,6 @@ import {
   CharacterType,
   characterTypeList,
 } from "@/entities/enums/characterType";
-import { toLowerRemoveDiacritics } from "@/helper/string";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -11,7 +10,7 @@ import {
   Avatar,
   Spacer,
 } from "@nextui-org/react";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
 import { getRoleIconPath } from "../ui/image-role-name";
@@ -22,35 +21,7 @@ export default function RolesSelector(props: {
   placeholderText: string;
   roles: Role[];
 }) {
-  const [filter, setFilter] = useState<string>("");
-
-  const reSetVisibleRolesFromValue = useCallback(
-    (value: string) => {
-      const visibleRolesToSet = props.roles.filter(
-        (r) =>
-          toLowerRemoveDiacritics(r.name).includes(
-            toLowerRemoveDiacritics(value)
-          ) && !props.selectedRoles.some((sr) => sr.id === r.id)
-      );
-      setFilter(value);
-    },
-    [props.roles, props.selectedRoles]
-  );
-
-  useEffect(() => {
-    reSetVisibleRolesFromValue(filter);
-  }, [filter, reSetVisibleRolesFromValue]);
-
-  function removeSelectedRole(id: number) {
-    const roleSelected = props.selectedRoles.find((role) => role.id == id);
-
-    if (roleSelected) {
-      const allSelectedRoles = props.selectedRoles.filter(
-        (role) => role.id !== id
-      );
-      props.setSelectedRoles(allSelectedRoles);
-    }
-  }
+  const rolesGroupedByCharacterType = groupRolesByCharacterType(props.roles);
 
   function getCssClassesFromCharacterType(characterType: CharacterType): {
     headerClass: string;
@@ -58,8 +29,7 @@ export default function RolesSelector(props: {
   } {
     let headingAutocompleteClasses =
       "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small text-slate-800 text-sm font-bold";
-    let bgColorClass = "bg-";
-    let ringColorClass = "ring-";
+    let ringColorClass;
 
     switch (characterType) {
       case CharacterType.Townsfolk:
@@ -94,6 +64,7 @@ export default function RolesSelector(props: {
         break;
 
       default:
+        ringColorClass = "";
         break;
     }
 
@@ -102,8 +73,6 @@ export default function RolesSelector(props: {
       ringColorClass: ringColorClass,
     };
   }
-
-  const rolesGroupedByCharacterType = groupRolesByCharacterType(props.roles);
 
   return (
     <>
@@ -115,7 +84,7 @@ export default function RolesSelector(props: {
                 image={role.name}
                 characterType={role.characterType}
               />
-              <X tabIndex={0} onClick={() => removeSelectedRole(role.id)} />
+              {/* <X tabIndex={0} onClick={() => removeSelectedRole(role.id)} /> */}
             </div>
             <Spacer x={1.5} />
           </Fragment>
@@ -123,7 +92,6 @@ export default function RolesSelector(props: {
       </div>
       {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
       <Autocomplete
-        classNames={{ listboxWrapper: "max-h-64" }}
         label="Rôles du module"
         variant="bordered"
         placeholder="Sélectionner un rôle"
@@ -136,7 +104,7 @@ export default function RolesSelector(props: {
 
           return (
             <AutocompleteSection
-              key={characterType}
+              key={characterType + 1}
               title={
                 characterTypeList().find((c) => c.key === +characterType)?.value
               }
