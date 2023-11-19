@@ -3,14 +3,11 @@
 @tailwind utilities;
 
 body {
-  color: #dadada;
-  /* background: #100e17; */
   font-family: "Open Sans", sans-serif;
 }
 
 html {
   height: 100%;
-  background: #100e17;
 }
 /* 
 .green {

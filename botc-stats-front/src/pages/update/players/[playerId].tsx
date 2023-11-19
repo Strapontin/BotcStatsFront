@@ -118,7 +118,11 @@ export default function UpdatePlayerPage() {
     );
   }
 
-  const title = <Title>Modification du joueur {`'${oldPlayer.name}'`}</Title>;
+  const title = (
+    <Title>
+      Modification du joueur {`'${oldPlayer.name} (${oldPlayer.pseudo})'`}
+    </Title>
+  );
 
   async function btnUpdatePlayer() {
     if (!canUpdatePlayer()) return;

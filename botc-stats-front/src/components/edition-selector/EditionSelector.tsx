@@ -2,7 +2,6 @@ import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Input, Spacer } from "@nextui-org/react";
 import { Fragment, useRef, useState } from "react";
-import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
 import Classes from "./EditionSelector.module.css";
 
@@ -97,16 +96,14 @@ export default function EditionSelector(props: {
       {showEditions && <Spacer y={1} />}
       {showEditions && (
         <div tabIndex={0} className={Classes["container-editions-values"]}>
-          <Container>
-            {visibleEditions.map((edition) => (
-              <Fragment key={edition.id}>
-                <ListItem
-                  onPress={() => onSelectEdition(edition.id)}
-                  left={edition.name}
-                />
-              </Fragment>
-            ))}
-          </Container>
+          {visibleEditions.map((edition) => (
+            <Fragment key={edition.id}>
+              <ListItem
+                onPress={() => onSelectEdition(edition.id)}
+                left={edition.name}
+              />
+            </Fragment>
+          ))}
         </div>
       )}
     </>

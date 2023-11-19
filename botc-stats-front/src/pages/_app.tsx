@@ -10,13 +10,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider>
       <AuthContextProvider>
-        <NextThemesProvider>
-          <NextUIProvider>
-            <Layout className="dark">
+        <NextUIProvider>
+          <NextThemesProvider defaultTheme="dark">
+            <Layout>
               <Component {...pageProps} />
             </Layout>
-          </NextUIProvider>
-        </NextThemesProvider>
+          </NextThemesProvider>
+        </NextUIProvider>
       </AuthContextProvider>
     </SessionProvider>
   );
