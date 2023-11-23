@@ -1,10 +1,9 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Spinner, Spacer } from "@nextui-org/react";
+import { Link, Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllEditions } from "../../../../data/back-api/back-api";
 
@@ -37,6 +36,12 @@ export default function UpdateEditionsPage() {
     );
   }
 
+  const editionsFiltered = editions.filter((edition) =>
+    toLowerRemoveDiacritics(edition.name).includes(
+      toLowerRemoveDiacritics(filter)
+    )
+  );
+
   return (
     <>
       {title}
@@ -46,15 +51,20 @@ export default function UpdateEditionsPage() {
         setFilter={setFilter}
         placeholder="Filtre module"
       />
-      <Container>
-        {editions
-          .filter((edition) =>
-            toLowerRemoveDiacritics(edition.name).includes(
-              toLowerRemoveDiacritics(filter)
-            )
-          )
-          .map((edition: Edition) => line(edition))}
-      </Container>
+      <Spacer y={5} />
+      <Listbox aria-label="Parties jouées">
+        {editionsFiltered.map((edition: Edition) => (
+          <ListboxItem
+            key={edition.id}
+            className="text-left"
+            href={`/update/editions/${edition.id}`}
+            textValue={String(edition.id)}
+            showDivider
+          >
+            {edition.name}
+          </ListboxItem>
+        ))}
+      </Listbox>
     </>
   );
 }
