@@ -3,13 +3,13 @@ import { Listbox, ListboxItem } from "@nextui-org/react";
 import IconAlignment from "../ui/icon-alignment";
 import ImageIconName from "../ui/image-role-name";
 
-export default function ListPlayerRolesComponent({
+export default function ListBoxPlayerRolesComponent({
   playerRoleGames,
 }: {
   playerRoleGames: PlayerRole[];
 }) {
   return (
-    <Listbox aria-label="ListPlayerRolesComponent">
+    <Listbox aria-label="ListBoxPlayerRolesComponent">
       {playerRoleGames.map((prg: PlayerRole, index) => (
         <ListboxItem
           key={`${prg.player.id}-${prg.role.id}-${index}`}

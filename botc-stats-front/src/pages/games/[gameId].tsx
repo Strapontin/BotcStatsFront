@@ -1,5 +1,5 @@
-import ListPlayerRoleComponent from "@/components/list-stats/ListPlayerRolesComponent";
-import ListRolesComponent from "@/components/list-stats/ListRolesComponent";
+import ListBoxPlayerRolesComponent from "@/components/list-stats/ListBoxPlayerRolesComponent";
+import ListBoxRolesComponent from "@/components/list-stats/ListBoxRolesComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
@@ -107,14 +107,14 @@ export default function GamePage() {
           aria-label="Liste des rôles des joueurs"
           title="Liste des rôles des joueurs"
         >
-          <ListPlayerRoleComponent playerRoleGames={game.playerRoles} />
+          <ListBoxPlayerRolesComponent playerRoleGames={game.playerRoles} />
         </AccordionItem>
         <AccordionItem
           key="2"
           aria-label="Liste des Demon Bluffs"
           title="Liste des Demon Bluffs"
         >
-          <ListRolesComponent roles={game.demonBluffs} />
+          <ListBoxRolesComponent roles={game.demonBluffs} />
         </AccordionItem>
       </Accordion>
 
