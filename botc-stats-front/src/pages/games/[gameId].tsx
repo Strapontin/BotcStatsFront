@@ -1,12 +1,10 @@
-import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
-import ListItemRole from "@/components/list-stats/ListItemRole";
-import ListPlayerRoleComponent from "@/components/list-stats/ListPlayerRoleComponent";
+import ListPlayerRoleComponent from "@/components/list-stats/ListPlayerRolesComponent";
+import ListRolesComponent from "@/components/list-stats/ListRolesComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
-import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
 import {
@@ -116,14 +114,7 @@ export default function GamePage() {
           aria-label="Liste des Demon Bluffs"
           title="Liste des Demon Bluffs"
         >
-          {game.demonBluffs.map((db: Role) => (
-            <ListItemRole
-              key={db.id}
-              id={db.id}
-              characterType={db.characterType}
-              image={db.name}
-            />
-          ))}
+          <ListRolesComponent roles={game.demonBluffs} />
         </AccordionItem>
       </Accordion>
 

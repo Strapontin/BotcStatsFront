@@ -1,12 +1,11 @@
 import Filter from "@/components/filter/Filter";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListRolesComponent from "@/components/list-stats/ListRolesComponent";
 import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Spinner, Spacer, Listbox, ListboxItem } from "@nextui-org/react";
+import { Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllRoles } from "../../../data/back-api/back-api";
-import { getAvatarRole } from "@/components/ui/image-role-name";
 
 export default function RolesPage() {
   const [filter, setFilter] = useState<string>("");
@@ -33,10 +32,6 @@ export default function RolesPage() {
     toLowerRemoveDiacritics(role.name).includes(toLowerRemoveDiacritics(filter))
   );
 
-  const classNamesListBoxItem = {
-    title: "text-left font-bold",
-  };
-
   return (
     <>
       {title}
@@ -46,7 +41,8 @@ export default function RolesPage() {
         setFilter={setFilter}
         placeholder="Filtre rôle"
       />
-      <Listbox aria-label="Rôles">
+      <ListRolesComponent roles={filteredRoles} />
+      {/* <Listbox aria-label="Rôles">
         {filteredRoles.map((role) => (
           <ListboxItem
             key={role.id}
@@ -56,7 +52,7 @@ export default function RolesPage() {
             {role.name}
           </ListboxItem>
         ))}
-      </Listbox>
+      </Listbox> */}
     </>
   );
 }
