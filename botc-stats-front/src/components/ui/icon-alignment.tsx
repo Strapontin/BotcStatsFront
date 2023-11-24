@@ -2,7 +2,6 @@ import { Alignment } from "@/entities/enums/alignment";
 import Image from "next/image";
 import evilImg from "../../../public/images/evil.webp";
 import goodImg from "../../../public/images/good.webp";
-import classes from "./icon-alignment.module.scss";
 
 export default function IconAlignment({
   alignment,
@@ -15,9 +14,10 @@ export default function IconAlignment({
 
   return (
     <Image
-      className={editable ? classes["editable"] : ""}
+      className={editable ? "cursor-pointer" : ""}
       src={image}
       alt="good"
+      height={35}
       width={35}
     />
   );

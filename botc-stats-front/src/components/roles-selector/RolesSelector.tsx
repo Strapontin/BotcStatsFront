@@ -1,11 +1,14 @@
 import { Role } from "@/entities/Role";
 import { Spacer } from "@nextui-org/react";
-import { Fragment } from "react";
-import ListItemRole from "../list-stats/ListItemRole";
 import AutocompleteRoles from "./AutocompleteRoles";
-import ListboxSelectedRoles from "./ListboxSelectedRoles";
+import ListboxRolesComponent from "../list-stats/ListboxRolesComponent";
 
-export default function RolesSelector(props: {
+export default function RolesSelector({
+  selectedRoles,
+  setSelectedRoles,
+  placeholderText,
+  roles,
+}: {
   selectedRoles: Role[];
   setSelectedRoles: any;
   placeholderText: string;
@@ -13,16 +16,16 @@ export default function RolesSelector(props: {
 }) {
   return (
     <>
-      <ListboxSelectedRoles
-        selectedRoles={props.selectedRoles}
-        setSelectedRoles={props.setSelectedRoles}
+      <ListboxRolesComponent
+        selectedRoles={selectedRoles}
+        setSelectedRoles={setSelectedRoles}
       />
-      {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
+      {selectedRoles.some((r) => r) && <Spacer y={1} />}
       <AutocompleteRoles
-        roles={props.roles}
-        selectedRoles={props.selectedRoles}
-        setSelectedRoles={props.setSelectedRoles}
-        placeholder={props.placeholderText}
+        roles={roles}
+        selectedRoles={selectedRoles}
+        setSelectedRoles={setSelectedRoles}
+        placeholder={placeholderText}
       ></AutocompleteRoles>
     </>
   );

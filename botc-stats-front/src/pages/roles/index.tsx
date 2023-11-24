@@ -1,5 +1,5 @@
 import Filter from "@/components/filter/Filter";
-import ListBoxRolesComponent from "@/components/list-stats/ListBoxRolesComponent";
+import ListBoxRolesComponent from "@/components/list-stats/--ListBoxRolesComponent";
 import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";

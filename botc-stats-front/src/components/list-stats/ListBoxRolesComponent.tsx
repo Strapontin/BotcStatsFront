@@ -1,30 +1,47 @@
-import { Role } from "@/entities/Role";
-import { Listbox, ListboxItem } from "@nextui-org/react";
+import { Role, sortRoles } from "@/entities/Role";
+import { Button, Listbox, ListboxItem } from "@nextui-org/react";
+import { X } from "react-feather";
 import { getAvatarRole } from "../ui/image-role-name";
 
-const classNamesListBoxItem = {
-  title: "text-left font-bold",
-};
-
-export default function ListBoxRolesComponent({
-  roles,
+export default function ListboxRolesComponent({
+  selectedRoles,
+  setSelectedRoles,
   hrefRoles,
 }: {
-  roles: Role[];
+  selectedRoles: Role[];
+  setSelectedRoles?: any;
   hrefRoles?: string;
 }) {
+  const sortedSelectedRoles = sortRoles(selectedRoles);
+
+  function onClickRemoveRole(roleId: number) {
+    setSelectedRoles(sortedSelectedRoles.filter((r) => r.id !== roleId));
+  }
+
   return (
-    <Listbox aria-label="Roles">
-      {roles.map((role) => (
-        <ListboxItem
-          key={role.id}
-          startContent={getAvatarRole(role)}
-          classNames={classNamesListBoxItem}
-          href={hrefRoles?.replace("ROLE_ID", String(role.id))}
-        >
-          {role.name}
-        </ListboxItem>
-      ))}
-    </Listbox>
+    <>
+      <Listbox aria-label="Rôles sélectionnés">
+        {sortedSelectedRoles.map((role) => (
+          <ListboxItem
+            key={role.id}
+            startContent={getAvatarRole(role)}
+            href={hrefRoles?.replace("ROLE_ID", String(role.id))}
+            endContent={
+              <Button
+                onClick={() => onClickRemoveRole(role.id)}
+                isIconOnly
+                color="danger"
+                aria-label="delete"
+                variant="flat"
+              >
+                <X />
+              </Button>
+            }
+          >
+            {role.name}
+          </ListboxItem>
+        ))}
+      </Listbox>
+    </>
   );
 }

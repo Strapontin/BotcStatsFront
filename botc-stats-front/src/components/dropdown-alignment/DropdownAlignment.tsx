@@ -29,7 +29,9 @@ export default function DropdownAlignment(props: {
     <>
       <Dropdown type="menu">
         <DropdownTrigger>
-          <Button className="w-full">{alignmentText}</Button>
+          <Button className="w-full" variant="bordered">
+            {alignmentText}
+          </Button>
         </DropdownTrigger>
         <DropdownMenu
           aria-label="Static Actions"

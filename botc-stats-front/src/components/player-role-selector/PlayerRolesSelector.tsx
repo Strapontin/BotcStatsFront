@@ -1,15 +1,16 @@
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role, getNewEmptyRole } from "@/entities/Role";
+import { Alignment } from "@/entities/enums/alignment";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { X } from "react-feather";
+import ListBoxPlayerRolesComponent from "../list-stats/ListBoxPlayerRolesComponent";
 import ListItem from "../list-stats/ListItem";
 import ListItemPlayerRole from "../list-stats/ListItemPlayerRole";
 import ListItemRole from "../list-stats/ListItemRole";
 import Classes from "./PlayerRolesSelector.module.css";
-import { Alignment } from "@/entities/enums/alignment";
 
 export default function PlayerRolesSelector(props: {
   selectedPlayerRoles: PlayerRole[];
@@ -55,16 +56,16 @@ export default function PlayerRolesSelector(props: {
     }
   }, [playerSelected, roleSelected, props]);
 
-  function removeSelectedPlayerRole(playerId: number, roleId: number) {
-    const index = props.selectedPlayerRoles.findIndex(
-      (spr) => spr.player.id === playerId && spr.role.id === roleId
-    );
-    if (index > -1) {
-      props.selectedPlayerRoles.splice(index, 1);
-    }
+  // function removeSelectedPlayerRole(playerId: number, roleId: number) {
+  //   const index = props.selectedPlayerRoles.findIndex(
+  //     (spr) => spr.player.id === playerId && spr.role.id === roleId
+  //   );
+  //   if (index > -1) {
+  //     props.selectedPlayerRoles.splice(index, 1);
+  //   }
 
-    props.setSelectedPlayerRoles(props.selectedPlayerRoles);
-  }
+  //   props.setSelectedPlayerRoles(props.selectedPlayerRoles);
+  // }
 
   function onFocusPlayerInput() {
     setShowPlayers(true);
@@ -195,26 +196,11 @@ export default function PlayerRolesSelector(props: {
 
   return (
     <>
-      <div className={Classes["players-roles-selected"]}>
-        {props.selectedPlayerRoles.map((pr, index) => (
-          <Fragment key={pr.player.id + "-" + pr.role.id + "-" + index}>
-            <div className={Classes["player-role-selected"]}>
-              <ListItemPlayerRole
-                playerRole={pr}
-                iconAlignmentClicked={() => iconAlignmentClicked(pr)}
-              />
-              <X
-                className={Classes.delete}
-                onClick={() =>
-                  removeSelectedPlayerRole(pr.player.id, pr.role.id)
-                }
-              />
-            </div>
-            <Spacer x={1.5} />
-          </Fragment>
-        ))}
-      </div>
-      {/* <Spacer x={2} /> */}
+      <ListBoxPlayerRolesComponent
+        playerRoles={props.selectedPlayerRoles}
+        showBtnDelete
+        setSelectedPlayerRoles={props.setSelectedPlayerRoles}
+      />
       <div className={Classes["inputs-container"]}>
         <Input
           label="Joueur"

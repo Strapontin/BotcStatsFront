@@ -1,3 +1,4 @@
+import AutocompleteEdition from "@/components/edition-selector/AutocompleteEdition";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 import { Edition } from "@/entities/Edition";
 import { Game } from "@/entities/Game";
@@ -7,11 +8,11 @@ import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToStringOrderByFormat } from "@/helper/date";
 import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { getEditionById } from "../../../../data/back-api/back-api";
 import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
-import EditionSelector from "../../edition-selector/EditionSelector";
 import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
-import PlayerSelector from "../../player-selector/PlayerSelector";
+import AutocompletePlayer from "@/components/player-selector/AutocompletePlayer";
 
 export default function GameCreateEdit(props: {
   title: JSX.Element;
@@ -27,27 +28,17 @@ export default function GameCreateEdit(props: {
     []
   );
 
-  useEffect(() => {
-    setRolesInSelectedEdition(props.game.edition.roles);
-  }, [props.game]);
-
-  function btnEnabled() {
-    // Can create a props.game when
-    //  - the edition is set
-    //  - the storyTeller is set
-    //  - the date is set
-    //  - the winningAlignment is set
-    return (
-      props.game.edition.id !== -1 &&
-      props.game.storyTeller.id !== -1 &&
-      props.game.winningAlignment !== Alignment.None
-    );
-  }
-
-  function editionSelected(edition: Edition) {
+  async function editionSelected(edition: Edition) {
     const newGame = { ...props.game, edition: edition };
+
+    if (edition) {
+      const editionRoles = (await getEditionById(edition.id)).roles;
+      setRolesInSelectedEdition(editionRoles);
+    } else {
+      setRolesInSelectedEdition([]);
+    }
+
     props.setGame(newGame);
-    setRolesInSelectedEdition(edition.roles);
   }
 
   function storyTellerSelected(storyTeller: Player) {
@@ -86,62 +77,62 @@ export default function GameCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <div
-      // fluid css={{ display: "flex", flexDirection: "column" }}
-      >
-        <EditionSelector
-          selectedEdition={props.game.edition}
-          setSelectedEdition={(edition: Edition) => editionSelected(edition)}
-          allEditions={props.allEditions}
-        />
-        <Spacer y={1.5} />
-        <PlayerSelector
-          selectedPlayer={props.game.storyTeller}
-          setSelectedPlayer={storyTellerSelected}
-          allPlayers={props.allPlayers}
-        />
-        <Spacer y={1.5} />
-        <Input
-          type="date"
-          label="Date à laquelle la partie a été jouée"
-          aria-label="Date à laquelle la partie a été jouée"
-          value={dateToStringOrderByFormat(props.game.datePlayed)}
-          onChange={(event) => datePlayedSelected(event.target.value)}
-        />
-        <Spacer y={1.5} />
-        <Textarea
-          label="Notes"
-          aria-label="Notes"
-          value={props.game.notes}
-          onChange={(event) => notesChanged(event.target.value)}
-        />
-        <Spacer y={1.5} />
-        <DropdownAlignment
-          alignment={props.game.winningAlignment}
-          setAlignment={winningAlignmentChanged}
-          defaultText="Alignement gagnant"
-        />
-        <Spacer y={1.5} />
-        <PlayerRolesSelector
-          selectedPlayerRoles={props.game.playerRoles}
-          setSelectedPlayerRoles={selectedPlayerRolesChanged}
-          rolesInSelectedEdition={rolesInSelectedEdition}
-          allPlayers={props.allPlayers}
-        />
-        <Spacer y={1.5} />
-        <RolesSelector
-          selectedRoles={props.game.demonBluffs}
-          setSelectedRoles={selectedDemonBluffsChanged}
-          placeholderText="Demon bluffs"
-          roles={rolesInSelectedEdition}
-        />
-        <Spacer y={3} />
-      </div>
+      <AutocompleteEdition
+        editions={props.allEditions}
+        selectedEdition={props.game.edition}
+        setSelectedEdition={(edition: Edition) => editionSelected(edition)}
+      />
+      <Spacer y={1.5} />
+      <AutocompletePlayer
+        players={props.allPlayers}
+        selectedPlayer={props.game.storyTeller}
+        setSelectedPlayer={storyTellerSelected}
+        autocompleteLabel="Conteur"
+        autocompletePlaceholder="Sélectionner un conteur"
+      />
+      <Spacer y={1.5} />
+      <Input
+        variant="bordered"
+        type="date"
+        label="Date à laquelle la partie a été jouée"
+        aria-label="Date à laquelle la partie a été jouée"
+        value={dateToStringOrderByFormat(props.game.datePlayed)}
+        onChange={(event) => datePlayedSelected(event.target.value)}
+      />
+      <Spacer y={1.5} />
+      <Textarea
+        variant="bordered"
+        label="Notes"
+        aria-label="Notes"
+        value={props.game.notes}
+        onChange={(event) => notesChanged(event.target.value)}
+      />
+      <Spacer y={1.5} />
+      <DropdownAlignment
+        alignment={props.game.winningAlignment}
+        setAlignment={winningAlignmentChanged}
+        defaultText="Alignement gagnant"
+      />
+      <Spacer y={5} />
+      <PlayerRolesSelector
+        selectedPlayerRoles={props.game.playerRoles}
+        setSelectedPlayerRoles={selectedPlayerRolesChanged}
+        rolesInSelectedEdition={rolesInSelectedEdition}
+        allPlayers={props.allPlayers}
+      />
+      <Spacer y={1.5} />
+      <RolesSelector
+        selectedRoles={props.game.demonBluffs}
+        setSelectedRoles={selectedDemonBluffsChanged}
+        placeholderText="Demon bluffs"
+        roles={rolesInSelectedEdition}
+      />
+      <Spacer y={3} />
 
       <Button
         color="success"
         onPress={props.btnPressed}
-        disabled={!btnEnabled()}
+        disabled={props.game.winningAlignment === Alignment.None}
       >
         {props.btnText}
       </Button>
