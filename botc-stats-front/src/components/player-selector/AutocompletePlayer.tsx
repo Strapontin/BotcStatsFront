@@ -20,12 +20,15 @@ export default function AutocompletePlayer({
       variant="bordered"
       placeholder={autocompletePlaceholder}
       onSelectionChange={(playerId) => {
-        setSelectedPlayer(players.find((e) => e.id === +playerId)!);
+        setSelectedPlayer(players.find((e) => e.id === playerId)!);
       }}
     >
       {players.map((player) => {
         return (
-          <AutocompleteItem key={player.id}>
+          <AutocompleteItem
+            key={player.id}
+            aria-label={`${player.name} (${player.pseudo})`}
+          >
             <div className="flex flex-col">
               <span>{player.name}</span>
               <span className="text-default-400 text-sm">{player.pseudo}</span>

@@ -15,12 +15,14 @@ export default function AutocompleteRoles({
   roles,
   selectedRoles,
   setSelectedRoles,
-  placeholder,
+  autocompleteLabel,
+  autocompletePlaceholder,
 }: {
   roles: Role[];
   selectedRoles: Role[];
   setSelectedRoles: any;
-  placeholder: string;
+  autocompleteLabel?: string;
+  autocompletePlaceholder?: string;
 }) {
   const rolesGroupedByCharacterType = groupRolesByCharacterType(roles);
   const [autocompleteKey, setAutocompleteKey] = useState(0);
@@ -45,9 +47,9 @@ export default function AutocompleteRoles({
     <Autocomplete
       key={autocompleteKey}
       ref={autocompleteRef}
-      label={placeholder}
+      label={autocompleteLabel}
       variant="bordered"
-      placeholder="Sélectionner un rôle"
+      placeholder={autocompletePlaceholder}
       onSelectionChange={(roleId) => setRoleSelected(+roleId)}
       disabledKeys={selectedRoles.map((sr) => sr.id + "")}
       scrollShadowProps={{
