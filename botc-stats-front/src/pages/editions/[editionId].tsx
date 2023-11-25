@@ -1,26 +1,21 @@
+import Filter from "@/components/filter/Filter";
 import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
-import { Edition, getNewEmptyEdition } from "@/entities/Edition";
+import { useGetEditionById } from "@/data/back-api/back-api-edition";
+import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getEditionById } from "../../../data/back-api/back-api";
-import Filter from "@/components/filter/Filter";
+import { useState } from "react";
 
 export default function EditionIdPage() {
   const [filter, setFilter] = useState<string>("");
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
-  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
-  useEffect(() => {
-    if (!editionId || isNaN(editionId)) return;
+  const { data: edition, isLoading } = useGetEditionById(editionId);
 
-    getEditionById(editionId).then((p) => setEdition(p));
-  }, [editionId]);
-
-  if (edition.id <= 0) {
+  if (isLoading || !editionId) {
     return (
       <>
         <Spinner />
@@ -28,7 +23,7 @@ export default function EditionIdPage() {
     );
   }
 
-  const filteredRoles = edition.roles.filter((role) =>
+  const filteredRoles = edition.roles.filter((role: Role) =>
     toLowerRemoveDiacritics(role.name).includes(toLowerRemoveDiacritics(filter))
   );
 
@@ -46,7 +41,7 @@ export default function EditionIdPage() {
         placeholder="Filtre rôle"
       />
       <Listbox aria-label="Rôles">
-        {filteredRoles.map((r) => (
+        {filteredRoles.map((r: Role) => (
           <ListboxItem
             key={r.id}
             startContent={getAvatarRole(r)}

@@ -75,7 +75,7 @@ export async function updatePlayer(
   console.log("updatePlayer");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -102,7 +102,7 @@ export async function deletePlayer(
   console.log("deletePlayer");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 

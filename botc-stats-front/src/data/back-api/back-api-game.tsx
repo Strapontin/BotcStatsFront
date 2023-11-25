@@ -1,32 +1,31 @@
 import { Game } from "@/entities/Game";
-import useApi from "./useApi";
+import useSWR from "swr";
+import useApi, { Api } from "./useApi";
 
-export async function getAllGames(apiUrl: string) {
-  const response = await fetch(`${apiUrl}/Games`);
-  const data = await response.json();
-  const games: Game[] = [];
+const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-  for (const key in data) {
-    games.push(data[key]);
-  }
+export function useGetGames() {
+  const { apiUrl } = useApi();
+  const { data, error, isLoading } = useSWR(`${apiUrl}/Games`, fetcher);
 
-  console.log("getAllGames");
-  return games;
+  return { data, error, isLoading };
 }
 
-export async function getGameById(apiUrl: string, id: number) {
-  if (isNaN(id)) return;
+export function useGetGameById(gameId: number) {
+  const { apiUrl } = useApi();
 
-  const response = await fetch(`${apiUrl}/Games/${id}`);
-  const game = await response.json();
+  const { data, error, isLoading } = useSWR(
+    gameId && !isNaN(gameId) ? `${apiUrl}/Games/${gameId}` : null,
+    fetcher
+  );
 
-  console.log("getGameById");
-  return game;
+  return { data, error, isLoading };
 }
 
-export async function CreateNewGame(game: Game): Promise<boolean> {
-  const { accessToken, apiUrl } = useApi();
-  
+export async function createNewGame(
+  game: Game,
+  { apiUrl, accessToken }: Api
+): Promise<boolean> {
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
     roleId: pr.role.id,
@@ -60,7 +59,7 @@ export async function CreateNewGame(game: Game): Promise<boolean> {
   console.log("createNewGame");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -68,9 +67,8 @@ export async function CreateNewGame(game: Game): Promise<boolean> {
 }
 
 export async function updateGame(
-  apiUrl: string,
   game: Game,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
@@ -106,7 +104,7 @@ export async function updateGame(
   console.log("updateGame");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -114,9 +112,8 @@ export async function updateGame(
 }
 
 export async function deleteGame(
-  apiUrl: string,
   gameId: number,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Games/${gameId}`, {
     method: "DELETE",
@@ -134,7 +131,7 @@ export async function deleteGame(
   console.log("deleteGame");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 

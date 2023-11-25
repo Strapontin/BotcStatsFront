@@ -25,7 +25,7 @@ export default function RolesSelector({
         roles={roles}
         selectedRoles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
-        placeholder={placeholderText}
+        autocompletePlaceholder={placeholderText}
       ></AutocompleteRoles>
     </>
   );
