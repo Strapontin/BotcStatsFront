@@ -1,18 +1,13 @@
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import Title from "@/components/ui/title";
+import { CreateNewGame } from "@/data/back-api/back-api-game";
 import { Edition } from "@/entities/Edition";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { Player } from "@/entities/Player";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
-import AuthContext from "@/stores/authContext";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Check, XOctagon } from "react-feather";
-import {
-  createNewGame,
-  getAllEditions,
-  getAllPlayers,
-} from "../../../../data/back-api/back-api";
 import classes from "../index.module.css";
 
 export default function CreateGame({
@@ -28,12 +23,10 @@ export default function CreateGame({
 
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
 
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
   async function createGame() {
     if (!canCreateGame()) return;
 
-    if (await createNewGame(game, accessToken)) {
+    if (await CreateNewGame(game)) {
       setGame(getNewEmptyGame());
       setGameCreateEditKey(gameCreateEditKey + 1);
       updateMessage(false, `La partie a été enregistrée correctement.`);
@@ -99,6 +92,7 @@ export default function CreateGame({
       btnText="Créer une partie"
       allEditions={editions}
       allPlayers={players}
+      isEditionLoading
     />
   );
 }

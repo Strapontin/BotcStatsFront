@@ -3,12 +3,12 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
 export default function AutocompleteEdition({
   editions,
-  selectedEdition,
+  isLoading,
   setSelectedEdition,
 }: {
   editions: Edition[];
-  selectedEdition: Edition;
   setSelectedEdition: (edition: Edition) => void;
+  isLoading?: boolean;
 }) {
   return (
     <Autocomplete
@@ -18,9 +18,7 @@ export default function AutocompleteEdition({
       onSelectionChange={(editionId) => {
         setSelectedEdition(editions.find((e) => e.id === +editionId)!);
       }}
-      scrollShadowProps={{
-        visibility: "none",
-      }}
+      isLoading={isLoading}
     >
       {editions.map((edition) => {
         return (

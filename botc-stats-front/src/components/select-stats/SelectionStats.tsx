@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
+  Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useContext } from "react";
@@ -20,43 +21,62 @@ export default function SelectionStats() {
     <DropdownItem className="hidden"></DropdownItem>
   );
 
-  if (user && user.accessToken) {
-    connexion = (
-      <DropdownItem key="/api/auth/signout" showDivider>
-        Se déconnecter
-      </DropdownItem>
-    );
-
-    if (user.isStoryTeller) {
-      storyTeller = (
-        <DropdownSection title="Espace conteur" className="mb-0">
-          <DropdownItem key="/create/game">
-            Ajouter une nouvelle partie
-          </DropdownItem>
-          <DropdownItem key="/create/edition">
-            Ajouter un nouveau module
-          </DropdownItem>
-          <DropdownItem key="/create/role">
-            Ajouter un nouveau rôle
-          </DropdownItem>
-          <DropdownItem key="/create/player">
-            Ajouter un nouveau joueur
-          </DropdownItem>
-          <DropdownItem key="/update/games">Modifier une partie</DropdownItem>
-          <DropdownItem key="/update/editions">Modifier un module</DropdownItem>
-          <DropdownItem key="/update/roles">Modifier un rôle</DropdownItem>
-          <DropdownItem key="/update/players" showDivider>
-            Modifier un joueur
-          </DropdownItem>
-        </DropdownSection>
+  if (user) {
+    // Loading
+    if (user.isLoading) {
+      connexion = (
+        <DropdownItem key={"Connecting"} startContent={<Spinner />}>
+          Connexion...
+        </DropdownItem>
       );
+    } else {
+      // Data received
+      // User connected
+      if (user.isConnected) {
+        connexion = (
+          <DropdownItem key="/api/auth/signout" showDivider>
+            Se déconnecter
+          </DropdownItem>
+        );
+        // User is StoryTeller
+        if (user.isStoryTeller) {
+          storyTeller = (
+            <DropdownSection title="Espace conteur" className="mb-0">
+              <DropdownItem key="/create/game">
+                Ajouter une nouvelle partie
+              </DropdownItem>
+              <DropdownItem key="/create/edition">
+                Ajouter un nouveau module
+              </DropdownItem>
+              <DropdownItem key="/create/role">
+                Ajouter un nouveau rôle
+              </DropdownItem>
+              <DropdownItem key="/create/player">
+                Ajouter un nouveau joueur
+              </DropdownItem>
+              <DropdownItem key="/update/games">
+                Modifier une partie
+              </DropdownItem>
+              <DropdownItem key="/update/editions">
+                Modifier un module
+              </DropdownItem>
+              <DropdownItem key="/update/roles">Modifier un rôle</DropdownItem>
+              <DropdownItem key="/update/players" showDivider>
+                Modifier un joueur
+              </DropdownItem>
+            </DropdownSection>
+          );
+        }
+      }
+      // User not connected
+      else {
+        connexion = (
+          <DropdownItem key="/api/auth/signin" showDivider>
+            Se connecter
+          </DropdownItem>
+        );
+      }
     }
-  } else {
-    connexion = (
-      <DropdownItem key="/api/auth/signin" showDivider>
-        Se connecter
-      </DropdownItem>
-    );
   }
 
   return (
@@ -66,7 +86,7 @@ export default function SelectionStats() {
           <Button>Selection stat</Button>
         </DropdownTrigger>
         <DropdownMenu
-          disabledKeys={[router.asPath, "/games-role"]}
+          disabledKeys={[router.asPath, "/games-role", "Connecting"]}
           onAction={(key) => {
             router.push(key.toString());
           }}
