@@ -1,17 +1,18 @@
 import RolesSelector from "@/components/roles-selector/RolesSelector";
 import { Edition } from "@/entities/Edition";
 import { Role } from "@/entities/Role";
+import { stringsAreEqual } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
-import { Fragment } from "react";
 
 export default function EditionCreateEdit(props: {
   title: JSX.Element;
   edition: Edition;
   setEdition: any;
-  message: JSX.Element;
+  editions: Edition[];
   btnPressed: any;
   btnText: string;
   roles: Role[];
+  isLoadingRoles?: boolean;
 }) {
   function editionNameChanged(editionName: string) {
     const newEdition = { ...props.edition, name: editionName };
@@ -24,18 +25,16 @@ export default function EditionCreateEdit(props: {
   }
 
   function canPressButton() {
-    if (props.edition.name === "") {
-      return false;
-    }
-    return true;
+    return (
+      props.edition.name !== "" &&
+      !props.editions.some((e) => stringsAreEqual(e.name, props.edition.name))
+    );
   }
 
   return (
     <>
       {props.title}
-      <Spacer y={2} />
-      {props.message}
-      <Spacer y={2} />
+      <Spacer y={4} />
       <div>
         <Input
           label="Nom"
@@ -49,8 +48,9 @@ export default function EditionCreateEdit(props: {
         <RolesSelector
           selectedRoles={props.edition.roles}
           setSelectedRoles={rolesInEditionChanged}
-          placeholderText="Rôles"
+          autocompleteLabel="Rôles"
           roles={props.roles}
+          isLoadingRoles={props.isLoadingRoles}
         />
         <Spacer y={3} />
       </div>
@@ -58,7 +58,7 @@ export default function EditionCreateEdit(props: {
       <Button
         color="success"
         onPress={props.btnPressed}
-        disabled={!canPressButton()}
+        isDisabled={!canPressButton()}
       >
         {props.btnText}
       </Button>

@@ -6,13 +6,15 @@ import ListboxRolesComponent from "../list-stats/ListboxRolesComponent";
 export default function RolesSelector({
   selectedRoles,
   setSelectedRoles,
-  placeholderText,
+  autocompleteLabel,
   roles,
+  isLoadingRoles,
 }: {
   selectedRoles: Role[];
   setSelectedRoles: any;
-  placeholderText: string;
+  autocompleteLabel: string;
   roles: Role[];
+  isLoadingRoles?: boolean;
 }) {
   return (
     <>
@@ -25,8 +27,9 @@ export default function RolesSelector({
         roles={roles}
         selectedRoles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
-        autocompletePlaceholder={placeholderText}
-      ></AutocompleteRoles>
+        autocompleteLabel={autocompleteLabel}
+        isLoadingRoles={isLoadingRoles}
+      />
     </>
   );
 }
