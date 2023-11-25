@@ -8,14 +8,16 @@ import { useState } from "react";
 
 export default function PlayerRolesSelector({
   selectedPlayerRoles,
-  setSelectedPlayerRoles,
-  rolesInSelectedEdition,
+  roles,
   allPlayers,
+  isPlayersLoading,
+  isRolesLoading,
 }: {
   selectedPlayerRoles: PlayerRole[];
-  setSelectedPlayerRoles: any;
-  rolesInSelectedEdition: Role[];
+  roles: Role[];
   allPlayers: Player[];
+  isPlayersLoading?: boolean;
+  isRolesLoading?: boolean;
 }) {
   const [player, setPlayer] = useState(getNewEmptyPlayer());
 
@@ -25,18 +27,19 @@ export default function PlayerRolesSelector({
         playerRoles={selectedPlayerRoles}
         showBtnDelete
       />
-      <div className="flex">
+      <div className="flex gap-1">
         <AutocompletePlayer
           players={allPlayers}
-          selectedPlayer={player}
           setSelectedPlayer={(p) => setPlayer(p)}
           autocompleteLabel="Joueur"
+          isLoading={isPlayersLoading}
         />
         <AutocompleteRoles
-          roles={rolesInSelectedEdition}
+          roles={roles}
           selectedRoles={[]}
           setSelectedRoles={() => {}}
           autocompleteLabel="Rôle"
+          isLoading={isRolesLoading}
         />
       </div>
     </>

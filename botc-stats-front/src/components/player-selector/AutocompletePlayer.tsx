@@ -1,19 +1,28 @@
 import { Player } from "@/entities/Player";
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
 export default function AutocompletePlayer({
   players,
-  selectedPlayer,
+  isLoading,
   setSelectedPlayer,
   autocompleteLabel,
   autocompletePlaceholder,
 }: {
   players: Player[];
-  selectedPlayer: Player;
+  isLoading?: boolean;
   setSelectedPlayer: (player: Player) => void;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
 }) {
+  const playersSorted = isLoading
+    ? []
+    : players.sort((a, b) =>
+        toLowerRemoveDiacritics(a.name) < toLowerRemoveDiacritics(b.name)
+          ? -1
+          : 1
+      );
+
   return (
     <Autocomplete
       label={autocompleteLabel}
@@ -22,8 +31,9 @@ export default function AutocompletePlayer({
       onSelectionChange={(playerId) => {
         setSelectedPlayer(players.find((e) => e.id === playerId)!);
       }}
+      isLoading={isLoading}
     >
-      {players.map((player) => {
+      {playersSorted.map((player) => {
         return (
           <AutocompleteItem
             key={player.id}
