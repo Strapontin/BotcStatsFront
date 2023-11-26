@@ -29,7 +29,7 @@ export default function AutocompletePlayer({
       variant="bordered"
       placeholder={autocompletePlaceholder}
       onSelectionChange={(playerId) => {
-        setSelectedPlayer(players.find((e) => e.id === playerId)!);
+        setSelectedPlayer(players.find((e) => e.id === +playerId)!);
       }}
       isLoading={isLoading}
     >

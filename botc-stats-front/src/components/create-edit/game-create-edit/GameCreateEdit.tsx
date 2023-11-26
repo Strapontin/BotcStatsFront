@@ -76,7 +76,7 @@ export default function GameCreateEdit(props: {
         editions={editions}
         isLoading={isEditionsLoading}
         setSelectedEdition={(edition: Edition) => editionSelected(edition)}
-        autocompleteLabel="Edition"
+        autocompleteLabel="Module"
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
@@ -111,7 +111,7 @@ export default function GameCreateEdit(props: {
       <Spacer y={5} />
       <PlayerRolesSelector
         selectedPlayerRoles={props.game.playerRoles}
-        // setSelectedPlayerRoles={selectedPlayerRolesChanged}
+        setSelectedPlayerRoles={selectedPlayerRolesChanged}
         roles={edition?.roles}
         allPlayers={players}
         isPlayersLoading={isPlayersLoading}
@@ -129,7 +129,13 @@ export default function GameCreateEdit(props: {
       <Button
         color="success"
         onPress={props.btnPressed}
-        disabled={props.game.winningAlignment === Alignment.None}
+        isDisabled={
+          props.game.winningAlignment === Alignment.None ||
+          !props.game.edition ||
+          props.game.edition?.id === -1 ||
+          !props.game.storyTeller ||
+          props.game.storyTeller?.id === -1
+        }
       >
         {props.btnText}
       </Button>

@@ -1,8 +1,6 @@
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import Title from "@/components/ui/title";
-import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { createNewGame } from "@/data/back-api/back-api-game";
-import { useGetPlayers } from "@/data/back-api/back-api-player";
 import useApi from "@/data/back-api/useApi";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { Alignment } from "@/entities/enums/alignment";
