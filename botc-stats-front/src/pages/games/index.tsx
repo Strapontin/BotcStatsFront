@@ -1,12 +1,11 @@
-import ListItem from "@/components/list-stats/ListItem";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
 import { Game } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
-import { Link, Spinner, Spacer, Listbox, ListboxItem } from "@nextui-org/react";
-import { getAllGames } from "../../../data/back-api/back-api";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { getAllGames } from "../../../data/back-api/back-api";
 
 export default function GamesListPage() {
   const [games, setGames] = useState<Game[]>([]);
@@ -39,6 +38,7 @@ export default function GamesListPage() {
             className="text-left"
             href={`/games/${game.id}`}
             textValue={String(game.id)}
+            showDivider
           >
             {dateToString(game.datePlayed)} - Contée par{" "}
             {

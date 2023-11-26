@@ -2,7 +2,6 @@ import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Input, Spacer } from "@nextui-org/react";
 import { Fragment, useRef, useState } from "react";
-import Container from "../list-stats/Container";
 import ListItem from "../list-stats/ListItem";
 import Classes from "./PlayerSelector.module.css";
 
@@ -104,17 +103,15 @@ export default function PlayerSelector(props: {
       {showPlayers && <Spacer y={1} />}
       {showPlayers && (
         <div tabIndex={0} className={Classes["container-players-values"]}>
-          <Container>
-            {visiblePlayers.map((player) => (
-              <Fragment key={player.id}>
-                <ListItem
-                  onPress={() => onSelectPlayer(player.id)}
-                  left={player.name}
-                  subName={player.pseudo}
-                />
-              </Fragment>
-            ))}
-          </Container>
+          {visiblePlayers.map((player) => (
+            <Fragment key={player.id}>
+              <ListItem
+                onPress={() => onSelectPlayer(player.id)}
+                left={player.name}
+                subName={player.pseudo}
+              />
+            </Fragment>
+          ))}
         </div>
       )}
     </>
