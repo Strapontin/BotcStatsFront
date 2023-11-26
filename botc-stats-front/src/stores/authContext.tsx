@@ -17,30 +17,11 @@ export const AuthContextProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     setUser({
+      isConnected: userData.isConnected,
       isStoryTeller: userData.data,
       isLoading: userData.isLoading,
-      isConnected: userData.isConnected,
     });
   }, [userData.data, userData.isLoading, userData.isConnected]);
-
-  // useEffect(() => {
-  //   async function getUserData() {
-  //     if (!sessionReact.data || user.accessToken) return;
-
-  //     const accessToken = sessionReact.data.accessToken;
-
-  //     const response = await getUserHasStoryTellerRights(accessToken);
-
-  //     const s: any = {
-  //       isStoryTeller: response,
-  //       accessToken,
-  //     };
-  //     setUser(s);
-  //   }
-  //   if (!user.accessToken && sessionReact.data) {
-  //     getUserData();
-  //   }
-  // }, [sessionReact.data, user]);
 
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };
