@@ -1,4 +1,4 @@
-import RolesSelector from "@/components/roles-selector/RolesSelector";
+import RolesSelector from "@/components/selector/RolesSelector";
 import { Edition } from "@/entities/Edition";
 import { Role } from "@/entities/Role";
 import { stringsAreEqual } from "@/helper/string";

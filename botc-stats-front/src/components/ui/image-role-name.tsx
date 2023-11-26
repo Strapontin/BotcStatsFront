@@ -3,7 +3,6 @@ import { CharacterType } from "@/entities/enums/characterType";
 import Image from "next/image";
 import { useState } from "react";
 import { removeDiacritics } from "../../helper/string";
-import classes from "./image-role-name.module.scss";
 import RoleColored from "./role-colored";
 import { Avatar } from "@nextui-org/react";
 
@@ -30,14 +29,14 @@ export default function ImageIconName(props: {
 
   if (props.setNameAtLeftOfImage) {
     return (
-      <div className={classes["image-role-container"]}>
+      <div className="flex items-center">
         {image}
         <RoleColored name={props.name} characterType={props.characterType} />
       </div>
     );
   } else {
     return (
-      <div className={classes["image-role-container"]}>
+      <div className="flex items-center">
         <RoleColored name={props.name} characterType={props.characterType} />
         {image}
       </div>

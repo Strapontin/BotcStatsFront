@@ -1,5 +1,5 @@
-import DropdownAlignment from "@/components/dropdown-alignment/DropdownAlignment";
-import DropdownCharacterType from "@/components/dropdown-character-type/DropdownCharacterType";
+import DropdownAlignment from "@/components/dropdowns/DropdownAlignment";
+import DropdownCharacterType from "@/components/dropdowns/DropdownCharacterType";
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";

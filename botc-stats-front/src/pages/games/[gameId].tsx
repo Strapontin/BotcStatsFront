@@ -1,5 +1,5 @@
-import ListboxPlayerRolesComponent from "@/components/list-stats/ListboxPlayerRolesComponent";
-import ListboxRolesComponent from "@/components/list-stats/ListboxRolesComponent";
+import ListboxPlayerRolesComponent from "@/components/listbox/ListboxPlayerRolesComponent";
+import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";

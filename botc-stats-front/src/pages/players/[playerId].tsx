@@ -19,7 +19,6 @@ export default function PlayerPage() {
 
   const { data: player, isLoading } = useGetPlayerById(playerId);
 
-  console.log(isLoading, playerId);
   if (isLoading || !playerId) {
     return (
       <>

@@ -1,7 +1,7 @@
 import { Role } from "@/entities/Role";
 import { Spacer } from "@nextui-org/react";
-import AutocompleteRoles from "./AutocompleteRoles";
-import ListboxRolesComponent from "../list-stats/ListboxRolesComponent";
+import AutocompleteRoles from "../autocompletes/AutocompleteRoles";
+import ListboxRolesComponent from "../listbox/ListboxRolesComponent";
 
 export default function RolesSelector({
   selectedRoles,

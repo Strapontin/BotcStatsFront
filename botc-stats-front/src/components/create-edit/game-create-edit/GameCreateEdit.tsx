@@ -1,6 +1,6 @@
-import AutocompleteEdition from "@/components/edition-selector/AutocompleteEdition";
-import AutocompletePlayer from "@/components/player-selector/AutocompletePlayer";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
+import AutocompleteEdition from "@/components/autocompletes/AutocompleteEdition";
+import AutocompletePlayer from "@/components/autocompletes/AutocompletePlayer";
+import RolesSelector from "@/components/selector/RolesSelector";
 import {
   useGetEditionById,
   useGetEditions,
@@ -14,8 +14,8 @@ import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToStringOrderByFormat } from "@/helper/date";
 import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
-import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
-import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
+import DropdownAlignment from "../../dropdowns/DropdownAlignment";
+import PlayerRolesSelector from "../../selector/PlayerRolesSelector";
 
 export default function GameCreateEdit({
   title,

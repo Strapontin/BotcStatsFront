@@ -1,16 +1,14 @@
 import { Input } from "@nextui-org/react";
 import { Dispatch, SetStateAction } from "react";
-import style from "./Filter.module.scss";
 
-export default function inputFilterPlayer(props: {
+export default function Filter(props: {
   filterValue: string;
   setFilter: Dispatch<SetStateAction<string>>;
   placeholder: string;
 }) {
   return (
-    <div className={style["filter-container"]}>
+    <div className="p-1">
       <Input
-        className={style["input"]}
         label={props.placeholder}
         aria-label={props.placeholder}
         value={props.filterValue}

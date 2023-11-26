@@ -1,10 +1,10 @@
-import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import { Player } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
-import { Role, getNewEmptyRole } from "@/entities/Role";
-import ListboxPlayerRolesComponent from "../list-stats/ListboxPlayerRolesComponent";
-import AutocompletePlayer from "../player-selector/AutocompletePlayer";
-import AutocompleteRoles from "../roles-selector/AutocompleteRoles";
+import { Role } from "@/entities/Role";
 import { useEffect, useState } from "react";
+import AutocompletePlayer from "../autocompletes/AutocompletePlayer";
+import AutocompleteRoles from "../autocompletes/AutocompleteRoles";
+import ListboxPlayerRolesComponent from "../listbox/ListboxPlayerRolesComponent";
 
 export default function PlayerRolesSelector({
   selectedPlayerRoles,

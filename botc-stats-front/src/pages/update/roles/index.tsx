@@ -1,5 +1,5 @@
 import Filter from "@/components/filter/Filter";
-import ListboxRolesComponent from "@/components/list-stats/ListboxRolesComponent";
+import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import Title from "@/components/ui/title";
 import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role } from "@/entities/Role";
