@@ -1,6 +1,4 @@
-import ListItem from "@/components/list-stats/ListItem";
-import ListItemRole from "@/components/list-stats/ListItemRole";
-import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
+import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import {
   Player,
@@ -10,7 +8,6 @@ import {
 import {
   Accordion,
   AccordionItem,
-  Button,
   Listbox,
   ListboxItem,
   Spinner,
@@ -18,9 +15,6 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getPlayerById } from "../../../data/back-api/back-api";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
-import { getAvatarRole } from "@/components/ui/image-role-name";
-import { X } from "react-feather";
 
 export default function PlayerPage() {
   const router = useRouter();
@@ -98,7 +92,7 @@ export default function PlayerPage() {
         {player.timesPlayedRole.map((role) => (
           <ListboxItem
             key={role.id}
-            // href={`/roles/${role.id}`}
+            // href={`/roles/${role.id}`} //TODO when roles details are implemented
             startContent={getAvatarRole(role)}
             endContent={`${role.timesWonByPlayer} | ${role.timesLostByPlayer} | ${role.timesPlayedByPlayer}`}
             classNames={classNamesListBoxItem}

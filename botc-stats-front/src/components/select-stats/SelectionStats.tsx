@@ -16,7 +16,9 @@ export default function SelectionStats() {
   const user = useContext(AuthContext);
 
   let connexion: JSX.Element = <DropdownItem className="hidden"></DropdownItem>;
-  let storyTeller: JSX.Element = <DropdownItem className="hidden"></DropdownItem>;
+  let storyTeller: JSX.Element = (
+    <DropdownItem className="hidden"></DropdownItem>
+  );
 
   if (user && user.accessToken) {
     connexion = (
@@ -75,12 +77,10 @@ export default function SelectionStats() {
           <DropdownItem key="/games-player">
             Nombre de parties par joueur
           </DropdownItem>
-          <DropdownItem key="/games-role">
+          <DropdownItem showDivider key="/games-role">
             Nombre de parties par rôle
           </DropdownItem>
-          <DropdownItem showDivider key="/games">
-            Liste des parties
-          </DropdownItem>
+          <DropdownItem key="/games">Liste des parties</DropdownItem>
           <DropdownItem key="/editions">Liste des modules</DropdownItem>
           <DropdownItem key="/roles">Liste des rôles</DropdownItem>
         </DropdownMenu>

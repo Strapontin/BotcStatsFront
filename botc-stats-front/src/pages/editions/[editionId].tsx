@@ -1,13 +1,15 @@
-import Container from "@/components/list-stats/Container";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
-import { Link, Spacer, Spinner } from "@nextui-org/react";
+import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getEditionById } from "../../../data/back-api/back-api";
+import Filter from "@/components/filter/Filter";
 
 export default function EditionIdPage() {
+  const [filter, setFilter] = useState<string>("");
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
@@ -26,21 +28,34 @@ export default function EditionIdPage() {
     );
   }
 
+  const filteredRoles = edition.roles.filter((role) =>
+    toLowerRemoveDiacritics(role.name).includes(toLowerRemoveDiacritics(filter))
+  );
+
+  const classNamesListBoxItem = {
+    title: "text-left font-bold",
+  };
+
   return (
     <>
       <Title>{`Rôles du module '${edition.name}'`}</Title>
       <Spacer y={3} />
-      <Container>
-        {edition.roles.map((r) => (
-          <Link key={r.id} href={`/roles/${r.id}`}>
-            <ListItemRole
-              key={r.id}
-              image={r.name}
-              characterType={r.characterType}
-            ></ListItemRole>
-          </Link>
+      <Filter
+        filterValue={filter}
+        setFilter={setFilter}
+        placeholder="Filtre rôle"
+      />
+      <Listbox aria-label="Rôles">
+        {filteredRoles.map((r) => (
+          <ListboxItem
+            key={r.id}
+            startContent={getAvatarRole(r)}
+            classNames={classNamesListBoxItem}
+          >
+            {r.name}
+          </ListboxItem>
         ))}
-      </Container>
+      </Listbox>
     </>
   );
 }

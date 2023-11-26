@@ -1,4 +1,3 @@
-import Container from "@/components/list-stats/Container";
 import ListItem from "@/components/list-stats/ListItem";
 import ListItemLarge from "@/components/list-stats/ListItemLarge";
 import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
@@ -11,10 +10,11 @@ import { getPlayerPseudoString } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { Link, Spinner, Spacer } from "@nextui-org/react";
+import { Link, Spinner, Spacer, Listbox, ListboxItem } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getGameById } from "../../../data/back-api/back-api";
+import { dateToString } from "@/helper/date";
 
 export default function GamePage() {
   const router = useRouter();
@@ -39,53 +39,82 @@ export default function GamePage() {
   const title = (
     <Title>
       Détails de la partie du <DateUi date={game.datePlayed} /> contée par{" "}
-      <Link href={`/players/${game.storyTeller.id}`}>
-        <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
-      </Link>
+      <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
     </Title>
   );
+
+  const classNamesListBoxItem = {
+    title: "text-left font-bold",
+  };
 
   return (
     <>
       {title}
-      <Container>
-        <ListItem left="Module" value={game.edition.name} />
-        <ListItem
-          left="Conteur"
-          value={
-            <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
-          }
+      <Spacer y={5} />
+      <Listbox
+        aria-label="Détails de la partie"
+        variant="light"
+        classNames={{ list: { base: "" } }}
+      >
+        <ListboxItem
+          key={1}
+          endContent={game.edition.name}
+          classNames={classNamesListBoxItem}
+        >
+          Module
+        </ListboxItem>
+        <ListboxItem
+          key={2}
+          endContent={`${game.storyTeller.name}${storyTellerPseudo}`}
+          classNames={classNamesListBoxItem}
+        >
+          Conteur
+        </ListboxItem>
+        <ListboxItem
+          key={3}
+          endContent={dateToString(game.datePlayed)}
+          classNames={classNamesListBoxItem}
+        >
+          Date de la partie
+        </ListboxItem>
+        <ListboxItem
+          key={4}
+          endContent={alignmentToString(game.winningAlignment)}
+          classNames={classNamesListBoxItem}
+        >
+          Alignement gagnant
+        </ListboxItem>
+        <ListboxItem key={5} classNames={classNamesListBoxItem}>
+          Notes
+        </ListboxItem>
+        <ListboxItem
+          key={6}
+          className="text-justify"
+          endContent={`${game.notes}`}
+          classNames={classNamesListBoxItem}
+          textValue={game.notes}
         />
-        <ListItem
-          left="Date de la partie"
-          value={<DateUi date={game.datePlayed} />}
+      </Listbox>
+      <Spacer y={2} />
+      <span>Liste des rôles des joueurs :</span>
+      {game.playerRoles.map((prg: PlayerRole, index) => (
+        <Link
+          key={`${prg.player.id}-${prg.role.id}-${index}`}
+          href={`/players/${prg.player.id}`}
+        >
+          <ListItemPlayerRole playerRole={prg} />
+        </Link>
+      ))}
+      <Spacer y={2} />
+      <span>Liste des demon bluffs :</span>
+      {game.demonBluffs.map((db: Role) => (
+        <ListItemRole
+          key={db.id}
+          id={db.id}
+          characterType={db.characterType}
+          image={db.name}
         />
-        <ListItem
-          left="Alignement gagnant"
-          value={alignmentToString(game.winningAlignment)}
-        />
-        <ListItemLarge name="Notes" value={game.notes} />
-        <Spacer y={2} />
-        <span>Liste des rôles des joueurs :</span>
-        {game.playerRoles.map((prg: PlayerRole, index) => (
-          <Link
-            key={`${prg.player.id}-${prg.role.id}-${index}`}
-            href={`/players/${prg.player.id}`}
-          >
-            <ListItemPlayerRole playerRole={prg} />
-          </Link>
-        ))}
-        <Spacer y={2} />
-        <span>Liste des demon bluffs :</span>
-        {game.demonBluffs.map((db: Role) => (
-          <ListItemRole
-            key={db.id}
-            id={db.id}
-            characterType={db.characterType}
-            image={db.name}
-          />
-        ))}
-      </Container>
+      ))}
     </>
   );
 }
