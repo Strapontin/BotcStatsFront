@@ -71,14 +71,14 @@ export async function updateEdition(
     body: JSON.stringify({
       editionId: edition.id,
       editionName: edition.name,
-      rolesId: edition.roles,
+      rolesId: edition.roles.map((r) => r.id),
     }),
   });
 
   console.log("updateEdition");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
+    console.log("ERROR :", response, await response.text());
     return false;
   }
 

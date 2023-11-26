@@ -108,7 +108,7 @@ export default function GamePage() {
           aria-label="Liste des Demon Bluffs"
           title="Liste des Demon Bluffs"
         >
-          <ListboxRolesComponent selectedRoles={game.demonBluffs} />
+          <ListboxRolesComponent roles={game.demonBluffs} />
         </AccordionItem>
       </Accordion>
 

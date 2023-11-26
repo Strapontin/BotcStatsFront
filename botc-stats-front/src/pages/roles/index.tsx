@@ -37,7 +37,7 @@ export default function RolesPage() {
         placeholder="Filtre rôle"
       />
       <ListboxRolesComponent
-        selectedRoles={filteredRoles}
+        roles={filteredRoles}
         // hrefRoles="roles/ROLE_ID"
       />
     </>

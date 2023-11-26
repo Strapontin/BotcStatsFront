@@ -3,9 +3,17 @@ import DropdownCharacterType from "@/components/dropdown-character-type/Dropdown
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
+import { stringsAreEqual } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
 
-export default function RoleCreateEdit(props: {
+export default function RoleCreateEdit({
+  title,
+  role,
+  setRole,
+  roles,
+  btnPressed,
+  btnText,
+}: {
   title: JSX.Element;
   role: Role;
   setRole: any;
@@ -13,13 +21,16 @@ export default function RoleCreateEdit(props: {
   btnPressed: any;
   btnText: string;
 }) {
+  const roleNameIsInvalid = roles?.some(
+    (p) => p.id !== role.id && stringsAreEqual(p.name, role.name)
+  );
+
   function roleNameChanged(roleName: string) {
-    const newRole = { ...props.role, name: roleName };
-    props.setRole(newRole);
+    setRole({ ...role, name: roleName });
   }
 
   function characterTypeChanged(characterType: CharacterType) {
-    let alignment = props.role.alignment;
+    let alignment = role.alignment;
 
     switch (characterType) {
       case CharacterType.Townsfolk:
@@ -32,54 +43,54 @@ export default function RoleCreateEdit(props: {
         break;
     }
 
-    const newRole = { ...props.role, characterType, alignment };
-    props.setRole(newRole);
+    setRole({ ...role, characterType, alignment });
   }
 
   function alignmentChanged(alignment: Alignment) {
-    const newRole = { ...props.role, alignment };
-    props.setRole(newRole);
+    setRole({ ...role, alignment });
   }
 
-  function canPressButton() {
-    return (
-      props.role.name !== "" &&
-      props.role.characterType !== CharacterType.None &&
-      props.role.alignment !== Alignment.None
-    );
+  function getExistingRoleName() {
+    return roles.find((r) => stringsAreEqual(r.name, role.name))?.name;
   }
 
   return (
     <>
-      {props.title}
+      {title}
       <Spacer y={4} />
       <Input
         label="Nom"
         aria-label="Nom"
-        value={props.role.name}
+        value={role.name}
         onChange={(event) => roleNameChanged(event.target.value)}
         isRequired
+        isInvalid={roleNameIsInvalid}
+        errorMessage={
+          roleNameIsInvalid
+            ? `Le rôle '${getExistingRoleName()}' existe déjà`
+            : ""
+        }
       />
       <Spacer y={1.5} />
       <DropdownCharacterType
         setCharacterType={characterTypeChanged}
-        characterType={props.role.characterType}
+        characterType={role.characterType}
         defaultText="Type de personnage"
       />
       <Spacer y={1.5} />
       <DropdownAlignment
         setAlignment={alignmentChanged}
-        alignment={props.role.alignment}
+        alignment={role.alignment}
         defaultText="Alignement"
       />
       <Spacer y={3} />
 
       <Button
         color="success"
-        onPress={props.btnPressed}
-        isDisabled={!canPressButton()}
+        onPress={btnPressed}
+        isDisabled={roleNameIsInvalid || !role.name}
       >
-        {props.btnText}
+        {btnText}
       </Button>
       <Spacer y={3} />
     </>

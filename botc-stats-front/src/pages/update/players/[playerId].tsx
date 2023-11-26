@@ -7,12 +7,7 @@ import {
   useGetPlayers,
 } from "@/data/back-api/back-api-player";
 import useApi from "@/data/back-api/useApi";
-import {
-  Player,
-  getPlayerFullName,
-  getPlayerPseudoString,
-} from "@/entities/Player";
-import { stringsAreEqual } from "@/helper/string";
+import { Player, getPlayerFullName } from "@/entities/Player";
 import NotFoundPage from "@/pages/404";
 import {
   Button,
@@ -24,7 +19,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { mutate } from "swr";
 
 export default function UpdatePlayerPage() {
@@ -87,7 +82,6 @@ export default function UpdatePlayerPage() {
 
   async function btnDeletePressed() {
     if (await deletePlayer(oldPlayer.id, api)) {
-      setPopupDeleteVisible(false);
       mutateRoutes();
 
       setTimeout(() => {
@@ -111,11 +105,12 @@ export default function UpdatePlayerPage() {
         btnPressed={btnUpdatePlayer}
         btnText="Modifier le joueur"
       />
-
       <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
         Supprimer le joueur
       </Button>
+
       <Spacer y={3} />
+
       <Modal
         backdrop="blur"
         isOpen={popupDeleteVisible}
