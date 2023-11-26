@@ -8,12 +8,14 @@ export default function AutocompleteEdition({
   setSelectedEdition,
   autocompleteLabel,
   autocompletePlaceholder,
+  defaultSelectedKey,
 }: {
   editions: Edition[];
   isLoading?: boolean;
   setSelectedEdition: (edition: Edition) => void;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
+  defaultSelectedKey?: string;
 }) {
   const editionsSorted = isLoading
     ? []
@@ -32,6 +34,7 @@ export default function AutocompleteEdition({
         setSelectedEdition(editions.find((e) => e.id === +editionId)!);
       }}
       isLoading={isLoading}
+      defaultSelectedKey={defaultSelectedKey}
     >
       {editionsSorted.map((edition) => {
         return (

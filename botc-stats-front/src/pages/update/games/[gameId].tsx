@@ -1,11 +1,16 @@
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import Title from "@/components/ui/title";
-import { Edition } from "@/entities/Edition";
-import { Game, getNewEmptyGame } from "@/entities/Game";
-import { Player, getPlayerPseudoString } from "@/entities/Player";
+import {
+  deleteGame,
+  updateGame,
+  useGetGameById,
+} from "@/data/back-api/back-api-game";
+import useApi from "@/data/back-api/useApi";
+import { Game } from "@/entities/Game";
+import { getPlayerPseudoString } from "@/entities/Player";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
-import AuthContext from "@/stores/authContext";
+import NotFoundPage from "@/pages/404";
 import {
   Button,
   Modal,
@@ -16,187 +21,119 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
-import {
-  deleteGame,
-  getAllEditions,
-  getAllPlayers,
-  getGameById,
-  updateGame,
-} from "../../../../data/back-api/back-api";
-import classes from "../index.module.css";
+import { useEffect, useState } from "react";
+import { mutate } from "swr";
 
 export default function UpdateGamePage() {
   const router = useRouter();
   const gameId: number = Number(router.query.gameId);
 
-  const [disableBtnDelete, setDisableBtnDelete] = useState(false);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const [gameCreateEditKey, setGameCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<></>);
-  const [game, setGame] = useState<Game>(getNewEmptyGame());
-
-  const [allEditions, setAllEditions] = useState<Edition[]>([]);
-  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
-
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
+  const { data: gameData, isLoading } = useGetGameById(gameId);
+  const [game, setGame] = useState<Game>(gameData);
+  const [oldGame, setOldGame] = useState<Game>(gameData);
+  const api = useApi();
 
   useEffect(() => {
-    if (gameId === undefined || isNaN(gameId)) return;
+    setGame(gameData);
+    setOldGame(gameData);
+  }, [gameData]);
 
-    getGameById(gameId).then((g) => setGame(g));
-    getAllEditions().then((e) => setAllEditions(e));
-    getAllPlayers().then((p) => setAllPlayers(p));
-  }, [gameId]);
-
-  if (game.id === -1) {
+  if (isLoading || !gameId || !game || !oldGame) {
     return (
       <>
         <Spinner />
+      </>
+    );
+  } else if (gameData.status === 404) {
+    return (
+      <>
+        <NotFoundPage />
       </>
     );
   }
 
   const title = <Title>Modification d{"'"}une partie existante</Title>;
 
-  async function btnUpdateGame() {
-    if (!canUpdateGame()) return;
-
-    if (await updateGame(game, accessToken)) {
-      const g = await getGameById(gameId);
-      setGame(g);
-      setGameCreateEditKey(gameCreateEditKey + 1);
-      updateMessage(false, `La partie a été modifiée correctement.`);
-    } else {
-      //Erreur
-      updateMessage(
-        true,
-        "Une erreur est survenue lors de la modification de la partie."
-      );
-    }
-  }
-
-  function updateMessage(isError: boolean, message: string) {
-    if (isError) {
-      setMessage(
-        <span className={classes.red + " flex justify-center"}>
-          <XOctagon className={classes.icon} />
-          {message}
-        </span>
-      );
-    } else {
-      setMessage(
-        <span className={classes.green + " flex justify-center"}>
-          <Check className={classes.icon} />
-          {message}
-        </span>
-      );
-    }
-  }
-
   function canUpdateGame() {
-    if (game.edition.id === -1) {
-      updateMessage(true, "Un module est obligatoire.");
+    if (
+      !game ||
+      game.edition.id === -1 ||
+      game.storyTeller.id === -1 ||
+      dateToString(game.datePlayed) === "" ||
+      game.winningAlignment === Alignment.None
+    )
       return false;
-    }
-    if (game.storyTeller.id === -1) {
-      updateMessage(true, "Un conteur est obligatoire.");
-      return false;
-    }
-    if (dateToString(game.datePlayed) === "") {
-      updateMessage(
-        true,
-        "La date à laquelle la partie a été jouée est obligatoire."
-      );
-      return false;
-    }
-    if (game.winningAlignment === Alignment.None) {
-      updateMessage(true, "L'alignement gagnant est obligatoire.");
-      return false;
-    }
-
     return true;
   }
 
-  function closePopupDelete() {
-    setPopupDeleteVisible(false);
+  async function btnUpdateGame() {
+    if (!canUpdateGame()) return;
+
+    if (await updateGame(game, api)) {
+      mutateRoutes();
+    }
   }
 
   async function btnDeletePressed() {
-    setDisableBtnDelete(true);
-    setTimeout(async () => {
-      if (await deleteGame(game.id, accessToken)) {
-        updateMessage(false, "La partie a été supprimé correctement.");
-        closePopupDelete();
-        setTimeout(() => {
-          router.push(
-            router.asPath.substring(0, router.asPath.lastIndexOf("/"))
-          );
-        }, 1500);
-      } else {
-        updateMessage(
-          true,
-          "Une erreur s'est produite pendant la suppression de la partie."
-        );
-      }
+    if (await deleteGame(game.id, api)) {
+      mutateRoutes();
 
-      setDisableBtnDelete(false);
-    }, 0);
+      setTimeout(() => {
+        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+      }, 0);
+    }
   }
 
-  const popup = (
-    <Modal
-      backdrop="blur"
-      isOpen={popupDeleteVisible}
-      onClose={closePopupDelete}
-    >
-      <ModalContent>
-        <ModalHeader>
-          <span id="modal-title">
-            Voulez-vous vraiment supprimer la partie du{" "}
-            <span>{dateToString(game.datePlayed)}</span> contée par{" '"}
-            <span>
-              {game.storyTeller.name}
-              {getPlayerPseudoString(game.storyTeller.pseudo)}
-            </span>
-            {"' "}?
-          </span>
-        </ModalHeader>
-        <ModalFooter>
-          <Button variant="flat" color="danger" onPress={btnDeletePressed}>
-            Confirmer
-          </Button>
-          <Button onPress={closePopupDelete}>Annuler</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
+  function mutateRoutes() {
+    mutate(`${api.apiUrl}/Games`);
+    mutate(`${api.apiUrl}/Games/${game.id}`);
+  }
 
   return (
     <>
       <GameCreateEdit
-        key={gameCreateEditKey}
         title={title}
         game={game}
         setGame={setGame}
-        message={message}
         btnPressed={btnUpdateGame}
         btnText="Modifier la partie"
-        allEditions={allEditions}
-        allPlayers={allPlayers}
       />
 
-      <Button
-        color="danger"
-        onPress={() => setPopupDeleteVisible(true)}
-        disabled={disableBtnDelete}
-      >
+      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
         Supprimer la partie
       </Button>
+
       <Spacer y={3} />
-      {popup}
+
+      <Modal
+        backdrop="blur"
+        isOpen={popupDeleteVisible}
+        onClose={() => setPopupDeleteVisible(false)}
+      >
+        <ModalContent>
+          <ModalHeader>
+            <span id="modal-title">
+              Voulez-vous vraiment supprimer la partie du{" "}
+              <span>{dateToString(game.datePlayed)}</span> contée par{" '"}
+              <span>
+                {game.storyTeller.name}
+                {getPlayerPseudoString(game.storyTeller.pseudo)}
+              </span>
+              {"' "}?
+            </span>
+          </ModalHeader>
+          <ModalFooter>
+            <Button variant="flat" color="danger" onPress={btnDeletePressed}>
+              Confirmer
+            </Button>
+            <Button onPress={() => setPopupDeleteVisible(false)}>
+              Annuler
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

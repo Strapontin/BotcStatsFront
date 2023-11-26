@@ -1,4 +1,4 @@
-import ListBoxPlayerRolesComponent from "@/components/list-stats/ListBoxPlayerRolesComponent";
+import ListboxPlayerRolesComponent from "@/components/list-stats/ListboxPlayerRolesComponent";
 import ListboxRolesComponent from "@/components/list-stats/ListboxRolesComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
@@ -101,7 +101,7 @@ export default function GamePage() {
           aria-label="Liste des rôles des joueurs"
           title="Liste des rôles des joueurs"
         >
-          <ListBoxPlayerRolesComponent playerRoles={game.playerRoles} />
+          <ListboxPlayerRolesComponent playerRoles={game.playerRoles} />
         </AccordionItem>
         <AccordionItem
           key="2"

@@ -1,23 +1,17 @@
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
+import { useGetGames } from "@/data/back-api/back-api-game";
 import { Game } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { getAllGames } from "../../../../data/back-api/back-api";
 
 export default function UpdateGamesPage() {
-  const [games, setGames] = useState<Game[]>([]);
   const title = <Title>Modifier une partie</Title>;
 
-  useEffect(() => {
-    getAllGames().then((g) => {
-      setGames(g);
-    });
-  }, []);
+  const { data: games, isLoading } = useGetGames();
 
-  if (games.length === 0) {
+  if (isLoading) {
     return (
       <>
         {title}
@@ -30,7 +24,6 @@ export default function UpdateGamesPage() {
   return (
     <>
       {title}
-      <Spacer y={5} />
       <Listbox aria-label="Parties jouées">
         {games.map((game: Game) => (
           <ListboxItem

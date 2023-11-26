@@ -1,7 +1,7 @@
 import { Player, getNewEmptyPlayer } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role, getNewEmptyRole } from "@/entities/Role";
-import ListBoxPlayerRolesComponent from "../list-stats/ListBoxPlayerRolesComponent";
+import ListboxPlayerRolesComponent from "../list-stats/ListboxPlayerRolesComponent";
 import AutocompletePlayer from "../player-selector/AutocompletePlayer";
 import AutocompleteRoles from "../roles-selector/AutocompleteRoles";
 import { useEffect, useState } from "react";
@@ -42,7 +42,7 @@ export default function PlayerRolesSelector({
 
   return (
     <>
-      <ListBoxPlayerRolesComponent
+      <ListboxPlayerRolesComponent
         playerRoles={selectedPlayerRoles}
         setSelectedPlayerRoles={setSelectedPlayerRoles}
         showBtnDelete

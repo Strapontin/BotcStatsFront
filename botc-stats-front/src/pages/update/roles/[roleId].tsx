@@ -28,8 +28,8 @@ export default function UpdateRolePage() {
 
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const { data: roles } = useGetRoles();
   const { data: roleData, isLoading } = useGetRoleById(roleId);
+  const { data: roles } = useGetRoles();
   const [role, setRole] = useState<Role>(roleData);
   const [oldRole, setOldRole] = useState<Role>(roleData);
   const api = useApi();
@@ -59,7 +59,7 @@ export default function UpdateRolePage() {
     if (
       !role ||
       role.name === "" ||
-      roles?.some((p: Role) => p.id !== role.id && p.name === role.name)
+      roles.some((p: Role) => p.id !== role.id && p.name === role.name)
     )
       return false;
     return true;

@@ -31,7 +31,6 @@ export default function UpdatePlayersPage() {
   return (
     <>
       {title}
-      <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}
