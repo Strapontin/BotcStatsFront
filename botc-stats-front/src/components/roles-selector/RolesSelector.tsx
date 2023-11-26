@@ -10,7 +10,7 @@ import {
   Avatar,
   Spacer,
 } from "@nextui-org/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
 import { getRoleIconPath } from "../ui/image-role-name";
@@ -22,6 +22,15 @@ export default function RolesSelector(props: {
   roles: Role[];
 }) {
   const rolesGroupedByCharacterType = groupRolesByCharacterType(props.roles);
+  const [autocompleteKey, setAutocompleteKey] = useState(1);
+
+  function setRoleSelected(roleId: number) {
+    const roleSelected = props.roles.find((r) => r.id === roleId);
+
+    props.setSelectedRoles([...props.selectedRoles, roleSelected]);
+
+    setAutocompleteKey((oldVal) => oldVal + 1);
+  }
 
   function getCssClassesFromCharacterType(characterType: CharacterType): {
     headerClass: string;
@@ -92,12 +101,15 @@ export default function RolesSelector(props: {
       </div>
       {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
       <Autocomplete
+        key={autocompleteKey}
         label="Rôles du module"
         variant="bordered"
         placeholder="Sélectionner un rôle"
         scrollShadowProps={{
           visibility: "none",
         }}
+        onSelectionChange={(roleId) => setRoleSelected(+roleId)}
+        disabledKeys={props.selectedRoles.map((sr) => sr.id + "")}
       >
         {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
           const cssClasses = getCssClassesFromCharacterType(+characterType);

@@ -3,6 +3,7 @@ import RoleColored from "./role-colored";
 import { CharacterType } from "@/entities/enums/characterType";
 import { removeDiacritics } from "../../helper/string";
 import classes from "./image-role-name.module.scss";
+import { useState } from "react";
 
 export default function ImageIconName(props: {
   name: string;
@@ -11,10 +12,24 @@ export default function ImageIconName(props: {
 }) {
   const imgPath = getRoleIconPath(props.name);
 
+  const [hideImage, setHideImage] = useState(false);
+
+  const image = !hideImage && (
+    <Image
+      width={50}
+      height={50}
+      src={imgPath}
+      alt={props.name}
+      onError={() => {
+        setHideImage(true);
+      }}
+    />
+  );
+
   if (props.setNameAtLeftOfImage) {
     return (
       <div className={classes["image-role-container"]}>
-        <Image width={50} height={50} src={imgPath} alt={props.name} />
+        {image}
         <RoleColored name={props.name} characterType={props.characterType} />
       </div>
     );
@@ -22,7 +37,7 @@ export default function ImageIconName(props: {
     return (
       <div className={classes["image-role-container"]}>
         <RoleColored name={props.name} characterType={props.characterType} />
-        <Image width={50} height={50} src={imgPath} alt={props.name} />
+        {image}
       </div>
     );
   }
