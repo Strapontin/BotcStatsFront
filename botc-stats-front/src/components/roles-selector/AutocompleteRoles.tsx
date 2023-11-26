@@ -1,16 +1,14 @@
 import { Role, groupRolesByCharacterType } from "@/entities/Role";
+import { characterTypeList } from "@/entities/enums/characterType";
 import {
-    characterTypeList
-} from "@/entities/enums/characterType";
-import {
-    Autocomplete,
-    AutocompleteItem,
-    AutocompleteSection
+  Autocomplete,
+  AutocompleteItem,
+  AutocompleteSection,
 } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
 import {
-    getAvatarRole,
-    getCssClassesFromCharacterType
+  getAvatarRole,
+  getCssClassesFromCharacterType,
 } from "../ui/image-role-name";
 
 export default function AutocompleteRoles({
