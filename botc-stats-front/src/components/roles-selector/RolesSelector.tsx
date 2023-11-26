@@ -21,6 +21,7 @@ export default function RolesSelector({
       <ListboxRolesComponent
         selectedRoles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
+        showDelete
       />
       {selectedRoles.some((r) => r) && <Spacer y={1} />}
       <AutocompleteRoles
@@ -29,6 +30,7 @@ export default function RolesSelector({
         setSelectedRoles={setSelectedRoles}
         autocompleteLabel={autocompleteLabel}
         isLoading={isLoadingRoles}
+        multiple
       />
     </>
   );

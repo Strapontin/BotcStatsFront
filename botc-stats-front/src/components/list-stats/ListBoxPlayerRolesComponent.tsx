@@ -1,8 +1,9 @@
 import { PlayerRole } from "@/entities/PlayerRole";
+import { Alignment } from "@/entities/enums/alignment";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
+import { X } from "react-feather";
 import IconAlignment from "../ui/icon-alignment";
 import ImageIconName from "../ui/image-role-name";
-import { X } from "react-feather";
 
 export default function ListBoxPlayerRolesComponent({
   playerRoles,
@@ -13,19 +14,21 @@ export default function ListBoxPlayerRolesComponent({
   setSelectedPlayerRoles?: any;
   showBtnDelete?: boolean;
 }) {
-  function onClickRemovePlayerRole(
-    playerId: number,
-    roleId: number,
-    index: number
-  ) {
-    setSelectedPlayerRoles(
-      playerRoles.filter(
-        (playerRole, i) =>
-          playerRole.player.id !== playerId &&
-          playerRole.role.id !== roleId &&
-          index !== i
-      )
-    );
+  function onClickRemovePlayerRole(playerRole: PlayerRole) {
+    setSelectedPlayerRoles(playerRoles.filter((pr) => pr !== playerRole));
+  }
+
+  function switchAlignment(playerRole: PlayerRole) {
+    const newPlayerRoles = playerRoles.map((pr) => {
+      if (pr === playerRole) {
+        pr.finalAlignment =
+          pr.finalAlignment === Alignment.Good
+            ? Alignment.Evil
+            : Alignment.Good;
+      }
+      return pr;
+    });
+    setSelectedPlayerRoles(newPlayerRoles);
   }
 
   return (
@@ -47,13 +50,7 @@ export default function ListBoxPlayerRolesComponent({
           endContent={
             showBtnDelete ? (
               <Button
-                onClick={() =>
-                  onClickRemovePlayerRole(
-                    playerRole.player.id,
-                    playerRole.role.id,
-                    index
-                  )
-                }
+                onClick={() => onClickRemovePlayerRole(playerRole)}
                 isIconOnly
                 color="danger"
                 aria-label="delete"
@@ -71,10 +68,16 @@ export default function ListBoxPlayerRolesComponent({
               name={playerRole.role.name}
               characterType={playerRole.role.characterType}
             />
-            <IconAlignment
-              editable={true}
-              alignment={playerRole.finalAlignment}
-            />
+            <Button
+              className="min-w-0 p-0"
+              variant="light"
+              onClick={() => switchAlignment(playerRole)}
+            >
+              <IconAlignment
+                editable={true}
+                alignment={playerRole.finalAlignment}
+              />
+            </Button>
           </div>
         </ListboxItem>
       ))}
