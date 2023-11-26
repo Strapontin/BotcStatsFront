@@ -1,49 +1,19 @@
 import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
 import Title from "@/components/ui/title";
+import { createNewRole, useGetRoles } from "@/data/back-api/back-api-role";
+import useApi from "@/data/back-api/useApi";
 import { Role, getNewEmptyRole } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import AuthContext from "@/stores/authContext";
-import { useContext, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
-import { createNewRole, getAllRoles } from "../../../../data/back-api/back-api";
-import classes from "../index.module.css";
+import { useState } from "react";
+import { mutate } from "swr";
 
 export default function CreateRole() {
   const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<></>);
   const [role, setRole] = useState<Role>(getNewEmptyRole());
-  const [roles, setRoles] = useState<Role[]>([]);
 
-  useEffect(() => {
-    getAllRoles().then((r) => setRoles(r));
-  }, []);
-
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  // Updates message on component refreshes
-  useEffect(() => {
-    if (
-      role.name === "" &&
-      role.characterType === CharacterType.None &&
-      role.alignment === Alignment.None
-    )
-      return;
-
-    if (toLowerRemoveDiacritics(role.name) === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-    } else if (
-      roles.filter(
-        (r) =>
-          toLowerRemoveDiacritics(r.name) === toLowerRemoveDiacritics(role.name)
-      ).length !== 0
-    ) {
-      updateMessage(true, "Un module avec ce nom existe déjà.");
-    } else {
-      setMessage(<></>);
-    }
-  }, [role, roles]);
+  const { data: roles } = useGetRoles();
+  const api = useApi();
 
   const title = <Title>Création d{"'"}un nouveau rôle</Title>;
 
@@ -56,43 +26,11 @@ export default function CreateRole() {
     )
       return;
 
-    if (
-      await createNewRole(
-        role.name,
-        role.characterType,
-        role.alignment,
-        accessToken
-      )
-    ) {
-      roles.push(role);
+    if (await createNewRole(role, api)) {
+      mutate(`${api.apiUrl}/Roles`);
       setRole(getNewEmptyRole());
 
-      updateMessage(false, `Rôle "${role.name}" enregistré correctement.`);
       setRoleCreateEditKey(roleCreateEditKey + 1);
-    } else {
-      //Erreur
-      updateMessage(
-        true,
-        "Une erreur est survenue lors de l'enregistrement du rôle."
-      );
-    }
-  }
-
-  function updateMessage(isError: boolean, message: string) {
-    if (isError) {
-      setMessage(
-        <span className={classes.red + " flex justify-center"}>
-          <XOctagon className={classes.icon} />
-          {message}
-        </span>
-      );
-    } else {
-      setMessage(
-        <span className={classes.green + " flex justify-center"}>
-          <Check className={classes.icon} />
-          {message}
-        </span>
-      );
     }
   }
 
@@ -102,7 +40,7 @@ export default function CreateRole() {
       title={title}
       role={role}
       setRole={setRole}
-      message={message}
+      roles={roles}
       btnPressed={createRole}
       btnText="Créer un rôle"
     />

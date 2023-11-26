@@ -21,19 +21,17 @@ export default function DropdownCharacterType(props: {
     props.defaultText
   );
 
-  // const [characterTypeSelected, setCharacterTypeSelected] =
-  //   useState("Type de personnage");
-
   function selectCharacterType(key: number) {
     props.setCharacterType(key);
-    // setCharacterTypeSelected(characterTypeList()[key].value);
   }
 
   return (
     <>
       <Dropdown type="menu">
         <DropdownTrigger>
-          <Button className="w-full">{characterTypeText}</Button>
+          <Button className="w-full" variant="bordered">
+            {characterTypeText}
+          </Button>
         </DropdownTrigger>
         <DropdownMenu
           aria-label="Static Actions"

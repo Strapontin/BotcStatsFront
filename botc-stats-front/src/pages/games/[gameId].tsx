@@ -3,7 +3,7 @@ import ListboxRolesComponent from "@/components/list-stats/ListboxRolesComponent
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
-import { Game, getNewEmptyGame } from "@/entities/Game";
+import { useGetGameById } from "@/data/back-api/back-api-game";
 import { getPlayerPseudoString } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
@@ -16,28 +16,22 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getGameById } from "../../../data/back-api/back-api";
 
 export default function GamePage() {
   const router = useRouter();
   const gameId: number = Number(router.query.gameId);
-  const [game, setGame] = useState<Game>(getNewEmptyGame());
-  const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
 
-  useEffect(() => {
-    if (!gameId || isNaN(gameId)) return;
+  const { data: game, isLoading } = useGetGameById(gameId);
 
-    getGameById(gameId).then((g) => setGame(g));
-  }, [gameId]);
-
-  if (game.id <= 0) {
+  if (isLoading || !gameId) {
     return (
       <>
         <Spinner />
       </>
     );
   }
+
+  const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
 
   const title = (
     <Title>

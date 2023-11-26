@@ -1,11 +1,9 @@
 import Filter from "@/components/filter/Filter";
-import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
-import useApi from "@/data/back-api/useApi";
 import { Player } from "@/entities/Player";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
+import { stringContainsString } from "@/helper/string";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useState } from "react";
 
 export default function UpdatePlayersPage() {
@@ -26,12 +24,8 @@ export default function UpdatePlayersPage() {
 
   const playersFiltered = players.filter(
     (player: Player) =>
-      toLowerRemoveDiacritics(player.name).includes(
-        toLowerRemoveDiacritics(filter)
-      ) ||
-      toLowerRemoveDiacritics(player.pseudo).includes(
-        toLowerRemoveDiacritics(filter)
-      )
+      stringContainsString(player.name, filter) ||
+      stringContainsString(player.pseudo, filter)
   );
 
   return (

@@ -1,33 +1,30 @@
 import { Edition } from "@/entities/Edition";
+import useSWR from "swr";
+import useApi, { Api } from "./useApi";
 
-export async function getAllEditions(apiUrl: string) {
-  const response = await fetch(`${apiUrl}/Editions`);
-  const data = await response.json();
-  const editions: Edition[] = [];
+const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-  for (const key in data) {
-    editions.push(data[key]);
-  }
+export function useGetEditions() {
+  const { apiUrl } = useApi();
+  const { data, error, isLoading } = useSWR(`${apiUrl}/Editions`, fetcher);
 
-  console.log("getAllEditions");
-  return editions;
+  return { data, error, isLoading };
 }
 
-export async function getEditionById(apiUrl: string, id: number) {
-  if (isNaN(id)) return;
+export function useGetEditionById(editionId: number) {
+  const { apiUrl } = useApi();
 
-  const response = await fetch(`${apiUrl}/Editions/${id}`);
-  const edition = await response.json();
+  const { data, error, isLoading } = useSWR(
+    editionId && !isNaN(editionId) ? `${apiUrl}/Editions/${editionId}` : null,
+    fetcher
+  );
 
-  console.log("getEditionById");
-  return edition;
+  return { data, error, isLoading };
 }
 
 export async function createNewEdition(
-  apiUrl: string,
-  editionName: string,
-  rolesId: number[],
-  accessToken: string
+  edition: Edition,
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions`, {
     method: "POST",
@@ -40,14 +37,16 @@ export async function createNewEdition(
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
-    body: JSON.stringify({ editionName, rolesId }),
+    body: JSON.stringify({
+      editionName: edition.name,
+      rolesId: edition.roles.map((r) => r.id),
+    }),
   });
 
   console.log("createNewEdition");
 
   if (!response.ok) {
-    const res = await response.json();
-    console.log(res);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -55,11 +54,8 @@ export async function createNewEdition(
 }
 
 export async function updateEdition(
-  apiUrl: string,
-  editionId: number,
-  editionName: string,
-  rolesId: number[],
-  accessToken: string
+  edition: Edition,
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions`, {
     method: "PUT",
@@ -73,16 +69,16 @@ export async function updateEdition(
     redirect: "follow",
     referrerPolicy: "no-referrer",
     body: JSON.stringify({
-      editionId,
-      editionName,
-      rolesId,
+      editionId: edition.id,
+      editionName: edition.name,
+      rolesId: edition.roles,
     }),
   });
 
   console.log("updateEdition");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -90,9 +86,8 @@ export async function updateEdition(
 }
 
 export async function deleteEdition(
-  apiUrl: string,
   editionId: number,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Editions/${editionId}`, {
     method: "DELETE",
@@ -110,7 +105,7 @@ export async function deleteEdition(
   console.log("deleteEdition");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 

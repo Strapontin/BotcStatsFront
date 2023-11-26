@@ -1,6 +1,5 @@
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
 import Title from "@/components/ui/title";
-import { CreateNewGame } from "@/data/back-api/back-api-game";
 import { Edition } from "@/entities/Edition";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { Player } from "@/entities/Player";

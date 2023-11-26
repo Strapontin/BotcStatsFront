@@ -14,3 +14,12 @@ export function stringsAreEqual(s1: string, s2: string): boolean {
     toLowerRemoveDiacritics(s1) === toLowerRemoveDiacritics(s2)
   );
 }
+
+export function stringContainsString(
+  longString: string,
+  shortString: string
+): boolean {
+  return toLowerRemoveDiacritics(longString).includes(
+    toLowerRemoveDiacritics(shortString)
+  );
+}

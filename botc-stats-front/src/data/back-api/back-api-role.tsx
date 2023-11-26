@@ -1,36 +1,30 @@
 import { Role } from "@/entities/Role";
-import { Alignment } from "@/entities/enums/alignment";
-import { CharacterType } from "@/entities/enums/characterType";
+import useSWR from "swr";
+import useApi, { Api } from "./useApi";
 
-export async function getAllRoles(apiUrl: string) {
-  const response = await fetch(`${apiUrl}/Roles`);
-  const data = await response.json();
-  const roles: Role[] = [];
+const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-  for (const key in data) {
-    roles.push(data[key]);
-  }
+export function useGetRoles() {
+  const { apiUrl } = useApi();
+  const { data, error, isLoading } = useSWR(`${apiUrl}/Roles`, fetcher);
 
-  console.log("getAllRoles");
-  return roles;
+  return { data, error, isLoading };
 }
 
-export async function getRoleById(apiUrl: string, id: number) {
-  if (isNaN(id)) return;
+export function useGetRoleById(roleId: number) {
+  const { apiUrl } = useApi();
 
-  const response = await fetch(`${apiUrl}/Roles/${id}`);
-  const role = await response.json();
+  const { data, error, isLoading } = useSWR(
+    roleId && !isNaN(roleId) ? `${apiUrl}/Roles/${roleId}` : null,
+    fetcher
+  );
 
-  console.log("getRoleById");
-  return role;
+  return { data, error, isLoading };
 }
 
 export async function createNewRole(
-  apiUrl: string,
-  roleName: string,
-  characterType: CharacterType,
-  alignment: Alignment,
-  accessToken: string
+  role: Role,
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Roles`, {
     method: "POST",
@@ -43,14 +37,17 @@ export async function createNewRole(
     },
     redirect: "follow",
     referrerPolicy: "no-referrer",
-    body: JSON.stringify({ roleName, characterType, alignment }),
+    body: JSON.stringify({
+      roleName: role.name,
+      characterType: role.characterType,
+      alignment: role.alignment,
+    }),
   });
 
   console.log("createPlayer");
 
   if (!response.ok) {
-    const res = await response.json();
-    console.log(res);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -58,9 +55,8 @@ export async function createNewRole(
 }
 
 export async function updateRole(
-  apiUrl: string,
   role: Role,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Roles`, {
     method: "PUT",
@@ -84,7 +80,7 @@ export async function updateRole(
   console.log("updateRole");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -92,9 +88,8 @@ export async function updateRole(
 }
 
 export async function deleteRole(
-  apiUrl: string,
   roleId: number,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Roles/${roleId}`, {
     method: "DELETE",
@@ -112,7 +107,7 @@ export async function deleteRole(
   console.log("deleteRole");
 
   if (!response.ok) {
-    console.log(response);
+    console.log("ERROR :", await response.text());
     return false;
   }
 

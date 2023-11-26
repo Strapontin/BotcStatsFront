@@ -9,7 +9,7 @@ export default function RoleCreateEdit(props: {
   title: JSX.Element;
   role: Role;
   setRole: any;
-  message: JSX.Element;
+  roles: Role[];
   btnPressed: any;
   btnText: string;
 }) {
@@ -19,7 +19,20 @@ export default function RoleCreateEdit(props: {
   }
 
   function characterTypeChanged(characterType: CharacterType) {
-    const newRole = { ...props.role, characterType };
+    let alignment = props.role.alignment;
+
+    switch (characterType) {
+      case CharacterType.Townsfolk:
+      case CharacterType.Outsider:
+        alignment = Alignment.Good;
+        break;
+      case CharacterType.Minion:
+      case CharacterType.Demon:
+        alignment = Alignment.Evil;
+        break;
+    }
+
+    const newRole = { ...props.role, characterType, alignment };
     props.setRole(newRole);
   }
 
@@ -29,23 +42,23 @@ export default function RoleCreateEdit(props: {
   }
 
   function canPressButton() {
-    if (props.role.name === "") {
-      return false;
-    }
-    return true;
+    return (
+      props.role.name !== "" &&
+      props.role.characterType !== CharacterType.None &&
+      props.role.alignment !== Alignment.None
+    );
   }
 
   return (
     <>
       {props.title}
-      <Spacer y={2} />
-      {props.message}
-      <Spacer y={2} />
+      <Spacer y={4} />
       <Input
         label="Nom"
         aria-label="Nom"
         value={props.role.name}
         onChange={(event) => roleNameChanged(event.target.value)}
+        isRequired
       />
       <Spacer y={1.5} />
       <DropdownCharacterType
@@ -64,7 +77,7 @@ export default function RoleCreateEdit(props: {
       <Button
         color="success"
         onPress={props.btnPressed}
-        disabled={!canPressButton()}
+        isDisabled={!canPressButton()}
       >
         {props.btnText}
       </Button>
