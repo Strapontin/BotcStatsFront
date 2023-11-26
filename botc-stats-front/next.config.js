@@ -9,5 +9,6 @@ module.exports = {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NODE_TLS_REJECT_UNAUTHORIZED: process.env.NODE_TLS_REJECT_UNAUTHORIZED,
+    NEXT_PUBLIC_TEST: process.env.NEXT_PUBLIC_TEST,
   },
 };

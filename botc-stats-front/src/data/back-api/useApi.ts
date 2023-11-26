@@ -9,5 +9,10 @@ export default function useApi() {
     process.env.NEXT_PUBLIC_BACKEND_URL! ??
     "https://botcstatsback-recette-zdgyxyd7kq-od.a.run.app";
 
+  console.log(
+    process.env.NEXT_PUBLIC_TEST,
+    process.env.NEXT_PUBLIC_BACKEND_URL == null
+  );
+
   return { accessToken, apiUrl };
 }
