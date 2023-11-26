@@ -29,8 +29,8 @@ export default function UpdateEditionPage() {
 
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const { data: editions } = useGetEditions();
   const { data: editionData, isLoading } = useGetEditionById(editionId);
+  const { data: editions } = useGetEditions();
   const { data: roles } = useGetRoles();
   const [edition, setEdition] = useState<Edition>(editionData);
   const [oldEdition, setOldEdition] = useState<Edition>(editionData);
@@ -61,7 +61,7 @@ export default function UpdateEditionPage() {
     if (
       !edition ||
       edition.name === "" ||
-      editions?.some(
+      editions.some(
         (p: Edition) => p.id !== edition.id && p.name === edition.name
       )
     )

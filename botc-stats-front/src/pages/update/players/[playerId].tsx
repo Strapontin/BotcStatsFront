@@ -28,8 +28,8 @@ export default function UpdatePlayerPage() {
 
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const { data: players } = useGetPlayers();
   const { data: playerData, isLoading } = useGetPlayerById(playerId);
+  const { data: players } = useGetPlayers();
   const [player, setPlayer] = useState<Player>(playerData);
   const [oldPlayer, setOldPlayer] = useState<Player>(playerData);
   const api = useApi();
@@ -61,7 +61,7 @@ export default function UpdatePlayerPage() {
     if (
       !player ||
       player.name === "" ||
-      players?.some(
+      players.some(
         (p: Player) =>
           p.id !== player.id &&
           p.name === player.name &&

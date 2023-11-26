@@ -30,7 +30,6 @@ export default function UpdateRolesPage() {
   return (
     <>
       {title}
-      <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}

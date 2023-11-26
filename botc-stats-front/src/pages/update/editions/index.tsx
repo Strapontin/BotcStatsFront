@@ -1,11 +1,10 @@
 import Filter from "@/components/filter/Filter";
-import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { Edition } from "@/entities/Edition";
-import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { stringContainsString } from "@/helper/string";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
+import { useState } from "react";
 
 export default function UpdateEditionsPage() {
   const [filter, setFilter] = useState<string>("");
@@ -30,7 +29,6 @@ export default function UpdateEditionsPage() {
   return (
     <>
       {title}
-      <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}

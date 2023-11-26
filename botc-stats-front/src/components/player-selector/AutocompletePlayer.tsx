@@ -8,12 +8,14 @@ export default function AutocompletePlayer({
   setSelectedPlayer,
   autocompleteLabel,
   autocompletePlaceholder,
+  defaultSelectedKey,
 }: {
   players: Player[];
   isLoading?: boolean;
   setSelectedPlayer: (player: Player) => void;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
+  defaultSelectedKey?: string;
 }) {
   const playersSorted = isLoading
     ? []
@@ -32,6 +34,7 @@ export default function AutocompletePlayer({
         setSelectedPlayer(players.find((e) => e.id === +playerId)!);
       }}
       isLoading={isLoading}
+      defaultSelectedKey={defaultSelectedKey}
     >
       {playersSorted.map((player) => {
         return (

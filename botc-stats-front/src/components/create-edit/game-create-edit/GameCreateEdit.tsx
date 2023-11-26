@@ -17,7 +17,13 @@ import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
 import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
 import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
 
-export default function GameCreateEdit(props: {
+export default function GameCreateEdit({
+  title,
+  game,
+  setGame,
+  btnPressed,
+  btnText,
+}: {
   title: JSX.Element;
   game: Game;
   setGame: any;
@@ -30,53 +36,41 @@ export default function GameCreateEdit(props: {
     data: edition,
     isLoading: isEditionByIdLoading,
   }: { data: Edition; isLoading: boolean } = useGetEditionById(
-    props.game?.edition?.id
+    game?.edition?.id
   );
 
   async function editionSelected(edition: Edition) {
-    const newGame = { ...props.game, edition: edition };
-    props.setGame(newGame);
+    setGame({ ...game, edition: edition });
   }
-
   function storyTellerSelected(storyTeller: Player) {
-    const newGame = { ...props.game, storyTeller: storyTeller };
-    props.setGame(newGame);
+    setGame({ ...game, storyTeller: storyTeller });
   }
-
   function datePlayedSelected(datePlayed: string) {
-    const newGame = { ...props.game, datePlayed: new Date(datePlayed) };
-    props.setGame(newGame);
+    setGame({ ...game, datePlayed: new Date(datePlayed) });
   }
-
   function notesChanged(notes: string) {
-    const newGame = { ...props.game, notes: notes };
-    props.setGame(newGame);
+    setGame({ ...game, notes: notes });
   }
-
   function winningAlignmentChanged(winningAlignment: Alignment) {
-    const newGame = { ...props.game, winningAlignment: winningAlignment };
-    props.setGame(newGame);
+    setGame({ ...game, winningAlignment: winningAlignment });
   }
-
   function selectedPlayerRolesChanged(selectedPlayerRoles: PlayerRole[]) {
-    const newGame = { ...props.game, playerRoles: selectedPlayerRoles };
-    props.setGame(newGame);
+    setGame({ ...game, playerRoles: selectedPlayerRoles });
   }
-
   function selectedDemonBluffsChanged(selectedDemonBluffs: Role[]) {
-    const newGame = { ...props.game, demonBluffs: selectedDemonBluffs };
-    props.setGame(newGame);
+    setGame({ ...game, demonBluffs: selectedDemonBluffs });
   }
 
   return (
     <>
-      {props.title}
+      {title}
       <Spacer y={4} />
       <AutocompleteEdition
         editions={editions}
         isLoading={isEditionsLoading}
         setSelectedEdition={(edition: Edition) => editionSelected(edition)}
         autocompleteLabel="Module"
+        defaultSelectedKey={String(game.edition.id)}
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
@@ -84,6 +78,7 @@ export default function GameCreateEdit(props: {
         isLoading={isPlayersLoading}
         setSelectedPlayer={storyTellerSelected}
         autocompleteLabel="Conteur"
+        defaultSelectedKey={String(game.storyTeller.id)}
       />
       <Spacer y={1.5} />
       <Input
@@ -91,7 +86,7 @@ export default function GameCreateEdit(props: {
         type="date"
         label="Date à laquelle la partie a été jouée"
         aria-label="Date à laquelle la partie a été jouée"
-        value={dateToStringOrderByFormat(props.game.datePlayed)}
+        value={dateToStringOrderByFormat(game.datePlayed)}
         onChange={(event) => datePlayedSelected(event.target.value)}
       />
       <Spacer y={1.5} />
@@ -99,18 +94,18 @@ export default function GameCreateEdit(props: {
         variant="bordered"
         label="Notes"
         aria-label="Notes"
-        value={props.game.notes}
+        value={game.notes}
         onChange={(event) => notesChanged(event.target.value)}
       />
       <Spacer y={1.5} />
       <DropdownAlignment
-        alignment={props.game.winningAlignment}
+        alignment={game.winningAlignment}
         setAlignment={winningAlignmentChanged}
         defaultText="Alignement gagnant"
       />
       <Spacer y={5} />
       <PlayerRolesSelector
-        selectedPlayerRoles={props.game.playerRoles}
+        selectedPlayerRoles={game.playerRoles}
         setSelectedPlayerRoles={selectedPlayerRolesChanged}
         roles={edition?.roles}
         allPlayers={players}
@@ -119,7 +114,7 @@ export default function GameCreateEdit(props: {
       />
       <Spacer y={1.5} />
       <RolesSelector
-        selectedRoles={props.game.demonBluffs}
+        selectedRoles={game.demonBluffs}
         setSelectedRoles={selectedDemonBluffsChanged}
         autocompleteLabel="Demon bluffs"
         roles={edition?.roles}
@@ -128,16 +123,16 @@ export default function GameCreateEdit(props: {
 
       <Button
         color="success"
-        onPress={props.btnPressed}
+        onPress={btnPressed}
         isDisabled={
-          props.game.winningAlignment === Alignment.None ||
-          !props.game.edition ||
-          props.game.edition?.id === -1 ||
-          !props.game.storyTeller ||
-          props.game.storyTeller?.id === -1
+          game.winningAlignment === Alignment.None ||
+          !game.edition ||
+          game.edition?.id === -1 ||
+          !game.storyTeller ||
+          game.storyTeller?.id === -1
         }
       >
-        {props.btnText}
+        {btnText}
       </Button>
       <Spacer y={3} />
     </>

@@ -5,7 +5,7 @@ import { X } from "react-feather";
 import IconAlignment from "../ui/icon-alignment";
 import ImageIconName from "../ui/image-role-name";
 
-export default function ListBoxPlayerRolesComponent({
+export default function ListboxPlayerRolesComponent({
   playerRoles,
   setSelectedPlayerRoles,
   showBtnDelete,
@@ -19,6 +19,8 @@ export default function ListBoxPlayerRolesComponent({
   }
 
   function switchAlignment(playerRole: PlayerRole) {
+    if (!setSelectedPlayerRoles) return;
+    
     const newPlayerRoles = playerRoles.map((pr) => {
       if (pr === playerRole) {
         pr.finalAlignment =
@@ -32,7 +34,7 @@ export default function ListBoxPlayerRolesComponent({
   }
 
   return (
-    <Listbox aria-label="ListBoxPlayerRolesComponent">
+    <Listbox aria-label="ListboxPlayerRolesComponent">
       {playerRoles.map((playerRole: PlayerRole, index) => (
         <ListboxItem
           key={`${playerRole.player.id}-${playerRole.role.id}-${index}`}
@@ -69,9 +71,10 @@ export default function ListBoxPlayerRolesComponent({
               characterType={playerRole.role.characterType}
             />
             <Button
-              className="min-w-0 p-0"
               variant="light"
               onClick={() => switchAlignment(playerRole)}
+              disableRipple={setSelectedPlayerRoles === undefined}
+              isIconOnly
             >
               <IconAlignment
                 editable={true}
