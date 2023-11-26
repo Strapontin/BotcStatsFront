@@ -1,60 +1,51 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
-import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
+import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { Edition } from "@/entities/Edition";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { getAllEditions } from "../../../data/back-api/back-api";
 
 export default function EditionsPage() {
   const [filter, setFilter] = useState<string>("");
-  const [editions, setEditions] = useState<Edition[]>([]);
-  const title = "Liste des modules";
+  const title = <Title>Liste des modules</Title>;
 
-  useEffect(() => {
-    getAllEditions().then((r) => {
-      setEditions(r);
-    });
-  }, []);
+  const { data: editions, isLoading } = useGetEditions();
 
-  if (editions.length === 0) {
+  if (isLoading) {
     return (
       <>
-        <Title>{title}</Title>
+        {title}
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
 
+  const filteredEditions = editions.filter((edition: Edition) =>
+    stringContainsString(edition.name, filter)
+  );
+
   return (
     <>
-      <Title>{title}</Title>
+      {title}
       <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre module"
       />
-      <Container>
-        {editions
-          .filter((edition) =>
-            toLowerRemoveDiacritics(edition.name).includes(
-              toLowerRemoveDiacritics(filter)
-            )
-          )
-          .map((edition) => (
-            <Link
-              key={edition.id}
-              href={`/editions/${edition.id}`}
-              color="text"
-            >
-              <ListItem left={edition.name} />
-            </Link>
-          ))}
-      </Container>
+      <Listbox aria-label="Modules">
+        {filteredEditions.map((edition: Edition) => (
+          <ListboxItem
+            showDivider
+            key={edition.id}
+            href={`/editions/${edition.id}`}
+          >
+            {edition.name}
+          </ListboxItem>
+        ))}
+      </Listbox>
     </>
   );
 }

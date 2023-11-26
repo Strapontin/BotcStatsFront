@@ -1,207 +1,138 @@
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
 import Title from "@/components/ui/title";
-import { Edition, getNewEmptyEdition } from "@/entities/Edition";
-import { Role } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import AuthContext from "@/stores/authContext";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
-import { useRouter } from "next/router";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
 import {
   deleteEdition,
-  getAllEditions,
-  getAllRoles,
-  getEditionById,
   updateEdition,
-} from "../../../../data/back-api/back-api";
-import classes from "../index.module.css";
+  useGetEditionById,
+  useGetEditions,
+} from "@/data/back-api/back-api-edition";
+import { useGetRoles } from "@/data/back-api/back-api-role";
+import useApi from "@/data/back-api/useApi";
+import { Edition } from "@/entities/Edition";
+import NotFoundPage from "@/pages/404";
+import {
+  Button,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { mutate } from "swr";
 
 export default function UpdateEditionPage() {
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
 
-  const [oldEdition, setOldEdition] = useState<Edition>(getNewEmptyEdition());
-  const [disableBtnDelete, setDisableBtnDelete] = useState(false);
-
-  const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
-  const [message, setMessage] = useState(<></>);
-  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
-  const [editions, setEditions] = useState<Edition[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
 
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
+  const { data: editionData, isLoading } = useGetEditionById(editionId);
+  const { data: editions } = useGetEditions();
+  const { data: roles } = useGetRoles();
+  const [edition, setEdition] = useState<Edition>(editionData);
+  const [oldEdition, setOldEdition] = useState<Edition>(editionData);
+  const api = useApi();
 
   useEffect(() => {
-    if (editionId === undefined || isNaN(editionId)) return;
+    setEdition(editionData);
+    setOldEdition(editionData);
+  }, [editionData]);
 
-    getEditionById(editionId).then((e) => {
-      setOldEdition(e);
-      setEdition(e);
-    });
-    getAllEditions().then((e) => setEditions(e));
-    getAllRoles().then((r) => setRoles(r));
-  }, [editionId]);
-
-  const canUpdateEdition = useCallback(() => {
-    if (edition.name === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-      return false;
-    } else if (
-      editions.filter(
-        (e) =>
-          toLowerRemoveDiacritics(e.name) !==
-            toLowerRemoveDiacritics(oldEdition.name) &&
-          toLowerRemoveDiacritics(e.name) ===
-            toLowerRemoveDiacritics(edition.name)
-      ).length !== 0
-    ) {
-      updateMessage(true, "Un module avec ce nom existe déjà.");
-      return false;
-    } else {
-      updateMessage(false, "");
-      return true;
-    }
-  }, [edition, editions, oldEdition]);
-
-  // Updates message on component refreshes
-  useEffect(() => {
-    if (edition.name === "" && edition.roles.length === 0) return;
-
-    canUpdateEdition();
-  }, [edition, canUpdateEdition]);
-
-  if (edition.id === -1) {
+  if (isLoading || !editionId || !edition || !oldEdition) {
     return (
       <>
-        <Loading />
+        <Spinner />
+      </>
+    );
+  } else if (editionData.status === 404) {
+    return (
+      <>
+        <NotFoundPage />
       </>
     );
   }
 
   const title = <Title>Modification du module {`'${oldEdition.name}'`}</Title>;
 
+  function canUpdateEdition() {
+    if (
+      !edition ||
+      edition.name === "" ||
+      editions.some(
+        (p: Edition) => p.id !== edition.id && p.name === edition.name
+      )
+    )
+      return false;
+    return true;
+  }
+
   async function btnUpdateEdition() {
     if (!canUpdateEdition()) return;
 
-    if (
-      await updateEdition(edition.id, edition.name, edition.roles, accessToken)
-    ) {
-      const e = await getEditionById(editionId);
-      setEditions([...editions, edition]);
-      setEdition(e);
-      setOldEdition(e);
-      setEditionCreateEditKey(editionCreateEditKey + 1);
-      setTimeout(
-        () =>
-          updateMessage(
-            false,
-            `Le module '${edition.name}' a été modifié correctement.`
-          ),
-        50
-      );
-    } else {
-      //Erreur
-      updateMessage(
-        true,
-        "Une erreur est survenue lors de la modification du module."
-      );
+    if (await updateEdition(edition, api)) {
+      mutateRoutes();
     }
-  }
-
-  function updateMessage(isError: boolean, message: string) {
-    if (message === "") {
-      setMessage(<></>);
-    } else if (isError) {
-      setMessage(
-        <Text span className={classes.red}>
-          <XOctagon className={classes.icon} />
-          {message}
-        </Text>
-      );
-    } else {
-      setMessage(
-        <Text span className={classes.green}>
-          <Check className={classes.icon} />
-          {message}
-        </Text>
-      );
-    }
-  }
-
-  function closePopupDelete() {
-    setPopupDeleteVisible(false);
   }
 
   async function btnDeletePressed() {
-    setDisableBtnDelete(true);
-    setTimeout(async () => {
-      if (await deleteEdition(oldEdition.id, accessToken)) {
-        updateMessage(false, "Le module a été supprimé correctement.");
-        closePopupDelete();
-        setTimeout(() => {
-          router.push(
-            router.asPath.substring(0, router.asPath.lastIndexOf("/"))
-          );
-        }, 1500);
-      } else {
-        updateMessage(
-          true,
-          "Une erreur s'est produite pendant la suppression du module."
-        );
-      }
+    if (await deleteEdition(oldEdition.id, api)) {
+      mutateRoutes();
 
-      setDisableBtnDelete(false);
-    }, 0);
+      setTimeout(() => {
+        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+      }, 0);
+    }
   }
 
-  const popup = (
-    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
-      <Modal.Header>
-        <Text id="modal-title" size={22}>
-          Voulez-vous vraiment supprimer le module :{" '"}
-          <Text b size={22}>
-            {oldEdition.name}
-          </Text>
-          {"' "}?
-        </Text>
-      </Modal.Header>
-      <Modal.Footer css={{ justifyContent: "space-around" }}>
-        <Button auto flat color="error" onPress={btnDeletePressed}>
-          Confirmer
-        </Button>
-        <Button auto onPress={closePopupDelete}>
-          Annuler
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
+  function mutateRoutes() {
+    mutate(`${api.apiUrl}/Editions`);
+    mutate(`${api.apiUrl}/Editions/${edition.id}`);
+  }
 
   return (
     <>
       <EditionCreateEdit
-        key={editionCreateEditKey}
         title={title}
         edition={edition}
         setEdition={setEdition}
-        message={message}
+        editions={editions}
         btnPressed={btnUpdateEdition}
         btnText="Modifier le module"
         roles={roles}
       />
 
-      <Button
-        shadow
-        ghost
-        color="error"
-        onPress={() => setPopupDeleteVisible(true)}
-        disabled={disableBtnDelete}
-      >
+      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
         Supprimer le module
       </Button>
+
       <Spacer y={3} />
-      {popup}
+
+      <Modal
+        backdrop="blur"
+        isOpen={popupDeleteVisible}
+        onClose={() => setPopupDeleteVisible(false)}
+      >
+        <ModalContent>
+          <ModalHeader>
+            <span id="modal-title">
+              Voulez-vous vraiment supprimer le module :{" '"}
+              <span>{oldEdition.name}</span>
+              {"' "}?
+            </span>
+          </ModalHeader>
+          <ModalFooter>
+            <Button color="danger" onPress={btnDeletePressed}>
+              Confirmer
+            </Button>
+            <Button onPress={() => setPopupDeleteVisible(false)}>
+              Annuler
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

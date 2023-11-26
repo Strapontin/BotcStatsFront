@@ -1,33 +1,34 @@
-import Container from "@/components/list-stats/Container";
-import ListItem from "@/components/list-stats/ListItem";
-import ListItemRole from "@/components/list-stats/ListItemRole";
-import ListItemTwoValues from "@/components/list-stats/ListItemTwoValues";
+import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
+import { useGetPlayerById } from "@/data/back-api/back-api-player";
+import { getPlayerPseudoString } from "@/entities/Player";
+import { Role } from "@/entities/Role";
 import {
-  Player,
-  getNewEmptyPlayer,
-  getPlayerPseudoString,
-} from "@/entities/Player";
-import { Collapse, Loading } from "@nextui-org/react";
+  Accordion,
+  AccordionItem,
+  Listbox,
+  ListboxItem,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getPlayerById } from "../../../data/back-api/back-api";
+import NotFoundPage from "../404";
 
 export default function PlayerPage() {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
-  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
-  useEffect(() => {
-    if (!playerId || isNaN(playerId)) return;
+  const { data: player, isLoading } = useGetPlayerById(playerId);
 
-    getPlayerById(playerId).then((p) => setPlayer(p));
-  }, [playerId]);
-
-  if (player.id < 0) {
+  if (isLoading || !playerId) {
     return (
       <>
-        <Loading />
+        <Spinner />
+      </>
+    );
+  } else if (player.status === 404) {
+    return (
+      <>
+        <NotFoundPage />
       </>
     );
   }
@@ -39,59 +40,75 @@ export default function PlayerPage() {
     </Title>
   );
 
+  const classNamesListBoxItem = {
+    title: "text-left font-bold",
+  };
+
   const playerComponent = player ? (
-    <Collapse expanded title="Détails généraux">
-      <Container>
-        <ListItem left="Parties jouées" value={player.nbGamesPlayed} />
-        <ListItemTwoValues
-          key1="Gentil"
-          key2="Maléfique"
-          value1={player.nbGamesGood}
-          value2={player.nbGamesEvil}
-          classKey1="townsfolk"
-          classKey2="red"
-          classValue1="townsfolk"
-          classValue2="red"
-        />
-        <ListItemTwoValues
-          key1="Victoires"
-          key2="Défaites"
-          value1={player.nbGamesWon}
-          value2={player.nbGamesLost}
-          classKey1="green"
-          classKey2="red"
-          classValue1="green"
-          classValue2="red"
-        />
-      </Container>
-    </Collapse>
+    <AccordionItem
+      key="1"
+      aria-label="Détails généraux"
+      title="Détails généraux"
+    >
+      <Listbox aria-label="Détails généraux" variant="light">
+        <ListboxItem
+          key={1}
+          endContent={player.nbGamesPlayed}
+          classNames={classNamesListBoxItem}
+          showDivider
+        >
+          Parties jouées
+        </ListboxItem>
+        <ListboxItem
+          key={2}
+          endContent={`${player.nbGamesGood} | ${player.nbGamesEvil}`}
+          classNames={classNamesListBoxItem}
+          showDivider
+        >
+          Gentil | Maléfique
+        </ListboxItem>
+        <ListboxItem
+          key={3}
+          endContent={`${player.nbGamesWon} | ${player.nbGamesLost}`}
+          classNames={classNamesListBoxItem}
+        >
+          Victoires | Défaites
+        </ListboxItem>
+      </Listbox>
+    </AccordionItem>
   ) : (
     <></>
   );
 
   const detailsRolesPlayed = (
-    <Collapse expanded title="Détails des rôles joués">
-      <Container>
-        {player.timesPlayedRole.map((tpr) => (
-          <ListItemRole
-            key={tpr.id}
-            id={tpr.id}
-            image={tpr.name}
-            characterType={tpr.characterType}
-            nbWins={tpr.timesWonByPlayer}
-            nbLoses={tpr.timesLostByPlayer}
-            nbGamesPlayed={tpr.timesPlayedByPlayer}
-          />
+    <AccordionItem
+      key="2"
+      aria-label="Détails des rôles joués"
+      title="Détails des rôles joués"
+    >
+      <Listbox aria-label="Rôles sélectionnés">
+        {player.timesPlayedRole.map((role: Role) => (
+          <ListboxItem
+            key={role.id}
+            // href={`/roles/${role.id}`} //TODO when roles details are implemented
+            startContent={getAvatarRole(role)}
+            endContent={`${role.timesWonByPlayer} | ${role.timesLostByPlayer} | ${role.timesPlayedByPlayer}`}
+            classNames={classNamesListBoxItem}
+          >
+            {role.name}
+          </ListboxItem>
         ))}
-      </Container>
-    </Collapse>
+      </Listbox>
+    </AccordionItem>
   );
 
   return (
     <>
       {title}
-      <Collapse.Group css={{ w: "100%" }}>{playerComponent}</Collapse.Group>
-      <Collapse.Group css={{ w: "100%" }}>{detailsRolesPlayed}</Collapse.Group>
+      <Accordion selectionMode={"multiple"} defaultExpandedKeys={["1", "2"]}>
+        {playerComponent}
+        {detailsRolesPlayed}
+      </Accordion>
     </>
   );
 }

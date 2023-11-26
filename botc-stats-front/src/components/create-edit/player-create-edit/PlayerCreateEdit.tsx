@@ -1,66 +1,82 @@
-import { Player } from "@/entities/Player";
-import { Button, Container, Input, Spacer } from "@nextui-org/react";
+import { Player, getPlayerFullName } from "@/entities/Player";
+import { stringsAreEqual } from "@/helper/string";
+import { Button, Input, Spacer } from "@nextui-org/react";
 
-export default function PlayerCreateEdit(props: {
+export default function PlayerCreateEdit({
+  title,
+  player,
+  setPlayer,
+  players,
+  btnPressed,
+  btnText,
+}: {
   title: JSX.Element;
   player: Player;
   setPlayer: any;
-  message: JSX.Element;
+  players: Player[];
   btnPressed: any;
   btnText: string;
 }) {
+  const inputsAreInvalid = players?.some(
+    (p) =>
+      p.id !== player.id &&
+      stringsAreEqual(p.name, player.name) &&
+      stringsAreEqual(p.pseudo, player.pseudo)
+  );
+
   function playerNameChanged(playerName: string) {
-    const newPlayer = { ...props.player, name: playerName };
-    props.setPlayer(newPlayer);
+    const newPlayer = { ...player, name: playerName };
+    setPlayer(newPlayer);
   }
 
   function pseudoChanged(pseudo: string) {
-    const newPlayer = { ...props.player, pseudo };
-    props.setPlayer(newPlayer);
+    const newPlayer = { ...player, pseudo };
+    setPlayer(newPlayer);
   }
 
-  function canPressButton() {
-    if (props.player.name === "") {
-      return false;
-    }
-    return true;
+  function getExistingPlayerFullName() {
+    const playerFound = players.find(
+      (p) =>
+        stringsAreEqual(p.name, player.name) &&
+        stringsAreEqual(p.pseudo, player.pseudo)
+    )!;
+
+    return getPlayerFullName(playerFound);
   }
 
   return (
     <>
-      {props.title}
+      {title}
+      <Spacer y={4} />
+      <Input
+        label="Nom"
+        aria-label="Nom"
+        value={player.name}
+        onChange={(event) => playerNameChanged(event.target.value)}
+        isRequired
+        isInvalid={inputsAreInvalid}
+      />
       <Spacer y={2} />
-      {props.message}
-      <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
-        <Input
-          clearable
-          bordered
-          labelPlaceholder="Nom"
-          aria-label="Nom"
-          initialValue={props.player.name}
-          onChange={(event) => playerNameChanged(event.target.value)}
-        />
-        <Spacer y={1.75} />
-        <Input
-          clearable
-          bordered
-          labelPlaceholder="pseudo"
-          aria-label="pseudo"
-          initialValue={props.player.pseudo}
-          onChange={(event) => pseudoChanged(event.target.value)}
-        />
-        <Spacer y={3} />
-      </Container>
+      <Input
+        label="Pseudo"
+        aria-label="Pseudo"
+        value={player.pseudo}
+        onChange={(event) => pseudoChanged(event.target.value)}
+        isInvalid={inputsAreInvalid}
+        errorMessage={
+          inputsAreInvalid
+            ? `Le joueur '${getExistingPlayerFullName()}' existe déjà`
+            : ""
+        }
+      />
+      <Spacer y={3} />
 
       <Button
-        shadow
-        ghost
         color="success"
-        onPress={props.btnPressed}
-        disabled={!canPressButton()}
+        onPress={btnPressed}
+        isDisabled={inputsAreInvalid || !player.name}
       >
-        {props.btnText}
+        {btnText}
       </Button>
       <Spacer y={3} />
     </>

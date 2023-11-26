@@ -1,64 +1,57 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
-import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
+import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player } from "@/entities/Player";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { getAllPlayers } from "../../../../data/back-api/back-api";
+import { stringContainsString } from "@/helper/string";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
+import { useState } from "react";
 
 export default function UpdatePlayersPage() {
   const [filter, setFilter] = useState<string>("");
-  const [players, setPlayers] = useState<Player[]>([]);
   const title = <Title>Modifier un joueur</Title>;
 
-  useEffect(() => {
-    getAllPlayers().then((p) => {
-      setPlayers(p);
-    });
-  }, []);
+  const { data: players, isLoading } = useGetPlayers();
 
-  if (players.length === 0) {
+  if (isLoading) {
     return (
       <>
         {title}
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
 
-  function line(player: Player) {
-    return (
-      <Link key={player.id} href={`/update/players/${player.id}`} color="text">
-        <ListItem left={player.name} subName={player.pseudo}></ListItem>
-      </Link>
-    );
-  }
+  const playersFiltered = players.filter(
+    (player: Player) =>
+      stringContainsString(player.name, filter) ||
+      stringContainsString(player.pseudo, filter)
+  );
 
   return (
     <>
       {title}
-      <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre joueur"
       />
-      <Container>
-        {players
-          .filter(
-            (player) =>
-              toLowerRemoveDiacritics(player.name).includes(
-                toLowerRemoveDiacritics(filter)
-              ) ||
-              toLowerRemoveDiacritics(player.pseudo).includes(
-                toLowerRemoveDiacritics(filter)
-              )
-          )
-          .map((player: Player) => line(player))}
-      </Container>
+      <Listbox items={playersFiltered}>
+        {(player: Player) => (
+          <ListboxItem
+            key={player.id}
+            href={`/update/players/${player.id}`}
+            description={player.pseudo}
+            showDivider
+            classNames={{
+              title: "text-left font-bold",
+              description: "w-auto",
+            }}
+          >
+            {player.name}
+          </ListboxItem>
+        )}
+      </Listbox>
     </>
   );
 }

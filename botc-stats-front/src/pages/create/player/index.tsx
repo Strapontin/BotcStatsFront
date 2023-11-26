@@ -1,101 +1,37 @@
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
 import Title from "@/components/ui/title";
-import { Player, getNewEmptyPlayer } from "@/entities/Player";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import AuthContext from "@/stores/authContext";
-import { Text } from "@nextui-org/react";
-import { useContext, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
 import {
   createNewPlayer,
-  getAllPlayers,
-} from "../../../../data/back-api/back-api";
-import classes from "../index.module.css";
+  useGetPlayers,
+} from "@/data/back-api/back-api-player";
+import useApi from "@/data/back-api/useApi";
+import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import { useState } from "react";
+import { mutate } from "swr";
 
 export default function CreatePlayer() {
-  const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<></>);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
-  const [players, setPlayers] = useState<Player[]>([]);
 
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  useEffect(() => {
-    getAllPlayers().then((p) => setPlayers(p));
-  }, []);
-
-  // Updates message on component refreshes
-  useEffect(() => {
-    if (player.name === "" && player.pseudo === "") return;
-
-    if (toLowerRemoveDiacritics(player.name) === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-    } else if (
-      players.filter(
-        (p) =>
-          toLowerRemoveDiacritics(p.name) ===
-            toLowerRemoveDiacritics(player.name) &&
-          toLowerRemoveDiacritics(p.pseudo) ===
-            toLowerRemoveDiacritics(player.pseudo)
-      ).length !== 0
-    ) {
-      const pseudoMsg = player.pseudo ? " (" + player.pseudo + ")" : "";
-      updateMessage(
-        true,
-        `Le joueur "${player.name}${pseudoMsg}" existe déjà.`
-      );
-    } else {
-      setMessage(<></>);
-    }
-  }, [player, players]);
+  const { data: players } = useGetPlayers();
+  const api = useApi();
 
   const title = <Title>Création d{"'"}un nouveau joueur</Title>;
 
   async function createPlayer() {
     if (player.name === "") return;
 
-    if (await createNewPlayer(player, accessToken)) {
+    if (await createNewPlayer(player, api)) {
+      mutate(`${api.apiUrl}/Players`);
       setPlayer(getNewEmptyPlayer());
-
-      updateMessage(
-        false,
-        `Le joueur "${player.name}" enregistré correctement.`
-      );
-      setPlayerCreateEditKey(playerCreateEditKey + 1);
-    } else {
-      //Erreur
-      updateMessage(
-        true,
-        "Une erreur est survenue lors de l'enregistrement du joueur."
-      );
-    }
-  }
-
-  function updateMessage(isError: boolean, message: string) {
-    if (isError) {
-      setMessage(
-        <Text span className={classes.red}>
-          <XOctagon className={classes.icon} />
-          {message}
-        </Text>
-      );
-    } else {
-      setMessage(
-        <Text span className={classes.green}>
-          <Check className={classes.icon} />
-          {message}
-        </Text>
-      );
     }
   }
 
   return (
     <PlayerCreateEdit
-      key={playerCreateEditKey}
       title={title}
       player={player}
       setPlayer={setPlayer}
-      message={message}
+      players={players}
       btnPressed={createPlayer}
       btnText="Créer un joueur"
     />

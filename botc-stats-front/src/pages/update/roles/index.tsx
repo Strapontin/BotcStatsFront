@@ -1,63 +1,44 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import Title from "@/components/ui/title";
+import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
+import { Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { getAllRoles } from "../../../../data/back-api/back-api";
 
 export default function UpdateRolesPage() {
   const [filter, setFilter] = useState<string>("");
-  const [roles, setRoles] = useState<Role[]>([]);
   const title = <Title>Modifier un rôle</Title>;
 
-  useEffect(() => {
-    getAllRoles().then((r) => {
-      setRoles(r);
-    });
-  }, []);
+  const { data: roles, isLoading } = useGetRoles();
 
-  if (roles.length === 0) {
+  if (isLoading) {
     return (
       <>
         {title}
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
 
-  function line(role: Role) {
-    return (
-      <Link key={role.id} href={`/update/roles/${role.id}`} color="text">
-        <ListItemRole
-          image={role.name}
-          characterType={role.characterType}
-        ></ListItemRole>
-      </Link>
-    );
-  }
+  const filteredRoles = roles.filter((role: Role) =>
+    stringContainsString(role.name, filter)
+  );
 
   return (
     <>
       {title}
-      <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre rôle"
       />
-      <Container>
-        {roles
-          .filter((role) =>
-            toLowerRemoveDiacritics(role.name).includes(
-              toLowerRemoveDiacritics(filter)
-            )
-          )
-          .map((role: Role) => line(role))}
-      </Container>
+      <ListboxRolesComponent
+        roles={filteredRoles}
+        hrefRoles="/update/roles/ROLE_ID"
+      />
     </>
   );
 }
