@@ -1,9 +1,9 @@
 import Layout from "@/components/layout/Layout";
 import { AuthContextProvider } from "@/stores/authContext";
-import "@/styles/globals.scss";
+import "@/styles/globals.css";
 import { NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+// import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { AppProps } from "next/app";
 
 export default function App({
@@ -20,7 +20,7 @@ export default function App({
   return (
     <SessionProvider>
       <AuthContextProvider>
-        <NextThemesProvider
+        {/* <NextThemesProvider
           defaultTheme="dark"
           attribute="class"
           value={
@@ -28,13 +28,13 @@ export default function App({
               // dark: darkTheme.className,
             }
           }
-        >
+        > */}
           <NextUIProvider>
             <Layout>
               <Component {...pageProps} />
             </Layout>
           </NextUIProvider>
-        </NextThemesProvider>
+        {/* </NextThemesProvider> */}
       </AuthContextProvider>
     </SessionProvider>
   );
