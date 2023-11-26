@@ -33,3 +33,8 @@ export function getPlayerPseudoString(pseudo: string) {
 
   return pseudoFormatted;
 }
+
+export function getPlayerFullName(player: Player) {
+  if (!player) return;
+  return `${player.name}${getPlayerPseudoString(player.pseudo)}`;
+}

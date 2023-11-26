@@ -12,6 +12,7 @@ export default function PlayerCreateEdit(props: {
 }) {
   const inputsAreInvalid = props.players?.some(
     (p) =>
+      p.id !== props.player.id &&
       stringsAreEqual(p.name, props.player.name) &&
       stringsAreEqual(p.pseudo, props.player.pseudo)
   );
