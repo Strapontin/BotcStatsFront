@@ -1,5 +1,5 @@
 import ListBoxPlayerRolesComponent from "@/components/list-stats/ListBoxPlayerRolesComponent";
-import ListBoxRolesComponent from "@/components/list-stats/--ListBoxRolesComponent";
+import ListboxRolesComponent from "@/components/list-stats/ListboxRolesComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
@@ -114,7 +114,7 @@ export default function GamePage() {
           aria-label="Liste des Demon Bluffs"
           title="Liste des Demon Bluffs"
         >
-          <ListBoxRolesComponent roles={game.demonBluffs} />
+          <ListboxRolesComponent selectedRoles={game.demonBluffs} />
         </AccordionItem>
       </Accordion>
 

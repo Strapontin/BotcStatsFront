@@ -7,10 +7,12 @@ export default function ListboxRolesComponent({
   selectedRoles,
   setSelectedRoles,
   hrefRoles,
+  showDelete,
 }: {
   selectedRoles: Role[];
   setSelectedRoles?: any;
   hrefRoles?: string;
+  showDelete?: boolean;
 }) {
   const sortedSelectedRoles = sortRoles(selectedRoles);
 
@@ -27,15 +29,17 @@ export default function ListboxRolesComponent({
             startContent={getAvatarRole(role)}
             href={hrefRoles?.replace("ROLE_ID", String(role.id))}
             endContent={
-              <Button
-                onClick={() => onClickRemoveRole(role.id)}
-                isIconOnly
-                color="danger"
-                aria-label="delete"
-                variant="flat"
-              >
-                <X />
-              </Button>
+              showDelete && (
+                <Button
+                  onClick={() => onClickRemoveRole(role.id)}
+                  isIconOnly
+                  color="danger"
+                  aria-label="delete"
+                  variant="flat"
+                >
+                  <X />
+                </Button>
+              )
             }
           >
             {role.name}
