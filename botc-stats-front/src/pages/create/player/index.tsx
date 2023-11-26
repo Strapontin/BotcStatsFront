@@ -23,7 +23,6 @@ export default function CreatePlayer() {
     if (await createNewPlayer(player, api)) {
       mutate(`${api.apiUrl}/Players`);
       setPlayer(getNewEmptyPlayer());
-
     }
   }
 

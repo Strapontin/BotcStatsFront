@@ -9,10 +9,11 @@ import {
 import useApi from "@/data/back-api/useApi";
 import {
   Player,
-  getNewEmptyPlayer,
+  getPlayerFullName,
   getPlayerPseudoString,
 } from "@/entities/Player";
-import { stringsAreEqual, toLowerRemoveDiacritics } from "@/helper/string";
+import { stringsAreEqual } from "@/helper/string";
+import NotFoundPage from "@/pages/404";
 import {
   Button,
   Modal,
@@ -24,111 +25,94 @@ import {
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
+import { mutate } from "swr";
 
 export default function UpdatePlayerPage() {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
-  const [oldPlayer, setOldPlayer] = useState<Player>(getNewEmptyPlayer());
-  const [disableBtnDelete, setDisableBtnDelete] = useState(false);
-
-  const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
-  const [message, setMessage] = useState(<></>);
-  // const [players, setPlayers] = useState<Player[]>([]);
 
   const { data: players } = useGetPlayers();
   const { data: playerData, isLoading } = useGetPlayerById(playerId);
   const [player, setPlayer] = useState<Player>(playerData);
+  const [oldPlayer, setOldPlayer] = useState<Player>(playerData);
   const api = useApi();
 
-  const canUpdatePlayer = useCallback(() => {
-    if (player.name === "") {
-      return false;
-    } else if (
-      players.filter(
-        (p: Player) =>
-          stringsAreEqual(p.name, player.name) &&
-          stringsAreEqual(p.pseudo, player.pseudo)
-      ).length !== 0
-    ) {
-      return false;
-    }
-  }, [player, players]);
+  useEffect(() => {
+    setPlayer(playerData);
+    setOldPlayer(playerData);
+  }, [playerData]);
 
-  if (isLoading || !playerId) {
+  if (isLoading || !playerId || !player || !oldPlayer) {
     return (
       <>
         <Spinner />
       </>
     );
+  } else if (playerData.status === 404) {
+    return (
+      <>
+        <NotFoundPage />
+      </>
+    );
   }
 
   const title = (
-    <Title>
-      Modification du joueur {`'${oldPlayer.name} (${oldPlayer.pseudo})'`}
-    </Title>
+    <Title>Modification du joueur {getPlayerFullName(oldPlayer)}</Title>
   );
+
+  function canUpdatePlayer() {
+    if (
+      !player ||
+      player.name === "" ||
+      players?.some(
+        (p: Player) =>
+          p.id !== player.id &&
+          p.name === player.name &&
+          p.pseudo === player.pseudo
+      )
+    )
+      return false;
+    return true;
+  }
 
   async function btnUpdatePlayer() {
     if (!canUpdatePlayer()) return;
 
     if (await updatePlayer(player, api)) {
-      // const p = useGetPlayerById(playerId);
-      // setPlayer(p);
-      // setOldPlayer(p);
-      setPlayerCreateEditKey(playerCreateEditKey + 1);
-    }
-  }
-
-  function updateMessage(isError: boolean, message: string) {
-    if (message === "") {
-      setMessage(<></>);
-    } else {
-      setMessage(
-        <span className={"flex justify-center"}>
-          {isError ? <XOctagon /> : <Check />}
-          {message}
-        </span>
-      );
+      mutateRoutes();
     }
   }
 
   async function btnDeletePressed() {
-    setDisableBtnDelete(true);
-    setTimeout(async () => {
-      if (await deletePlayer(oldPlayer.id, api)) {
-        setPopupDeleteVisible(false);
+    if (await deletePlayer(oldPlayer.id, api)) {
+      setPopupDeleteVisible(false);
+      mutateRoutes();
 
-        setTimeout(() => {
-          router.push(
-            router.asPath.substring(0, router.asPath.lastIndexOf("/"))
-          );
-        }, 0);
-      }
+      setTimeout(() => {
+        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
+      }, 0);
+    }
+  }
 
-      setDisableBtnDelete(false);
-    }, 0);
+  function mutateRoutes() {
+    mutate(`${api.apiUrl}/Players`);
+    mutate(`${api.apiUrl}/Players/${player.id}`);
   }
 
   return (
     <>
       <PlayerCreateEdit
-        key={playerCreateEditKey}
         title={title}
         player={player}
         setPlayer={setPlayer}
-        message={message}
+        players={players}
         btnPressed={btnUpdatePlayer}
         btnText="Modifier le joueur"
       />
 
-      <Button
-        color="danger"
-        onPress={() => setPopupDeleteVisible(true)}
-        disabled={disableBtnDelete}
-      >
+      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
         Supprimer le joueur
       </Button>
       <Spacer y={3} />
@@ -141,15 +125,12 @@ export default function UpdatePlayerPage() {
           <ModalHeader>
             <span id="modal-title">
               Voulez-vous vraiment supprimer le joueur :{" '"}
-              <span>
-                {oldPlayer.name}
-                {getPlayerPseudoString(oldPlayer.pseudo)}
-              </span>
+              <span>{getPlayerFullName(oldPlayer)}</span>
               {"' "}?
             </span>
           </ModalHeader>
           <ModalFooter>
-            <Button variant="flat" color="danger" onPress={btnDeletePressed}>
+            <Button color="danger" onPress={btnDeletePressed}>
               Confirmer
             </Button>
             <Button onPress={() => setPopupDeleteVisible(false)}>
