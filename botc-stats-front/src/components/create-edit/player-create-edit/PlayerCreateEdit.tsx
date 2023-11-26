@@ -43,8 +43,8 @@ export default function PlayerCreateEdit(props: {
         />
         <Spacer y={1.5} />
         <Input
-          label="pseudo"
-          aria-label="pseudo"
+          label="Pseudo"
+          aria-label="Pseudo"
           value={props.player.pseudo}
           onChange={(event) => pseudoChanged(event.target.value)}
         />

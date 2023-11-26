@@ -1,10 +1,8 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
-import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Spinner, Spacer } from "@nextui-org/react";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllPlayers } from "../../../data/back-api/back-api";
 
@@ -32,6 +30,16 @@ export default function GamesPlayedByPlayerPage() {
     );
   }
 
+  const playersFiltered = players.filter(
+    (player) =>
+      toLowerRemoveDiacritics(player.name).includes(
+        toLowerRemoveDiacritics(filter)
+      ) ||
+      toLowerRemoveDiacritics(player.pseudo).includes(
+        toLowerRemoveDiacritics(filter)
+      )
+  );
+
   return (
     <>
       <Title>{title}</Title>
@@ -41,27 +49,23 @@ export default function GamesPlayedByPlayerPage() {
         setFilter={setFilter}
         placeholder="Filtre joueur"
       />
-      <Container>
-        {players
-          .filter(
-            (player) =>
-              toLowerRemoveDiacritics(player.name).includes(
-                toLowerRemoveDiacritics(filter)
-              ) ||
-              toLowerRemoveDiacritics(player.pseudo).includes(
-                toLowerRemoveDiacritics(filter)
-              )
-          )
-          .map((player) => (
-            <Link key={player.id} href={`/players/${player.id}`}>
-              <ListItem
-                left={player.name}
-                subName={player.pseudo}
-                value={player.nbGamesPlayed}
-              />
-            </Link>
-          ))}
-      </Container>
+      <Listbox items={playersFiltered}>
+        {(player) => (
+          <ListboxItem
+            key={player.id}
+            href={`/players/${player.id}`}
+            endContent={player.nbGamesPlayed}
+            description={player.pseudo}
+            showDivider
+            classNames={{
+              title: "text-left font-bold",
+              description: "w-auto",
+            }}
+          >
+            {player.name}
+          </ListboxItem>
+        )}
+      </Listbox>
     </>
   );
 }

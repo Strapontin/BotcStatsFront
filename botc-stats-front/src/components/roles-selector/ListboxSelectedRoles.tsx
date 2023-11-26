@@ -1,16 +1,7 @@
 import { Role, sortRoles } from "@/entities/Role";
-import {
-  Button,
-  Listbox,
-  ListboxItem,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  select,
-} from "@nextui-org/react";
-import { getAvatarRole } from "../ui/image-role-name";
+import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import { X } from "react-feather";
-import { useMemo } from "react";
+import { getAvatarRole } from "../ui/image-role-name";
 
 export default function ListboxSelectedRoles({
   selectedRoles,
@@ -29,7 +20,6 @@ export default function ListboxSelectedRoles({
     <>
       <Listbox
         aria-label="Rôles sélectionnés"
-        onAction={(key) => console.log(selectedRoles, key)}
       >
         {sortedSelectedRoles.map((role) => (
           <ListboxItem
