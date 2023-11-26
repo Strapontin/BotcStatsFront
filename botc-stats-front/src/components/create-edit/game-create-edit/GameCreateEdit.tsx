@@ -1,5 +1,11 @@
 import AutocompleteEdition from "@/components/edition-selector/AutocompleteEdition";
+import AutocompletePlayer from "@/components/player-selector/AutocompletePlayer";
 import RolesSelector from "@/components/roles-selector/RolesSelector";
+import {
+  useGetEditionById,
+  useGetEditions,
+} from "@/data/back-api/back-api-edition";
+import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Edition } from "@/entities/Edition";
 import { Game } from "@/entities/Game";
 import { Player } from "@/entities/Player";
@@ -8,37 +14,27 @@ import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToStringOrderByFormat } from "@/helper/date";
 import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
-import { useState } from "react";
-import { getEditionById } from "../../../../data/back-api/back-api";
 import DropdownAlignment from "../../dropdown-alignment/DropdownAlignment";
 import PlayerRolesSelector from "../../player-role-selector/PlayerRolesSelector";
-import AutocompletePlayer from "@/components/player-selector/AutocompletePlayer";
 
 export default function GameCreateEdit(props: {
   title: JSX.Element;
   game: Game;
   setGame: any;
-  message: JSX.Element;
   btnPressed: any;
   btnText: string;
-  allEditions: Edition[];
-  allPlayers: Player[];
-  isEditionLoading: boolean;
 }) {
-  const [rolesInSelectedEdition, setRolesInSelectedEdition] = useState<Role[]>(
-    []
+  const { data: editions, isLoading: isEditionsLoading } = useGetEditions();
+  const { data: players, isLoading: isPlayersLoading } = useGetPlayers();
+  const {
+    data: edition,
+    isLoading: isEditionByIdLoading,
+  }: { data: Edition; isLoading: boolean } = useGetEditionById(
+    props.game?.edition?.id
   );
 
   async function editionSelected(edition: Edition) {
     const newGame = { ...props.game, edition: edition };
-
-    if (edition) {
-      const editionRoles = (await getEditionById(edition.id)).roles;
-      setRolesInSelectedEdition(editionRoles);
-    } else {
-      setRolesInSelectedEdition([]);
-    }
-
     props.setGame(newGame);
   }
 
@@ -75,21 +71,19 @@ export default function GameCreateEdit(props: {
   return (
     <>
       {props.title}
-      <Spacer y={2} />
-      {props.message}
-      <Spacer y={2} />
+      <Spacer y={4} />
       <AutocompleteEdition
-        editions={props.allEditions}
-        isLoading={props.isEditionLoading}
+        editions={editions}
+        isLoading={isEditionsLoading}
         setSelectedEdition={(edition: Edition) => editionSelected(edition)}
+        autocompleteLabel="Edition"
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
-        players={props.allPlayers}
-        selectedPlayer={props.game.storyTeller}
+        players={players}
+        isLoading={isPlayersLoading}
         setSelectedPlayer={storyTellerSelected}
         autocompleteLabel="Conteur"
-        autocompletePlaceholder="Sélectionner un conteur"
       />
       <Spacer y={1.5} />
       <Input
@@ -117,16 +111,18 @@ export default function GameCreateEdit(props: {
       <Spacer y={5} />
       <PlayerRolesSelector
         selectedPlayerRoles={props.game.playerRoles}
-        setSelectedPlayerRoles={selectedPlayerRolesChanged}
-        rolesInSelectedEdition={rolesInSelectedEdition}
-        allPlayers={props.allPlayers}
+        // setSelectedPlayerRoles={selectedPlayerRolesChanged}
+        roles={edition?.roles}
+        allPlayers={players}
+        isPlayersLoading={isPlayersLoading}
+        isRolesLoading={isEditionByIdLoading}
       />
       <Spacer y={1.5} />
       <RolesSelector
         selectedRoles={props.game.demonBluffs}
         setSelectedRoles={selectedDemonBluffsChanged}
-        placeholderText="Demon bluffs"
-        roles={rolesInSelectedEdition}
+        autocompleteLabel="Demon bluffs"
+        roles={edition?.roles}
       />
       <Spacer y={3} />
 

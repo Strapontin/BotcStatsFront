@@ -28,7 +28,7 @@ export default function RolesSelector({
         selectedRoles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
         autocompleteLabel={autocompleteLabel}
-        isLoadingRoles={isLoadingRoles}
+        isLoading={isLoadingRoles}
       />
     </>
   );

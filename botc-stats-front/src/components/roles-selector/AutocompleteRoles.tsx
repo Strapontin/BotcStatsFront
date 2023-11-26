@@ -17,17 +17,17 @@ export default function AutocompleteRoles({
   setSelectedRoles,
   autocompleteLabel,
   autocompletePlaceholder,
-  isLoadingRoles,
+  isLoading,
 }: {
   roles: Role[];
   selectedRoles: Role[];
   setSelectedRoles: any;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
-  isLoadingRoles?: boolean;
+  isLoading?: boolean;
 }) {
   const rolesGroupedByCharacterType = groupRolesByCharacterType(
-    isLoadingRoles ? [] : roles
+    isLoading || !roles ? [] : roles
   );
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const autocompleteRef = useRef<HTMLInputElement>(null);
@@ -59,7 +59,7 @@ export default function AutocompleteRoles({
         visibility: "none",
       }}
       inputProps={{ baseRef: autocompleteRef }}
-      isLoading={isLoadingRoles}
+      isLoading={isLoading}
     >
       {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
         return (
