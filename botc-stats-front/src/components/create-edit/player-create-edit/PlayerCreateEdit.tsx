@@ -1,14 +1,21 @@
-import { Player } from "@/entities/Player";
+import { Player, getPlayerPseudoString } from "@/entities/Player";
+import { stringsAreEqual } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
 
 export default function PlayerCreateEdit(props: {
   title: JSX.Element;
   player: Player;
   setPlayer: any;
-  message: JSX.Element;
+  players: Player[];
   btnPressed: any;
   btnText: string;
 }) {
+  const inputsAreInvalid = props.players?.some(
+    (p) =>
+      stringsAreEqual(p.name, props.player.name) &&
+      stringsAreEqual(p.pseudo, props.player.pseudo)
+  );
+
   function playerNameChanged(playerName: string) {
     const newPlayer = { ...props.player, name: playerName };
     props.setPlayer(newPlayer);
@@ -19,40 +26,39 @@ export default function PlayerCreateEdit(props: {
     props.setPlayer(newPlayer);
   }
 
-  function canPressButton() {
-    if (props.player.name === "") {
-      return false;
-    }
-    return true;
-  }
-
   return (
     <>
       {props.title}
-      <Spacer y={2} />
-      {props.message}
-      <Spacer y={2} />
+      <Spacer y={4} />
       <Input
         label="Nom"
         aria-label="Nom"
         value={props.player.name}
         onChange={(event) => playerNameChanged(event.target.value)}
         isRequired
-        isInvalid={true}
+        isInvalid={inputsAreInvalid}
       />
-      <Spacer y={1.5} />
+      <Spacer y={2} />
       <Input
         label="Pseudo"
         aria-label="Pseudo"
         value={props.player.pseudo}
         onChange={(event) => pseudoChanged(event.target.value)}
+        isInvalid={inputsAreInvalid}
+        errorMessage={
+          inputsAreInvalid
+            ? `Le joueur ${props.player.name} ${getPlayerPseudoString(
+                props.player.pseudo
+              )} existe déjà`
+            : ""
+        }
       />
       <Spacer y={3} />
 
       <Button
         color="success"
         onPress={props.btnPressed}
-        isDisabled={!canPressButton()}
+        isDisabled={inputsAreInvalid || props.player.name === ""}
       >
         {props.btnText}
       </Button>
