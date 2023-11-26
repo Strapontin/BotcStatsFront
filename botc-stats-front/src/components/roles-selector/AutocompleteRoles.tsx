@@ -17,14 +17,18 @@ export default function AutocompleteRoles({
   setSelectedRoles,
   autocompleteLabel,
   autocompletePlaceholder,
+  isLoadingRoles,
 }: {
   roles: Role[];
   selectedRoles: Role[];
   setSelectedRoles: any;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
+  isLoadingRoles?: boolean;
 }) {
-  const rolesGroupedByCharacterType = groupRolesByCharacterType(roles);
+  const rolesGroupedByCharacterType = groupRolesByCharacterType(
+    isLoadingRoles ? [] : roles
+  );
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const autocompleteRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +41,6 @@ export default function AutocompleteRoles({
 
   function setRoleSelected(roleId: number) {
     const roleSelected = roles.find((r) => r.id === roleId);
-
     setSelectedRoles([...selectedRoles, roleSelected]);
 
     setAutocompleteKey((oldVal) => oldVal + 1);
@@ -47,7 +50,7 @@ export default function AutocompleteRoles({
     <Autocomplete
       key={autocompleteKey}
       ref={autocompleteRef}
-      label={autocompleteLabel}
+      label={autocompleteLabel ?? "Rôles"}
       variant="bordered"
       placeholder={autocompletePlaceholder}
       onSelectionChange={(roleId) => setRoleSelected(+roleId)}
@@ -56,6 +59,7 @@ export default function AutocompleteRoles({
         visibility: "none",
       }}
       inputProps={{ baseRef: autocompleteRef }}
+      isLoading={isLoadingRoles}
     >
       {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
         return (

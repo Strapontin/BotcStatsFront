@@ -1,123 +1,43 @@
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
 import Title from "@/components/ui/title";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
-import { Role } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import AuthContext from "@/stores/authContext";
-import { useContext, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
+import { useState } from "react";
+
 import {
   createNewEdition,
-  getAllEditions,
-  getAllRoles,
-} from "../../../../data/back-api/back-api";
-import classes from "../index.module.css";
+  useGetEditions,
+} from "@/data/back-api/back-api-edition";
+import { useGetRoles } from "@/data/back-api/back-api-role";
+import useApi from "@/data/back-api/useApi";
+import { mutate } from "swr";
 
 export default function CreateEdition() {
-  const [editionCreateEditKey, setEditionCreateEditKey] = useState(0);
-  const [message, setMessage] = useState(<></>);
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
-  const [editions, setEditions] = useState<Edition[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
 
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  useEffect(() => {
-    getAllEditions().then((e) => setEditions(e));
-    getAllRoles().then((r) => setRoles(r));
-  }, []);
-
-  // Updates message on component refreshes
-  useEffect(() => {
-    if (edition.name === "" && edition.roles.length === 0) return;
-    if (toLowerRemoveDiacritics(edition.name) === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-    } else if (
-      editions.filter(
-        (e) =>
-          toLowerRemoveDiacritics(e.name) ===
-          toLowerRemoveDiacritics(edition.name)
-      ).length !== 0
-    ) {
-      updateMessage(true, "Un module avec ce nom existe déjà.");
-    } else {
-      setMessage(<></>);
-    }
-  }, [edition, editions]);
+  const { data: editions, isLoading: isLoadingEditions } = useGetEditions();
+  const { data: roles, isLoading: isLoadingRoles } = useGetRoles();
+  const api = useApi();
 
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
   async function createEdition() {
-    if (!canCreateEdition()) return;
-
-    if (
-      await createNewEdition(
-        edition.name,
-        edition.roles.map((r) => r.id),
-        accessToken
-      )
-    ) {
+    if (await createNewEdition(edition, api)) {
+      mutate(`${api.apiUrl}/Editions`);
       editions.push(edition);
       setEdition(getNewEmptyEdition());
-      setEditionCreateEditKey(editionCreateEditKey + 1);
-      updateMessage(false, `Le module a été enregistrée correctement.`);
-    } else {
-      //Erreur
-      updateMessage(
-        true,
-        "Une erreur est survenue lors de l'enregistrement du module."
-      );
     }
-  }
-
-  function updateMessage(isError: boolean, message: string) {
-    if (isError) {
-      setMessage(
-        <span className={classes.red + " flex justify-center"}>
-          <XOctagon className={classes.icon} />
-          {message}
-        </span>
-      );
-    } else {
-      setMessage(
-        <span className={classes.green + " flex justify-center"}>
-          <Check className={classes.icon} />
-          {message}
-        </span>
-      );
-    }
-  }
-
-  function canCreateEdition() {
-    if (toLowerRemoveDiacritics(edition.name) === "") {
-      updateMessage(true, "Un nom est obligatoire.");
-      return false;
-    }
-
-    if (
-      editions.filter(
-        (e) =>
-          toLowerRemoveDiacritics(e.name) ===
-          toLowerRemoveDiacritics(edition.name)
-      ).length !== 0
-    ) {
-      updateMessage(true, "Un module avec ce nom existe déjà.");
-      return false;
-    }
-
-    return true;
   }
 
   return (
     <EditionCreateEdit
-      key={editionCreateEditKey}
       title={title}
       edition={edition}
       setEdition={setEdition}
-      message={message}
+      editions={editions}
+      roles={roles}
+      isLoadingRoles={isLoadingRoles}
       btnPressed={createEdition}
       btnText="Créer un module"
-      roles={roles}
     />
   );
 }

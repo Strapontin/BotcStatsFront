@@ -9,7 +9,6 @@ import { useState } from "react";
 import { mutate } from "swr";
 
 export default function CreateRole() {
-  const [roleCreateEditKey, setRoleCreateEditKey] = useState(0);
   const [role, setRole] = useState<Role>(getNewEmptyRole());
 
   const { data: roles } = useGetRoles();
@@ -29,14 +28,11 @@ export default function CreateRole() {
     if (await createNewRole(role, api)) {
       mutate(`${api.apiUrl}/Roles`);
       setRole(getNewEmptyRole());
-
-      setRoleCreateEditKey(roleCreateEditKey + 1);
     }
   }
 
   return (
     <RoleCreateEdit
-      key={roleCreateEditKey}
       title={title}
       role={role}
       setRole={setRole}
