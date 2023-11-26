@@ -1,6 +1,6 @@
 import Layout from "@/components/layout/Layout";
 import { AuthContextProvider } from "@/stores/authContext";
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import { NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";

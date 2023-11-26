@@ -5,7 +5,11 @@ export default function RoleColored(props: {
   characterType: CharacterType;
 }) {
   return (
-    <span className={CharacterType[props.characterType].toLowerCase()}>
+    <span
+      className={
+        CharacterType[props.characterType].toLowerCase() + " font-bold" 
+      }
+    >
       {props.name}
     </span>
   );

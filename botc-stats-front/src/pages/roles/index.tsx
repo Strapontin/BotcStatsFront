@@ -11,7 +11,7 @@ import { getAllRoles } from "../../../data/back-api/back-api";
 export default function RolesPage() {
   const [filter, setFilter] = useState<string>("");
   const [roles, setRoles] = useState<Role[]>([]);
-  const title = "Liste des rôles";
+  const title = <Title>Liste des rôles</Title>;
 
   useEffect(() => {
     getAllRoles().then((r) => {
@@ -22,7 +22,7 @@ export default function RolesPage() {
   if (roles.length === 0) {
     return (
       <>
-        <Title>{title}</Title>
+        {title}
         <Spacer y={3} />
         <Spinner />
       </>
@@ -31,7 +31,7 @@ export default function RolesPage() {
 
   return (
     <>
-      <Title>{title}</Title>
+      {title}
       <Spacer y={1} />
       <Filter
         filterValue={filter}
