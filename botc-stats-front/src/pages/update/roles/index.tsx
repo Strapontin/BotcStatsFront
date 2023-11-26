@@ -1,10 +1,9 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListBoxRolesComponent from "@/components/list-stats/ListBoxRolesComponent";
 import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Spinner, Spacer } from "@nextui-org/react";
+import { Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllRoles } from "../../../../data/back-api/back-api";
 
@@ -29,16 +28,9 @@ export default function UpdateRolesPage() {
     );
   }
 
-  function line(role: Role) {
-    return (
-      <Link key={role.id} href={`/update/roles/${role.id}`} >
-        <ListItemRole
-          image={role.name}
-          characterType={role.characterType}
-        ></ListItemRole>
-      </Link>
-    );
-  }
+  const filteredRoles = roles.filter((role) =>
+    toLowerRemoveDiacritics(role.name).includes(toLowerRemoveDiacritics(filter))
+  );
 
   return (
     <>
@@ -49,15 +41,10 @@ export default function UpdateRolesPage() {
         setFilter={setFilter}
         placeholder="Filtre rôle"
       />
-      <Container>
-        {roles
-          .filter((role) =>
-            toLowerRemoveDiacritics(role.name).includes(
-              toLowerRemoveDiacritics(filter)
-            )
-          )
-          .map((role: Role) => line(role))}
-      </Container>
+      <ListBoxRolesComponent
+        roles={filteredRoles}
+        hrefRoles="/update/roles/ROLE_ID"
+      />
     </>
   );
 }

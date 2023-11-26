@@ -52,7 +52,7 @@ export default function PlayerPage() {
       aria-label="Détails généraux"
       title="Détails généraux"
     >
-      <Listbox aria-label="Détails généraux">
+      <Listbox aria-label="Détails généraux" variant="light">
         <ListboxItem
           key={1}
           endContent={player.nbGamesPlayed}

@@ -1,5 +1,5 @@
 import Filter from "@/components/filter/Filter";
-import ListRolesComponent from "@/components/list-stats/ListRolesComponent";
+import ListBoxRolesComponent from "@/components/list-stats/ListBoxRolesComponent";
 import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
@@ -41,18 +41,7 @@ export default function RolesPage() {
         setFilter={setFilter}
         placeholder="Filtre rôle"
       />
-      <ListRolesComponent roles={filteredRoles} />
-      {/* <Listbox aria-label="Rôles">
-        {filteredRoles.map((role) => (
-          <ListboxItem
-            key={role.id}
-            startContent={getAvatarRole(role)}
-            classNames={classNamesListBoxItem}
-          >
-            {role.name}
-          </ListboxItem>
-        ))}
-      </Listbox> */}
+      <ListBoxRolesComponent roles={filteredRoles} />
     </>
   );
 }
