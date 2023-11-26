@@ -1,3 +1,4 @@
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Alignment } from "./enums/alignment";
 import { CharacterType } from "./enums/characterType";
 
@@ -34,8 +35,8 @@ interface GroupedRoles {
   [key: string]: Role[];
 }
 
-export function groupRolesByCharacterType(array: Role[]): GroupedRoles {
-  return array.reduce((acc: GroupedRoles, current: Role) => {
+export function groupRolesByCharacterType(roles: Role[]): GroupedRoles {
+  return roles.reduce((acc: GroupedRoles, current: Role) => {
     const key = current.characterType;
     if (!acc[key]) {
       acc[key] = [];
@@ -43,4 +44,15 @@ export function groupRolesByCharacterType(array: Role[]): GroupedRoles {
     acc[key].push(current);
     return acc;
   }, {});
+}
+
+export function sortRoles(roles: Role[]) {
+  return roles.sort((a, b) => {
+    if (a.characterType === b.characterType) {
+      return toLowerRemoveDiacritics(a.name) < toLowerRemoveDiacritics(b.name)
+        ? -1
+        : 1;
+    }
+    return a.characterType < b.characterType ? -1 : 1;
+  });
 }

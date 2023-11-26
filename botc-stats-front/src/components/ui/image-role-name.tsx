@@ -1,9 +1,11 @@
-import Image from "next/image";
-import RoleColored from "./role-colored";
+import { Role } from "@/entities/Role";
 import { CharacterType } from "@/entities/enums/characterType";
+import Image from "next/image";
+import { useState } from "react";
 import { removeDiacritics } from "../../helper/string";
 import classes from "./image-role-name.module.scss";
-import { useState } from "react";
+import RoleColored from "./role-colored";
+import { Avatar } from "@nextui-org/react";
 
 export default function ImageIconName(props: {
   name: string;
@@ -50,4 +52,68 @@ export function getRoleIconPath(roleName: string) {
   const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png`;
 
   return imgPath;
+}
+
+export function getCssClassesFromCharacterType(characterType: CharacterType): {
+  headerClass: string;
+  ringColorClass: string;
+} {
+  let headingAutocompleteClasses =
+    "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small text-slate-800 text-sm font-bold";
+  let ringColorClass;
+
+  switch (characterType) {
+    case CharacterType.Townsfolk:
+      headingAutocompleteClasses =
+        headingAutocompleteClasses + " text-slate-700 bg-townsfolk";
+      ringColorClass = "ring-townsfolk";
+      break;
+    case CharacterType.Outsider:
+      headingAutocompleteClasses =
+        headingAutocompleteClasses + " text-slate-300 bg-outsider";
+      ringColorClass = "ring-outsider";
+      break;
+    case CharacterType.Minion:
+      headingAutocompleteClasses =
+        headingAutocompleteClasses + " text-slate-300 bg-minion";
+      ringColorClass = "ring-minion";
+      break;
+    case CharacterType.Demon:
+      headingAutocompleteClasses =
+        headingAutocompleteClasses + " text-slate-300 bg-demon";
+      ringColorClass = "ring-demon";
+      break;
+    case CharacterType.Fabled:
+      headingAutocompleteClasses =
+        headingAutocompleteClasses + " text-slate-300 bg-fabled";
+      ringColorClass = "ring-fabled";
+      break;
+    case CharacterType.Traveller:
+      headingAutocompleteClasses =
+        headingAutocompleteClasses + " text-slate-300 bg-traveller";
+      ringColorClass = "ring-traveller";
+      break;
+
+    default:
+      ringColorClass = "";
+      break;
+  }
+
+  return {
+    headerClass: headingAutocompleteClasses,
+    ringColorClass: ringColorClass,
+  };
+}
+
+export function getAvatarRole(role: Role) {
+  return (
+    <Avatar
+      isBordered
+      classNames={{
+        base: getCssClassesFromCharacterType(role.characterType).ringColorClass,
+      }}
+      radius="sm"
+      src={getRoleIconPath(role.name)}
+    />
+  );
 }
