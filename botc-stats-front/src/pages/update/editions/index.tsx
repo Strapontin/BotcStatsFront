@@ -1,24 +1,19 @@
 import Filter from "@/components/filter/Filter";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
+import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { Edition } from "@/entities/Edition";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { getAllEditions } from "../../../../data/back-api/back-api";
 
 export default function UpdateEditionsPage() {
   const [filter, setFilter] = useState<string>("");
-  const [editions, setEditions] = useState<Edition[]>([]);
   const title = <Title>Modifier un module</Title>;
 
-  useEffect(() => {
-    getAllEditions().then((r) => {
-      setEditions(r);
-    });
-  }, []);
+  const { data: editions, isLoading } = useGetEditions();
 
-  if (editions.length === 0) {
+  if (isLoading) {
     return (
       <>
         {title}
@@ -28,18 +23,8 @@ export default function UpdateEditionsPage() {
     );
   }
 
-  function line(edition: Edition) {
-    return (
-      <Link key={edition.id} href={`/update/editions/${edition.id}`}>
-        <ListItem left={edition.name}></ListItem>
-      </Link>
-    );
-  }
-
-  const editionsFiltered = editions.filter((edition) =>
-    toLowerRemoveDiacritics(edition.name).includes(
-      toLowerRemoveDiacritics(filter)
-    )
+  const editionsFiltered = editions.filter((edition: Edition) =>
+    stringContainsString(edition.name, filter)
   );
 
   return (
@@ -51,8 +36,7 @@ export default function UpdateEditionsPage() {
         setFilter={setFilter}
         placeholder="Filtre module"
       />
-      <Spacer y={5} />
-      <Listbox aria-label="Parties jouées">
+      <Listbox aria-label="Modules">
         {editionsFiltered.map((edition: Edition) => (
           <ListboxItem
             key={edition.id}

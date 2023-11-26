@@ -19,7 +19,7 @@ export default function RolesSelector({
   return (
     <>
       <ListboxRolesComponent
-        selectedRoles={selectedRoles}
+        roles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
         showDelete
       />

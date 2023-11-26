@@ -1,24 +1,19 @@
 import Filter from "@/components/filter/Filter";
-import ListBoxRolesComponent from "@/components/list-stats/--ListBoxRolesComponent";
+import ListboxRolesComponent from "@/components/list-stats/ListboxRolesComponent";
 import Title from "@/components/ui/title";
+import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
 import { Spacer, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { getAllRoles } from "../../../../data/back-api/back-api";
 
 export default function UpdateRolesPage() {
   const [filter, setFilter] = useState<string>("");
-  const [roles, setRoles] = useState<Role[]>([]);
   const title = <Title>Modifier un rôle</Title>;
 
-  useEffect(() => {
-    getAllRoles().then((r) => {
-      setRoles(r);
-    });
-  }, []);
+  const { data: roles, isLoading } = useGetRoles();
 
-  if (roles.length === 0) {
+  if (isLoading) {
     return (
       <>
         {title}
@@ -28,8 +23,8 @@ export default function UpdateRolesPage() {
     );
   }
 
-  const filteredRoles = roles.filter((role) =>
-    toLowerRemoveDiacritics(role.name).includes(toLowerRemoveDiacritics(filter))
+  const filteredRoles = roles.filter((role: Role) =>
+    stringContainsString(role.name, filter)
   );
 
   return (
@@ -41,7 +36,7 @@ export default function UpdateRolesPage() {
         setFilter={setFilter}
         placeholder="Filtre rôle"
       />
-      <ListBoxRolesComponent
+      <ListboxRolesComponent
         roles={filteredRoles}
         hrefRoles="/update/roles/ROLE_ID"
       />
