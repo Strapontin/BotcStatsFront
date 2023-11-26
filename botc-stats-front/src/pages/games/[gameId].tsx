@@ -45,21 +45,19 @@ export default function GamePage() {
 
   const classNamesListBoxItem = {
     title: "text-left font-bold",
+    base: "whitespace-pre-line",
   };
 
   return (
     <>
       {title}
       <Spacer y={5} />
-      <Listbox
-        aria-label="Détails de la partie"
-        variant="light"
-        classNames={{ list: { base: "" } }}
-      >
+      <Listbox aria-label="Détails de la partie" variant="light">
         <ListboxItem
           key={1}
           endContent={game.edition.name}
           classNames={classNamesListBoxItem}
+          showDivider
         >
           Module
         </ListboxItem>
@@ -67,6 +65,7 @@ export default function GamePage() {
           key={2}
           endContent={`${game.storyTeller.name}${storyTellerPseudo}`}
           classNames={classNamesListBoxItem}
+          showDivider
         >
           Conteur
         </ListboxItem>
@@ -74,6 +73,7 @@ export default function GamePage() {
           key={3}
           endContent={dateToString(game.datePlayed)}
           classNames={classNamesListBoxItem}
+          showDivider
         >
           Date de la partie
         </ListboxItem>
@@ -81,6 +81,7 @@ export default function GamePage() {
           key={4}
           endContent={alignmentToString(game.winningAlignment)}
           classNames={classNamesListBoxItem}
+          showDivider
         >
           Alignement gagnant
         </ListboxItem>
@@ -93,6 +94,7 @@ export default function GamePage() {
           endContent={`${game.notes}`}
           classNames={classNamesListBoxItem}
           textValue={game.notes}
+          showDivider
         />
       </Listbox>
       <Spacer y={2} />
