@@ -6,12 +6,12 @@ import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
 import {
   Button,
-  CircularProgress,
   Modal,
   ModalContent,
   ModalFooter,
   ModalHeader,
   Spacer,
+  Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -83,7 +83,7 @@ export default function UpdateEditionPage() {
   if (edition.id === -1) {
     return (
       <>
-        <CircularProgress />
+        <Spinner />
       </>
     );
   }
