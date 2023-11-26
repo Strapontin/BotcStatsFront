@@ -16,7 +16,7 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* {CssBaseline.flush()} */}
-          <link href="/dist/output.css" rel="stylesheet" />
+          {/* <link href="/dist/output.css" rel="stylesheet" /> */}
         </Head>
         <body>
           <Main />

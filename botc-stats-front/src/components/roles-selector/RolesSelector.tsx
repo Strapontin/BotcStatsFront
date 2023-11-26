@@ -1,10 +1,18 @@
-import { Role } from "@/entities/Role";
+import { Role, groupRolesByCharacterType } from "@/entities/Role";
+import {
+  CharacterType,
+  characterTypeList,
+} from "@/entities/enums/characterType";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Button, Input, Spacer } from "@nextui-org/react";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  AutocompleteSection,
+  Spacer,
+} from "@nextui-org/react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { X } from "react-feather";
 import ListItemRole from "../list-stats/ListItemRole";
-import Classes from "./RolesSelector.module.css";
 
 export default function RolesSelector(props: {
   selectedRoles: Role[];
@@ -12,10 +20,6 @@ export default function RolesSelector(props: {
   placeholderText: string;
   roles: Role[];
 }) {
-  const inputFilterRole = useRef<HTMLInputElement>(null);
-  const [showRoles, setShowRoles] = useState(false);
-  const [visibleRoles, setVisibleRoles] = useState<Role[]>(props.roles);
-
   const [filter, setFilter] = useState<string>("");
 
   const reSetVisibleRolesFromValue = useCallback(
@@ -26,7 +30,6 @@ export default function RolesSelector(props: {
             toLowerRemoveDiacritics(value)
           ) && !props.selectedRoles.some((sr) => sr.id === r.id)
       );
-      setVisibleRoles(visibleRolesToSet);
       setFilter(value);
     },
     [props.roles, props.selectedRoles]
@@ -35,27 +38,6 @@ export default function RolesSelector(props: {
   useEffect(() => {
     reSetVisibleRolesFromValue(filter);
   }, [filter, reSetVisibleRolesFromValue]);
-
-  function onChangeInput(value: string) {
-    reSetVisibleRolesFromValue(value);
-  }
-
-  function onSelectRole(idRoleSelected: number) {
-    const roleSelected = visibleRoles.find(
-      (role) => role.id === idRoleSelected
-    );
-
-    if (roleSelected) {
-      props.selectedRoles.push(roleSelected);
-      props.setSelectedRoles(props.selectedRoles);
-
-      inputFilterRole.current?.focus();
-
-      setTimeout(() => {
-        setFilter("");
-      }, 0);
-    }
-  }
 
   function removeSelectedRole(id: number) {
     const roleSelected = props.selectedRoles.find((role) => role.id == id);
@@ -68,96 +50,77 @@ export default function RolesSelector(props: {
     }
   }
 
-  function onFocusInput() {
-    reSetVisibleRolesFromValue(filter);
-    setShowRoles(true);
-  }
+  function getHeaderClassFromCharacterType(characterType: CharacterType) {
+    const headingAutocompleteClasses =
+      "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small text-slate-800 text-sm font-bold";
 
-  function blurInput(event: any) {
-    // Not (selecting a role/clearing input/click around roles) => hide roles
-    if (
-      event === undefined ||
-      event === null ||
-      event.relatedTarget === undefined ||
-      event.relatedTarget === null ||
-      event.relatedTarget.classList === undefined ||
-      event.relatedTarget.classList === null ||
-      (!event.relatedTarget.classList.contains(Classes["role-item"]) &&
-        !event.relatedTarget.classList.contains("nextui-input-clear-button") &&
-        !event.relatedTarget.classList.contains(Classes.delete) &&
-        !event.relatedTarget.classList.contains(
-          Classes["container-roles-values"]
-        ))
-    ) {
-      setShowRoles(false);
-    } else if (
-      event.relatedTarget.classList.contains("nextui-input-clear-button")
-    ) {
-      onChangeInput("");
-    } else if (
-      event.relatedTarget.classList.contains(
-        Classes["container-roles-values"]
-      ) ||
-      event.relatedTarget.classList.contains(Classes.delete)
-    ) {
-      setTimeout(() => {
-        inputFilterRole.current?.focus();
-      }, 0);
+    switch (characterType) {
+      case CharacterType.Townsfolk:
+        return headingAutocompleteClasses + " bg-townsfolk text-slate-700";
+      case CharacterType.Outsider:
+        return headingAutocompleteClasses + " bg-outsider text-slate-300";
+      case CharacterType.Minion:
+        return headingAutocompleteClasses + " bg-minion text-slate-300";
+      case CharacterType.Demon:
+        return headingAutocompleteClasses + " bg-demon text-slate-300";
+      case CharacterType.Fabled:
+        return headingAutocompleteClasses + " bg-fabled text-slate-300";
+      case CharacterType.Traveller:
+        return headingAutocompleteClasses + " bg-traveller text-slate-300";
+
+      default:
+        return headingAutocompleteClasses;
     }
   }
 
+  const rolesGroupedByCharacterType = groupRolesByCharacterType(props.roles);
+
   return (
     <>
-      <div className={Classes["roles-selected"]}>
+      <div>
         {props.selectedRoles.map((role) => (
           <Fragment key={role.id}>
-            <div className={Classes["role-selected"]}>
+            <div>
               <ListItemRole
                 image={role.name}
                 characterType={role.characterType}
               />
-              <X
-                tabIndex={0}
-                className={Classes.delete}
-                onClick={() => removeSelectedRole(role.id)}
-              />
+              <X tabIndex={0} onClick={() => removeSelectedRole(role.id)} />
             </div>
             <Spacer x={1.5} />
           </Fragment>
         ))}
       </div>
       {props.selectedRoles.some((r) => r) && <Spacer y={1} />}
-      <div className={Classes["input-container"]}>
-        <Input
-          // css={{ flex: 1 }}
-          label={props.placeholderText}
-          aria-label={props.placeholderText}
-          value={filter}
-          onChange={(event) => onChangeInput(event.target.value)}
-          onFocus={(event) => setTimeout(() => onFocusInput(), 0)}
-          onBlur={(event) => blurInput(event)}
-          ref={inputFilterRole}
-        ></Input>
-      </div>
-      {showRoles && <Spacer y={1} />}
-      {showRoles && (
-        <div tabIndex={0} className={Classes["container-roles-values"]}>
-          {visibleRoles.map((role) => (
-            <Fragment key={role.id}>
-              <Button
-                className={Classes["role-item"]}
-                onPress={() => onSelectRole(role.id)}
-              >
-                <ListItemRole
-                  image={role.name}
-                  characterType={role.characterType}
-                />
-              </Button>
-              <Spacer y={1} />
-            </Fragment>
-          ))}
-        </div>
-      )}
+      <Autocomplete
+        label="Rôles du module"
+        variant="bordered"
+        placeholder="Sélectionner un rôle"
+        scrollShadowProps={{
+          isEnabled: true,
+          visibility: "bottom",
+        }}
+      >
+        {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
+          return (
+            <AutocompleteSection
+              key={characterType}
+              title={
+                characterTypeList().find((c) => c.key === +characterType)?.value
+              }
+              classNames={{
+                heading: getHeaderClassFromCharacterType(+characterType),
+              }}
+            >
+              {rolesGroupedByCharacterType[characterType].map((role) => {
+                return (
+                  <AutocompleteItem key={role.id}>{role.name}</AutocompleteItem>
+                );
+              })}
+            </AutocompleteSection>
+          );
+        })}
+      </Autocomplete>
     </>
   );
 }
