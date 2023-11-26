@@ -1,27 +1,24 @@
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
 import Title from "@/components/ui/title";
-import { Player, getNewEmptyPlayer } from "@/entities/Player";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import AuthContext from "@/stores/authContext";
-import { useContext, useEffect, useState } from "react";
-import { Check, XOctagon } from "react-feather";
 import {
   createNewPlayer,
-  getAllPlayers,
-} from "../../../../data/back-api/back-api";
+  useGetPlayers,
+} from "@/data/back-api/back-api-player";
+import useApi from "@/data/back-api/useApi";
+import { Player, getNewEmptyPlayer } from "@/entities/Player";
+import { toLowerRemoveDiacritics } from "@/helper/string";
+import { useEffect, useState } from "react";
+import { Check, XOctagon } from "react-feather";
+import { mutate } from "swr";
 import classes from "../index.module.css";
 
 export default function CreatePlayer() {
   const [playerCreateEditKey, setPlayerCreateEditKey] = useState(0);
   const [message, setMessage] = useState(<></>);
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
-  const [players, setPlayers] = useState<Player[]>([]);
 
-  const accessToken = useContext(AuthContext)?.accessToken ?? "";
-
-  useEffect(() => {
-    getAllPlayers().then((p) => setPlayers(p));
-  }, []);
+  const { data: players } = useGetPlayers();
+  const api = useApi();
 
   // Updates message on component refreshes
   useEffect(() => {
@@ -31,7 +28,7 @@ export default function CreatePlayer() {
       updateMessage(true, "Un nom est obligatoire.");
     } else if (
       players.filter(
-        (p) =>
+        (p: Player) =>
           toLowerRemoveDiacritics(p.name) ===
             toLowerRemoveDiacritics(player.name) &&
           toLowerRemoveDiacritics(p.pseudo) ===
@@ -53,7 +50,8 @@ export default function CreatePlayer() {
   async function createPlayer() {
     if (player.name === "") return;
 
-    if (await createNewPlayer(player, accessToken)) {
+    if (await createNewPlayer(player, api)) {
+      mutate(`${api.apiUrl}/Players`);
       setPlayer(getNewEmptyPlayer());
 
       updateMessage(

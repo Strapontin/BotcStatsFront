@@ -1,26 +1,18 @@
 import Filter from "@/components/filter/Filter";
 import Title from "@/components/ui/title";
+import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { getAllPlayers } from "../../../data/back-api/back-api";
+import { useState } from "react";
 
 export default function GamesPlayedByPlayerPage() {
   const [filter, setFilter] = useState<string>("");
-  const [players, setPlayers] = useState<Player[]>([]);
   const title = "Nombre de parties/joueur";
 
-  useEffect(() => {
-    getAllPlayers().then((p) => {
-      const sortedPlayers = p.sort(
-        (a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed
-      );
-      setPlayers(sortedPlayers);
-    });
-  }, []);
+  const { data: players, isLoading } = useGetPlayers();
 
-  if (players.length === 0) {
+  if (isLoading) {
     return (
       <>
         <Title>{title}</Title>
@@ -30,15 +22,17 @@ export default function GamesPlayedByPlayerPage() {
     );
   }
 
-  const playersFiltered = players.filter(
-    (player) =>
-      toLowerRemoveDiacritics(player.name).includes(
-        toLowerRemoveDiacritics(filter)
-      ) ||
-      toLowerRemoveDiacritics(player.pseudo).includes(
-        toLowerRemoveDiacritics(filter)
-      )
-  );
+  const playersFiltered = players
+    .filter(
+      (player: Player) =>
+        toLowerRemoveDiacritics(player.name).includes(
+          toLowerRemoveDiacritics(filter)
+        ) ||
+        toLowerRemoveDiacritics(player.pseudo).includes(
+          toLowerRemoveDiacritics(filter)
+        )
+    )
+    .sort((a: Player, b: Player) => b.nbGamesPlayed - a.nbGamesPlayed);
 
   return (
     <>
@@ -49,8 +43,8 @@ export default function GamesPlayedByPlayerPage() {
         setFilter={setFilter}
         placeholder="Filtre joueur"
       />
-      <Listbox items={playersFiltered}>
-        {(player) => (
+      <Listbox items={playersFiltered} aria-label="listbox Players">
+        {(player: Player) => (
           <ListboxItem
             key={player.id}
             href={`/players/${player.id}`}

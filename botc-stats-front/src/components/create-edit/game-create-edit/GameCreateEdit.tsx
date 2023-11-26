@@ -23,6 +23,7 @@ export default function GameCreateEdit(props: {
   btnText: string;
   allEditions: Edition[];
   allPlayers: Player[];
+  isEditionLoading: boolean;
 }) {
   const [rolesInSelectedEdition, setRolesInSelectedEdition] = useState<Role[]>(
     []
@@ -79,7 +80,7 @@ export default function GameCreateEdit(props: {
       <Spacer y={2} />
       <AutocompleteEdition
         editions={props.allEditions}
-        selectedEdition={props.game.edition}
+        isLoading={props.isEditionLoading}
         setSelectedEdition={(edition: Edition) => editionSelected(edition)}
       />
       <Spacer y={1.5} />

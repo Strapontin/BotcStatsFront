@@ -1,4 +1,5 @@
 import { Game } from "@/entities/Game";
+import useApi from "./useApi";
 
 export async function getAllGames(apiUrl: string) {
   const response = await fetch(`${apiUrl}/Games`);
@@ -23,11 +24,9 @@ export async function getGameById(apiUrl: string, id: number) {
   return game;
 }
 
-export async function createNewGame(
-  apiUrl: string,
-  game: Game,
-  accessToken: string
-): Promise<boolean> {
+export async function CreateNewGame(game: Game): Promise<boolean> {
+  const { accessToken, apiUrl } = useApi();
+  
   const playersIdRolesId = game.playerRoles.map((pr) => ({
     playerId: pr.player.id,
     roleId: pr.role.id,

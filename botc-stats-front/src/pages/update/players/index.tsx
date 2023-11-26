@@ -1,24 +1,20 @@
 import Filter from "@/components/filter/Filter";
 import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
+import { useGetPlayers } from "@/data/back-api/back-api-player";
+import useApi from "@/data/back-api/useApi";
 import { Player } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Link, Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { getAllPlayers } from "../../../../data/back-api/back-api";
+import { useState } from "react";
 
 export default function UpdatePlayersPage() {
   const [filter, setFilter] = useState<string>("");
-  const [players, setPlayers] = useState<Player[]>([]);
   const title = <Title>Modifier un joueur</Title>;
 
-  useEffect(() => {
-    getAllPlayers().then((p) => {
-      setPlayers(p);
-    });
-  }, []);
+  const { data: players, isLoading } = useGetPlayers();
 
-  if (players.length === 0) {
+  if (isLoading) {
     return (
       <>
         {title}
@@ -28,16 +24,8 @@ export default function UpdatePlayersPage() {
     );
   }
 
-  function line(player: Player) {
-    return (
-      <Link key={player.id} href={`/update/players/${player.id}`}>
-        <ListItem left={player.name} subName={player.pseudo}></ListItem>
-      </Link>
-    );
-  }
-
   const playersFiltered = players.filter(
-    (player) =>
+    (player: Player) =>
       toLowerRemoveDiacritics(player.name).includes(
         toLowerRemoveDiacritics(filter)
       ) ||
@@ -56,7 +44,7 @@ export default function UpdatePlayersPage() {
         placeholder="Filtre joueur"
       />
       <Listbox items={playersFiltered}>
-        {(player) => (
+        {(player: Player) => (
           <ListboxItem
             key={player.id}
             href={`/update/players/${player.id}`}

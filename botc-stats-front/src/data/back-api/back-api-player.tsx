@@ -1,41 +1,30 @@
 import { Player } from "@/entities/Player";
+import useSWR from "swr";
+import useApi, { Api } from "./useApi";
 
-export async function getAllPlayers(apiUrl: string) {
-  const response = await fetch(`${apiUrl}/Players`, {
-    mode: "cors",
-    cache: "no-cache",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
-  });
-  const data = await response.json();
-  const players: Player[] = [];
+const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-  for (const key in data) {
-    players.push(data[key]);
-  }
+export function useGetPlayers() {
+  const { apiUrl } = useApi();
+  const { data, error, isLoading } = useSWR(`${apiUrl}/Players`, fetcher);
 
-  console.log("getAllPlayers");
-  return players;
+  return { data, error, isLoading };
 }
 
-export async function getPlayerById(apiUrl: string, playerId: number) {
-  if (playerId === undefined || playerId === null || isNaN(playerId)) return;
+export function useGetPlayerById(playerId: number) {
+  const { apiUrl } = useApi();
 
-  const response = await fetch(`${apiUrl}/Players/${playerId}`);
-  const player = await response.json();
+  const { data, error, isLoading } = useSWR(
+    playerId && !isNaN(playerId) ? `${apiUrl}/Players/${playerId}` : null,
+    fetcher
+  );
 
-  console.log("getPlayerById");
-  return player;
+  return { data, error, isLoading };
 }
 
 export async function createNewPlayer(
-  apiUrl: string,
   player: Player,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players`, {
     method: "POST",
@@ -52,11 +41,9 @@ export async function createNewPlayer(
   });
 
   console.log("createPlayer");
-  console.log(response);
 
   if (!response.ok) {
-    const res = await response.json();
-    console.log(res.error);
+    console.log("ERROR :", await response.text());
     return false;
   }
 
@@ -64,9 +51,8 @@ export async function createNewPlayer(
 }
 
 export async function updatePlayer(
-  apiUrl: string,
   player: Player,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players`, {
     method: "PUT",
@@ -97,9 +83,8 @@ export async function updatePlayer(
 }
 
 export async function deletePlayer(
-  apiUrl: string,
   playerId: number,
-  accessToken: string
+  { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const response = await fetch(`${apiUrl}/Players/${playerId}`, {
     method: "DELETE",

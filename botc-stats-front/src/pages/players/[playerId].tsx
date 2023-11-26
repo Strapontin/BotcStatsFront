@@ -1,10 +1,8 @@
 import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
-import {
-  Player,
-  getNewEmptyPlayer,
-  getPlayerPseudoString,
-} from "@/entities/Player";
+import { useGetPlayerById } from "@/data/back-api/back-api-player";
+import { getPlayerPseudoString } from "@/entities/Player";
+import { Role } from "@/entities/Role";
 import {
   Accordion,
   AccordionItem,
@@ -13,24 +11,24 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getPlayerById } from "../../../data/back-api/back-api";
+import NotFoundPage from "../404";
 
 export default function PlayerPage() {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
-  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
 
-  useEffect(() => {
-    if (!playerId || isNaN(playerId)) return;
+  const { data: player, isLoading } = useGetPlayerById(playerId);
 
-    getPlayerById(playerId).then((p) => setPlayer(p));
-  }, [playerId]);
-
-  if (player.id < 0) {
+  if (isLoading || !playerId) {
     return (
       <>
         <Spinner />
+      </>
+    );
+  } else if (player.status === 404) {
+    return (
+      <>
+        <NotFoundPage />
       </>
     );
   }
@@ -89,7 +87,7 @@ export default function PlayerPage() {
       title="Détails des rôles joués"
     >
       <Listbox aria-label="Rôles sélectionnés">
-        {player.timesPlayedRole.map((role) => (
+        {player.timesPlayedRole.map((role: Role) => (
           <ListboxItem
             key={role.id}
             // href={`/roles/${role.id}`} //TODO when roles details are implemented

@@ -1,37 +1,46 @@
-import { useSession } from "next-auth/react";
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { createContext, useEffect, useState } from "react";
-import { getUserHasStoryTellerRights } from "../../data/back-api/back-api";
 
 const AuthContext = createContext({
-  accessToken: null,
+  isConnected: false,
   isStoryTeller: false,
+  isLoading: true,
 });
 
 export const AuthContextProvider = ({ children }: { children: any }) => {
   const [user, setUser] = useState({
-    accessToken: null,
+    isConnected: false,
     isStoryTeller: false,
+    isLoading: true,
   });
-  const sessionReact: any = useSession();
+  const userData = useUserHasStoryTellerRights();
 
   useEffect(() => {
-    async function getUserData() {
-      if (!sessionReact.data || user.accessToken) return;
+    setUser({
+      isStoryTeller: userData.data,
+      isLoading: userData.isLoading,
+      isConnected: userData.isConnected,
+    });
+  }, [userData.data, userData.isLoading, userData.isConnected]);
 
-      const accessToken = sessionReact.data.accessToken;
+  // useEffect(() => {
+  //   async function getUserData() {
+  //     if (!sessionReact.data || user.accessToken) return;
 
-      const response = await getUserHasStoryTellerRights(accessToken);
+  //     const accessToken = sessionReact.data.accessToken;
 
-      const s: any = {
-        isStoryTeller: response,
-        accessToken,
-      };
-      setUser(s);
-    }
-    if (!user.accessToken && sessionReact.data) {
-      getUserData();
-    }
-  }, [sessionReact.data, user]);
+  //     const response = await getUserHasStoryTellerRights(accessToken);
+
+  //     const s: any = {
+  //       isStoryTeller: response,
+  //       accessToken,
+  //     };
+  //     setUser(s);
+  //   }
+  //   if (!user.accessToken && sessionReact.data) {
+  //     getUserData();
+  //   }
+  // }, [sessionReact.data, user]);
 
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
 };

@@ -32,29 +32,27 @@ export default function PlayerCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <div
-      //  css={{ display: "flex", flexDirection: "column" }}
-      >
-        <Input
-          label="Nom"
-          aria-label="Nom"
-          value={props.player.name}
-          onChange={(event) => playerNameChanged(event.target.value)}
-        />
-        <Spacer y={1.5} />
-        <Input
-          label="Pseudo"
-          aria-label="Pseudo"
-          value={props.player.pseudo}
-          onChange={(event) => pseudoChanged(event.target.value)}
-        />
-        <Spacer y={3} />
-      </div>
+      <Input
+        label="Nom"
+        aria-label="Nom"
+        value={props.player.name}
+        onChange={(event) => playerNameChanged(event.target.value)}
+        isRequired
+        isInvalid={true}
+      />
+      <Spacer y={1.5} />
+      <Input
+        label="Pseudo"
+        aria-label="Pseudo"
+        value={props.player.pseudo}
+        onChange={(event) => pseudoChanged(event.target.value)}
+      />
+      <Spacer y={3} />
 
       <Button
         color="success"
         onPress={props.btnPressed}
-        disabled={!canPressButton()}
+        isDisabled={!canPressButton()}
       >
         {props.btnText}
       </Button>
