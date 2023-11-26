@@ -214,7 +214,7 @@ export default function PlayerRolesSelector(props: {
           </Fragment>
         ))}
       </div>
-      <Spacer x={2} />
+      {/* <Spacer x={2} /> */}
       <div className={Classes["inputs-container"]}>
         <Input
           label="Joueur"

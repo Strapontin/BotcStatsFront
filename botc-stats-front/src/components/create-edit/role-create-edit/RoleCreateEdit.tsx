@@ -41,29 +41,25 @@ export default function RoleCreateEdit(props: {
       <Spacer y={2} />
       {props.message}
       <Spacer y={2} />
-      <div
-      //  css={{ display: "flex", flexDirection: "column" }}
-      >
-        <Input
-          label="Nom"
-          aria-label="Nom"
-          value={props.role.name}
-          onChange={(event) => roleNameChanged(event.target.value)}
-        />
-        <Spacer y={1.5} />
-        <DropdownCharacterType
-          setCharacterType={characterTypeChanged}
-          characterType={props.role.characterType}
-          defaultText="Type de personnage"
-        />
-        <Spacer y={1.5} />
-        <DropdownAlignment
-          setAlignment={alignmentChanged}
-          alignment={props.role.alignment}
-          defaultText="Alignement"
-        />
-        <Spacer y={3} />
-      </div>
+      <Input
+        label="Nom"
+        aria-label="Nom"
+        value={props.role.name}
+        onChange={(event) => roleNameChanged(event.target.value)}
+      />
+      <Spacer y={1.5} />
+      <DropdownCharacterType
+        setCharacterType={characterTypeChanged}
+        characterType={props.role.characterType}
+        defaultText="Type de personnage"
+      />
+      <Spacer y={1.5} />
+      <DropdownAlignment
+        setAlignment={alignmentChanged}
+        alignment={props.role.alignment}
+        defaultText="Alignement"
+      />
+      <Spacer y={3} />
 
       <Button
         color="success"

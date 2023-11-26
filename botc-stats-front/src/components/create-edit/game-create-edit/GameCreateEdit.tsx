@@ -100,7 +100,7 @@ export default function GameCreateEdit(props: {
           setSelectedPlayer={storyTellerSelected}
           allPlayers={props.allPlayers}
         />
-        <Spacer y={0.5} />
+        <Spacer y={1.5} />
         <Input
           type="date"
           label="Date à laquelle la partie a été jouée"
@@ -121,14 +121,14 @@ export default function GameCreateEdit(props: {
           setAlignment={winningAlignmentChanged}
           defaultText="Alignement gagnant"
         />
-        <Spacer y={3} />
+        <Spacer y={1.5} />
         <PlayerRolesSelector
           selectedPlayerRoles={props.game.playerRoles}
           setSelectedPlayerRoles={selectedPlayerRolesChanged}
           rolesInSelectedEdition={rolesInSelectedEdition}
           allPlayers={props.allPlayers}
         />
-        <Spacer y={3} />
+        <Spacer y={1.5} />
         <RolesSelector
           selectedRoles={props.game.demonBluffs}
           setSelectedRoles={selectedDemonBluffsChanged}

@@ -120,14 +120,14 @@ export default function UpdateRolePage() {
       setMessage(<></>);
     } else if (isError) {
       setMessage(
-        <span className={classes.red}>
+        <span className={classes.red + " flex justify-center"}>
           <XOctagon className={classes.icon} />
           {message}
         </span>
       );
     } else {
       setMessage(
-        <span className={classes.green}>
+        <span className={classes.green + " flex justify-center"}>
           <Check className={classes.icon} />
           {message}
         </span>
