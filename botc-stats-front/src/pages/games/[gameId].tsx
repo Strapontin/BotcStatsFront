@@ -1,20 +1,25 @@
-import ListItem from "@/components/list-stats/ListItem";
-import ListItemLarge from "@/components/list-stats/ListItemLarge";
 import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
 import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListPlayerRoleComponent from "@/components/list-stats/ListPlayerRoleComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
 import { Game, getNewEmptyGame } from "@/entities/Game";
 import { getPlayerPseudoString } from "@/entities/Player";
-import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { Link, Spinner, Spacer, Listbox, ListboxItem } from "@nextui-org/react";
+import { dateToString } from "@/helper/date";
+import {
+  Accordion,
+  AccordionItem,
+  Listbox,
+  ListboxItem,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getGameById } from "../../../data/back-api/back-api";
-import { dateToString } from "@/helper/date";
 
 export default function GamePage() {
   const router = useRouter();
@@ -97,26 +102,32 @@ export default function GamePage() {
           showDivider
         />
       </Listbox>
-      <Spacer y={2} />
-      <span>Liste des rôles des joueurs :</span>
-      {game.playerRoles.map((prg: PlayerRole, index) => (
-        <Link
-          key={`${prg.player.id}-${prg.role.id}-${index}`}
-          href={`/players/${prg.player.id}`}
+      <Spacer y={12} />
+      <Accordion selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
+        <AccordionItem
+          key="1"
+          aria-label="Liste des rôles des joueurs"
+          title="Liste des rôles des joueurs"
         >
-          <ListItemPlayerRole playerRole={prg} />
-        </Link>
-      ))}
-      <Spacer y={2} />
-      <span>Liste des demon bluffs :</span>
-      {game.demonBluffs.map((db: Role) => (
-        <ListItemRole
-          key={db.id}
-          id={db.id}
-          characterType={db.characterType}
-          image={db.name}
-        />
-      ))}
+          <ListPlayerRoleComponent playerRoleGames={game.playerRoles} />
+        </AccordionItem>
+        <AccordionItem
+          key="2"
+          aria-label="Liste des Demon Bluffs"
+          title="Liste des Demon Bluffs"
+        >
+          {game.demonBluffs.map((db: Role) => (
+            <ListItemRole
+              key={db.id}
+              id={db.id}
+              characterType={db.characterType}
+              image={db.name}
+            />
+          ))}
+        </AccordionItem>
+      </Accordion>
+
+      <Spacer y={5} />
     </>
   );
 }
