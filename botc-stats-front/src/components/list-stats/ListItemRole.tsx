@@ -1,8 +1,7 @@
 import { CharacterType } from "@/entities/enums/characterType";
-import { Text } from "@nextui-org/react";
 import Link from "next/link";
 import ImageIconName from "../ui/image-role-name";
-import Classes from "./ListItem.module.css";
+import Classes from "./ListItem.module.scss";
 
 export default function ListItemRole(props: {
   image: string;
@@ -16,9 +15,9 @@ export default function ListItemRole(props: {
     props.nbWins !== undefined ? (
       props.nbWins !== undefined && (
         <>
-          <Text b className="green">
+          <span  className="green">
             {props.nbWins}
-          </Text>{" "}
+          </span>{" "}
           |{" "}
         </>
       )
@@ -29,9 +28,9 @@ export default function ListItemRole(props: {
     props.nbLoses !== undefined ? (
       props.nbLoses !== undefined && (
         <>
-          <Text b className="red">
+          <span  className="red">
             {props.nbLoses}
-          </Text>{" "}
+          </span>{" "}
           |{" "}
         </>
       )
@@ -40,7 +39,7 @@ export default function ListItemRole(props: {
     );
   const textNbGamesPlayed =
     props.nbGamesPlayed !== undefined ? (
-      props.nbGamesPlayed !== undefined && <Text b>{props.nbGamesPlayed}</Text>
+      props.nbGamesPlayed !== undefined && <span >{props.nbGamesPlayed}</span>
     ) : (
       <></>
     );

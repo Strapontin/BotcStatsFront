@@ -4,7 +4,7 @@ import ListItem from "@/components/list-stats/ListItem";
 import Title from "@/components/ui/title";
 import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Link, Spinner, Spacer } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllEditions } from "../../../data/back-api/back-api";
 
@@ -24,7 +24,7 @@ export default function EditionsPage() {
       <>
         <Title>{title}</Title>
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -46,11 +46,7 @@ export default function EditionsPage() {
             )
           )
           .map((edition) => (
-            <Link
-              key={edition.id}
-              href={`/editions/${edition.id}`}
-              color="text"
-            >
+            <Link key={edition.id} href={`/editions/${edition.id}`}>
               <ListItem left={edition.name} />
             </Link>
           ))}

@@ -4,7 +4,7 @@ import ListItemRole from "@/components/list-stats/ListItemRole";
 import Title from "@/components/ui/title";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
+import { Link, Spinner, Spacer } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { getAllRoles } from "../../../data/back-api/back-api";
 
@@ -24,7 +24,7 @@ export default function RolesPage() {
       <>
         <Title>{title}</Title>
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -46,7 +46,7 @@ export default function RolesPage() {
             )
           )
           .map((role) => (
-            <Link key={role.id} href={`/roles/${role.id}`} color="text">
+            <Link key={role.id} href={`/roles/${role.id}`}>
               <ListItemRole
                 image={role.name}
                 characterType={role.characterType}

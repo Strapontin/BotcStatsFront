@@ -6,7 +6,15 @@ import { Player, getPlayerPseudoString } from "@/entities/Player";
 import { Alignment } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
 import AuthContext from "@/stores/authContext";
-import { Button, Loading, Modal, Spacer, Text } from "@nextui-org/react";
+import {
+  Button,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
@@ -46,7 +54,7 @@ export default function UpdateGamePage() {
   if (game.id === -1) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -73,17 +81,17 @@ export default function UpdateGamePage() {
   function updateMessage(isError: boolean, message: string) {
     if (isError) {
       setMessage(
-        <Text span className={classes.red}>
+        <span className={classes.red}>
           <XOctagon className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     } else {
       setMessage(
-        <Text span className={classes.green}>
+        <span className={classes.green}>
           <Check className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     }
   }
@@ -139,29 +147,30 @@ export default function UpdateGamePage() {
   }
 
   const popup = (
-    <Modal blur open={popupDeleteVisible} onClose={closePopupDelete}>
-      <Modal.Header>
-        <Text id="modal-title" size={22}>
-          Voulez-vous vraiment supprimer la partie du{" "}
-          <Text b size={22}>
-            {dateToString(game.datePlayed)}
-          </Text>{" "}
-          contée par{" '"}
-          <Text b size={22}>
-            {game.storyTeller.name}
-            {getPlayerPseudoString(game.storyTeller.pseudo)}
-          </Text>
-          {"' "}?
-        </Text>
-      </Modal.Header>
-      <Modal.Footer css={{ justifyContent: "space-around" }}>
-        <Button auto flat color="error" onPress={btnDeletePressed}>
-          Confirmer
-        </Button>
-        <Button auto onPress={closePopupDelete}>
-          Annuler
-        </Button>
-      </Modal.Footer>
+    <Modal
+      backdrop="blur"
+      isOpen={popupDeleteVisible}
+      onClose={closePopupDelete}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <span id="modal-title">
+            Voulez-vous vraiment supprimer la partie du{" "}
+            <span>{dateToString(game.datePlayed)}</span> contée par{" '"}
+            <span>
+              {game.storyTeller.name}
+              {getPlayerPseudoString(game.storyTeller.pseudo)}
+            </span>
+            {"' "}?
+          </span>
+        </ModalHeader>
+        <ModalFooter>
+          <Button variant="flat" color="danger" onPress={btnDeletePressed}>
+            Confirmer
+          </Button>
+          <Button onPress={closePopupDelete}>Annuler</Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 
@@ -180,9 +189,7 @@ export default function UpdateGamePage() {
       />
 
       <Button
-        shadow
-        ghost
-        color="error"
+        color="danger"
         onPress={() => setPopupDeleteVisible(true)}
         disabled={disableBtnDelete}
       >

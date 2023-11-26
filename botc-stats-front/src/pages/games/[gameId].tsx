@@ -11,7 +11,7 @@ import { getPlayerPseudoString } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
+import { Link, Spinner, Spacer } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getGameById } from "../../../data/back-api/back-api";
@@ -31,7 +31,7 @@ export default function GamePage() {
   if (game.id <= 0) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
@@ -39,7 +39,7 @@ export default function GamePage() {
   const title = (
     <Title>
       Détails de la partie du <DateUi date={game.datePlayed} /> contée par{" "}
-      <Link href={`/players/${game.storyTeller.id}`} color="text">
+      <Link href={`/players/${game.storyTeller.id}`}>
         <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
       </Link>
     </Title>
@@ -66,18 +66,17 @@ export default function GamePage() {
         />
         <ListItemLarge name="Notes" value={game.notes} />
         <Spacer y={2} />
-        <Text b>Liste des rôles des joueurs :</Text>
+        <span>Liste des rôles des joueurs :</span>
         {game.playerRoles.map((prg: PlayerRole, index) => (
           <Link
             key={`${prg.player.id}-${prg.role.id}-${index}`}
             href={`/players/${prg.player.id}`}
-            color="text"
           >
             <ListItemPlayerRole playerRole={prg} />
           </Link>
         ))}
         <Spacer y={2} />
-        <Text b>Liste des demon bluffs :</Text>
+        <span>Liste des demon bluffs :</span>
         {game.demonBluffs.map((db: Role) => (
           <ListItemRole
             key={db.id}

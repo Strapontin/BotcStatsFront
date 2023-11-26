@@ -3,7 +3,13 @@ import {
   characterTypeList,
   getCharacterTypeTextById,
 } from "@/entities/enums/characterType";
-import { Dropdown } from "@nextui-org/react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 
 export default function DropdownCharacterType(props: {
   setCharacterType: any;
@@ -26,22 +32,17 @@ export default function DropdownCharacterType(props: {
   return (
     <>
       <Dropdown type="menu">
-        <Dropdown.Button
-          id="selection-stat"
-          ghost
-          iconRight
-          css={{ display: "flex", justifyContent: "left" }}
-        >
-          {characterTypeText}
-        </Dropdown.Button>
-        <Dropdown.Menu
+        <DropdownTrigger>
+          <Button id="selection-stat">{characterTypeText}</Button>
+        </DropdownTrigger>
+        <DropdownMenu
           aria-label="Static Actions"
           onAction={(key) => selectCharacterType(+key)}
         >
           {characterTypeList().map((item) => (
-            <Dropdown.Item key={item.key}>{item.value}</Dropdown.Item>
+            <DropdownItem key={item.key}>{item.value}</DropdownItem>
           ))}
-        </Dropdown.Menu>
+        </DropdownMenu>
       </Dropdown>
     </>
   );

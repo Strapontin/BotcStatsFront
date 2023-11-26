@@ -92,11 +92,8 @@ export default function PlayerSelector(props: {
     <>
       <div className={Classes["input-container"]}>
         <Input
-          css={{ flex: 1 }}
-          labelPlaceholder="Conteur"
+          label="Conteur"
           aria-label="Conteur"
-          clearable
-          bordered
           value={filter}
           onChange={(event) => onChangeInput(event.target.value)}
           onFocus={(event) => setTimeout(() => onFocusInput(), 0)}
@@ -104,7 +101,7 @@ export default function PlayerSelector(props: {
           ref={inputFilterPlayer}
         />
       </div>
-      {showPlayers && <Spacer y={0.75} />}
+      {showPlayers && <Spacer y={1} />}
       {showPlayers && (
         <div tabIndex={0} className={Classes["container-players-values"]}>
           <Container>

@@ -85,11 +85,8 @@ export default function EditionSelector(props: {
     <>
       <div className={Classes["input-container"]}>
         <Input
-          css={{ flex: 1 }}
-          labelPlaceholder="Module"
+          label="Module"
           aria-label="Module"
-          clearable
-          bordered
           value={filter}
           onChange={(event) => onChangeInput(event.target.value)}
           onFocus={(event) => setTimeout(() => onFocusInput(), 0)}
@@ -97,7 +94,7 @@ export default function EditionSelector(props: {
           ref={inputFilterEdition}
         />
       </div>
-      {showEditions && <Spacer y={0.75} />}
+      {showEditions && <Spacer y={1} />}
       {showEditions && (
         <div tabIndex={0} className={Classes["container-editions-values"]}>
           <Container>

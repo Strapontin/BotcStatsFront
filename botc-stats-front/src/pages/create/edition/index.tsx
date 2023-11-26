@@ -4,7 +4,6 @@ import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { Role } from "@/entities/Role";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import AuthContext from "@/stores/authContext";
-import { Text } from "@nextui-org/react";
 import { useContext, useEffect, useState } from "react";
 import { Check, XOctagon } from "react-feather";
 import {
@@ -74,17 +73,17 @@ export default function CreateEdition() {
   function updateMessage(isError: boolean, message: string) {
     if (isError) {
       setMessage(
-        <Text span className={classes.red}>
+        <span className={classes.red}>
           <XOctagon className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     } else {
       setMessage(
-        <Text span className={classes.green}>
+        <span className={classes.green}>
           <Check className={classes.icon} />
           {message}
-        </Text>
+        </span>
       );
     }
   }

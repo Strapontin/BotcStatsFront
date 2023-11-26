@@ -11,10 +11,8 @@ export default function inputFilterPlayer(props: {
     <div className={style["filter-container"]}>
       <Input
         className={style["input"]}
-        labelPlaceholder={props.placeholder}
+        label={props.placeholder}
         aria-label={props.placeholder}
-        clearable
-        bordered
         value={props.filterValue}
         onChange={(event) => props.setFilter(event.target.value)}
       />
