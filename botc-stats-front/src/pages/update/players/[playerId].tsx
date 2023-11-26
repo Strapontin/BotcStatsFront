@@ -39,7 +39,7 @@ export default function UpdatePlayerPage() {
     setOldPlayer(playerData);
   }, [playerData]);
 
-  if (isLoading || !playerId || !player || !oldPlayer) {
+  if (isLoading || !player) {
     return (
       <>
         <Spinner />

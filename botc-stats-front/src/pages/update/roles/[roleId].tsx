@@ -39,7 +39,7 @@ export default function UpdateRolePage() {
     setOldRole(roleData);
   }, [roleData]);
 
-  if (isLoading || !roleId || !role || !oldRole) {
+  if (isLoading || !role) {
     return (
       <>
         <Spinner />

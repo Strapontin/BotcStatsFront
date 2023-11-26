@@ -32,15 +32,13 @@ export default function UpdateGamePage() {
 
   const { data: gameData, isLoading } = useGetGameById(gameId);
   const [game, setGame] = useState<Game>(gameData);
-  const [oldGame, setOldGame] = useState<Game>(gameData);
   const api = useApi();
 
   useEffect(() => {
     setGame(gameData);
-    setOldGame(gameData);
   }, [gameData]);
 
-  if (isLoading || !gameId || !game || !oldGame) {
+  if (isLoading || !game) {
     return (
       <>
         <Spinner />

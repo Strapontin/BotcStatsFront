@@ -19,7 +19,7 @@ export default function PlayerPage() {
 
   const { data: player, isLoading } = useGetPlayerById(playerId);
 
-  if (isLoading || !playerId) {
+  if (isLoading) {
     return (
       <>
         <Spinner />

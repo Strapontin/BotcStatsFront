@@ -5,21 +5,28 @@ import useApi, { Api } from "./useApi";
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
 export function useGetPlayers() {
-  const { apiUrl } = useApi();
-  const { data, error, isLoading } = useSWR(`${apiUrl}/Players`, fetcher);
-
-  return { data, error, isLoading };
-}
-
-export function useGetPlayerById(playerId: number) {
-  const { apiUrl } = useApi();
-
+  const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
-    playerId && !isNaN(playerId) ? `${apiUrl}/Players/${playerId}` : null,
+    !isLoadingApi ? `${apiUrl}/Players` : null,
     fetcher
   );
 
-  return { data, error, isLoading };
+  return { data, error, isLoading: isLoading || isLoadingApi };
+}
+
+export function useGetPlayerById(playerId: number) {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, error, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(playerId) ? `${apiUrl}/Players/${playerId}` : null,
+    fetcher
+  );
+
+  return {
+    data,
+    error,
+    isLoading: isLoading || isLoadingApi || isNaN(playerId),
+  };
 }
 
 export async function createNewPlayer(

@@ -23,7 +23,7 @@ export default function GamePage() {
 
   const { data: game, isLoading } = useGetGameById(gameId);
 
-  if (isLoading || !gameId) {
+  if (isLoading) {
     return (
       <>
         <Spinner />

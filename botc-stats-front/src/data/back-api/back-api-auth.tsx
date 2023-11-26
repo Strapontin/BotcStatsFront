@@ -7,10 +7,10 @@ export function useUserHasStoryTellerRights(): {
   isLoading: boolean;
   isConnected: boolean;
 } {
-  const { accessToken, apiUrl } = useApi();
+  const { accessToken, apiUrl, isLoadingApi } = useApi();
 
   const { data, error, isLoading } = useSWR(
-    accessToken ? `${apiUrl}/Auth` : null,
+    accessToken && !isLoadingApi ? `${apiUrl}/Auth` : null,
     (args) =>
       fetch(args, {
         method: "GET",
@@ -26,5 +26,10 @@ export function useUserHasStoryTellerRights(): {
       }).then((res) => res.json())
   );
 
-  return { data, error, isLoading, isConnected: accessToken ? true : false };
+  return {
+    data,
+    error,
+    isLoading: isLoading || isLoadingApi,
+    isConnected: accessToken ? true : false,
+  };
 }
