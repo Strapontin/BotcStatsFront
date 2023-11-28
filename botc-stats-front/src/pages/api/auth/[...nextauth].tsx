@@ -10,7 +10,7 @@ export default NextAuth({
       authorization: {
         params: { scope: "identify guilds.members.read" },
       },
-      issuer: process.env.NEXTAUTH_URL,
+      // issuer: process.env.NEXTAUTH_URL,
       // checks: ["none"],
     }),
     // ...add more providers here
