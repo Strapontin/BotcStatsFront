@@ -3,6 +3,7 @@ import SelectionStats from "../select-stats/SelectionStats";
 import classes from "./Layout.module.css";
 
 export default function Layout(props: { children: any }) {
+  console.log(process.env.NEXT_PUBLIC_IS_RECETTE)
   return (
     <>
       <div className="w-full">
