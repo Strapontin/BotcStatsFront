@@ -1,3 +1,4 @@
+import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Alignment } from "./enums/alignment";
 import { CharacterType } from "./enums/characterType";
 
@@ -30,8 +31,28 @@ export function getNewEmptyRole() {
   return role;
 }
 
-// export enum RoleOrderBy {
-//   None = 0,
-//   Name = 1 << 0,
-//   CharacterType = 1 << 1,
-// }
+interface GroupedRoles {
+  [key: string]: Role[];
+}
+
+export function groupRolesByCharacterType(roles: Role[]): GroupedRoles {
+  return roles.reduce((acc: GroupedRoles, current: Role) => {
+    const key = current.characterType;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(current);
+    return acc;
+  }, {});
+}
+
+export function sortRoles(roles: Role[]) {
+  return roles.sort((a, b) => {
+    if (a.characterType === b.characterType) {
+      return toLowerRemoveDiacritics(a.name) < toLowerRemoveDiacritics(b.name)
+        ? -1
+        : 1;
+    }
+    return a.characterType < b.characterType ? -1 : 1;
+  });
+}

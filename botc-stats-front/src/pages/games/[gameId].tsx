@@ -1,92 +1,118 @@
-import Container from "@/components/list-stats/Container";
-import ListItem from "@/components/list-stats/ListItem";
-import ListItemLarge from "@/components/list-stats/ListItemLarge";
-import ListItemPlayerRole from "@/components/list-stats/ListItemPlayerRole";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListboxPlayerRolesComponent from "@/components/listbox/ListboxPlayerRolesComponent";
+import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
-import { Game, getNewEmptyGame } from "@/entities/Game";
+import { useGetGameById } from "@/data/back-api/back-api-game";
 import { getPlayerPseudoString } from "@/entities/Player";
-import { PlayerRole } from "@/entities/PlayerRole";
-import { Role } from "@/entities/Role";
 import { alignmentToString } from "@/entities/enums/alignment";
-import { Link, Loading, Spacer, Text } from "@nextui-org/react";
+import { dateToString } from "@/helper/date";
+import {
+  Accordion,
+  AccordionItem,
+  Listbox,
+  ListboxItem,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getGameById } from "../../../data/back-api/back-api";
 
 export default function GamePage() {
   const router = useRouter();
   const gameId: number = Number(router.query.gameId);
-  const [game, setGame] = useState<Game>(getNewEmptyGame());
-  const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
 
-  useEffect(() => {
-    if (!gameId || isNaN(gameId)) return;
+  const { data: game, isLoading } = useGetGameById(gameId);
 
-    getGameById(gameId).then((g) => setGame(g));
-  }, [gameId]);
-
-  if (game.id <= 0) {
+  if (isLoading || !gameId) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
 
+  const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
+
   const title = (
     <Title>
       Détails de la partie du <DateUi date={game.datePlayed} /> contée par{" "}
-      <Link href={`/players/${game.storyTeller.id}`} color="text">
-        <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
-      </Link>
+      <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
     </Title>
   );
+
+  const classNamesListBoxItem = {
+    title: "text-left font-bold",
+    base: "whitespace-pre-line",
+  };
 
   return (
     <>
       {title}
-      <Container>
-        <ListItem left="Module" value={game.edition.name} />
-        <ListItem
-          left="Conteur"
-          value={
-            <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
-          }
+      <Spacer y={5} />
+      <Listbox aria-label="Détails de la partie" variant="light">
+        <ListboxItem
+          key={1}
+          endContent={game.edition.name}
+          classNames={classNamesListBoxItem}
+          showDivider
+        >
+          Module
+        </ListboxItem>
+        <ListboxItem
+          key={2}
+          endContent={`${game.storyTeller.name}${storyTellerPseudo}`}
+          classNames={classNamesListBoxItem}
+          showDivider
+        >
+          Conteur
+        </ListboxItem>
+        <ListboxItem
+          key={3}
+          endContent={dateToString(game.datePlayed)}
+          classNames={classNamesListBoxItem}
+          showDivider
+        >
+          Date de la partie
+        </ListboxItem>
+        <ListboxItem
+          key={4}
+          endContent={alignmentToString(game.winningAlignment)}
+          classNames={classNamesListBoxItem}
+          showDivider
+        >
+          Alignement gagnant
+        </ListboxItem>
+        <ListboxItem key={5} classNames={classNamesListBoxItem}>
+          Notes
+        </ListboxItem>
+        <ListboxItem
+          key={6}
+          className="text-justify"
+          endContent={`${game.notes}`}
+          classNames={classNamesListBoxItem}
+          textValue={game.notes}
+          showDivider
         />
-        <ListItem
-          left="Date de la partie"
-          value={<DateUi date={game.datePlayed} />}
-        />
-        <ListItem
-          left="Alignement gagnant"
-          value={alignmentToString(game.winningAlignment)}
-        />
-        <ListItemLarge name="Notes" value={game.notes} />
-        <Spacer y={2} />
-        <Text b>Liste des rôles des joueurs :</Text>
-        {game.playerRoles.map((prg: PlayerRole, index) => (
-          <Link
-            key={`${prg.player.id}-${prg.role.id}-${index}`}
-            href={`/players/${prg.player.id}`}
-            color="text"
-          >
-            <ListItemPlayerRole playerRole={prg} />
-          </Link>
-        ))}
-        <Spacer y={2} />
-        <Text b>Liste des demon bluffs :</Text>
-        {game.demonBluffs.map((db: Role) => (
-          <ListItemRole
-            key={db.id}
-            id={db.id}
-            characterType={db.characterType}
-            image={db.name}
-          />
-        ))}
-      </Container>
+      </Listbox>
+      <Spacer y={12} />
+      <Accordion selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
+        <AccordionItem
+          key="1"
+          aria-label="Liste des rôles des joueurs"
+          title="Liste des rôles des joueurs"
+        >
+          <ListboxPlayerRolesComponent playerRoles={game.playerRoles} />
+        </AccordionItem>
+        <AccordionItem
+          key="2"
+          aria-label="Liste des Demon Bluffs"
+          title="Liste des Demon Bluffs"
+        >
+          <ListboxRolesComponent roles={game.demonBluffs} />
+        </AccordionItem>
+      </Accordion>
+
+      <Spacer y={5} />
     </>
   );
 }

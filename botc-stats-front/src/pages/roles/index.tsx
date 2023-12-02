@@ -1,59 +1,45 @@
 import Filter from "@/components/filter/Filter";
-import Container from "@/components/list-stats/Container";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import Title from "@/components/ui/title";
+import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role } from "@/entities/Role";
-import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Link, Loading, Spacer } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { getAllRoles } from "../../../data/back-api/back-api";
+import { stringContainsString } from "@/helper/string";
+import { Spacer, Spinner } from "@nextui-org/react";
+import { useState } from "react";
 
 export default function RolesPage() {
   const [filter, setFilter] = useState<string>("");
-  const [roles, setRoles] = useState<Role[]>([]);
-  const title = "Liste des rôles";
+  const title = <Title>Liste des rôles</Title>;
 
-  useEffect(() => {
-    getAllRoles().then((r) => {
-      setRoles(r);
-    });
-  }, []);
+  const { data: roles, isLoading } = useGetRoles();
 
-  if (roles.length === 0) {
+  if (isLoading) {
     return (
       <>
-        <Title>{title}</Title>
+        {title}
         <Spacer y={3} />
-        <Loading />
+        <Spinner />
       </>
     );
   }
 
+  const filteredRoles = roles.filter((role: Role) =>
+    stringContainsString(role.name, filter)
+  );
+
   return (
     <>
-      <Title>{title}</Title>
+      {title}
       <Spacer y={1} />
       <Filter
         filterValue={filter}
         setFilter={setFilter}
         placeholder="Filtre rôle"
       />
-      <Container>
-        {roles
-          .filter((edition) =>
-            toLowerRemoveDiacritics(edition.name).includes(
-              toLowerRemoveDiacritics(filter)
-            )
-          )
-          .map((role) => (
-            <Link key={role.id} href={`/roles/${role.id}`} color="text">
-              <ListItemRole
-                image={role.name}
-                characterType={role.characterType}
-              />
-            </Link>
-          ))}
-      </Container>
+      <ListboxRolesComponent
+        roles={filteredRoles}
+        // hrefRoles="roles/ROLE_ID"
+      />
     </>
   );
 }

@@ -1,46 +1,56 @@
-import Container from "@/components/list-stats/Container";
-import ListItemRole from "@/components/list-stats/ListItemRole";
+import Filter from "@/components/filter/Filter";
+import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
-import { Edition, getNewEmptyEdition } from "@/entities/Edition";
-import { Link, Loading, Spacer } from "@nextui-org/react";
-import { getEditionById } from "../../../data/back-api/back-api";
+import { useGetEditionById } from "@/data/back-api/back-api-edition";
+import { Role } from "@/entities/Role";
+import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function EditionIdPage() {
+  const [filter, setFilter] = useState<string>("");
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
-  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
-  useEffect(() => {
-    if (!editionId || isNaN(editionId)) return;
+  const { data: edition, isLoading } = useGetEditionById(editionId);
 
-    getEditionById(editionId).then((p) => setEdition(p));
-  }, [editionId]);
-
-  if (edition.id <= 0) {
+  if (isLoading || !editionId) {
     return (
       <>
-        <Loading />
+        <Spinner />
       </>
     );
   }
+
+  const filteredRoles = edition.roles.filter((role: Role) =>
+    toLowerRemoveDiacritics(role.name).includes(toLowerRemoveDiacritics(filter))
+  );
+
+  const classNamesListBoxItem = {
+    title: "text-left font-bold",
+  };
 
   return (
     <>
       <Title>{`Rôles du module '${edition.name}'`}</Title>
       <Spacer y={3} />
-      <Container>
-        {edition.roles.map((r) => (
-          <Link key={r.id} href={`/roles/${r.id}`} color="text">
-            <ListItemRole
-              key={r.id}
-              image={r.name}
-              characterType={r.characterType}
-            ></ListItemRole>
-          </Link>
+      <Filter
+        filterValue={filter}
+        setFilter={setFilter}
+        placeholder="Filtre rôle"
+      />
+      <Listbox aria-label="Rôles">
+        {filteredRoles.map((r: Role) => (
+          <ListboxItem
+            key={r.id}
+            startContent={getAvatarRole(r)}
+            classNames={classNamesListBoxItem}
+          >
+            {r.name}
+          </ListboxItem>
         ))}
-      </Container>
+      </Listbox>
     </>
   );
 }

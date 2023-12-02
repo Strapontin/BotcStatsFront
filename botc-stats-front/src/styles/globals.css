@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+html {
+  height: 100%;
+}
+/* 
+.green {
+  color: #988f2a;
+}
+
+.red {
+  color: #f8533a;
+} */
+
+.h-auto {
+  height: auto;
+}
+
+svg {
+  stroke-width: 3;
+}
+
+/* Forces no zoom on input click on phones */
+input[type="text"] {
+  font-size: 16px;
+}

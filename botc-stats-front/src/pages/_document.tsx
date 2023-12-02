@@ -1,20 +1,23 @@
 import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import { CssBaseline } from "@nextui-org/react";
+// import { CssBaseline } from "@nextui-org/react";
 
 export default class MyDocument extends Document {
-  static async getInitialProps(ctx: any) {
-    const initialProps = await Document.getInitialProps(ctx);
-    return {
-      ...initialProps,
-      styles: React.Children.toArray([initialProps.styles]),
-    };
-  }
+  // static async getInitialProps(ctx: any) {
+  //   const initialProps = await Document.getInitialProps(ctx);
+  //   return {
+  //     ...initialProps,
+  //     styles: React.Children.toArray([initialProps.styles]),
+  //   };
+  // }
 
   render() {
     return (
       <Html lang="en">
-        <Head>{CssBaseline.flush()}</Head>
+        <Head>
+          {/* {CssBaseline.flush()} */}
+          {/* <link href="/dist/output.css" rel="stylesheet" /> */}
+        </Head>
         <body>
           <Main />
           <NextScript />

@@ -17,6 +17,12 @@
   display: flex;
   justify-content: center;
   top: 0;
+  background: url(/images/Recette.png);
+  background-position: center;
+}
+
+.header:before{
+  top:50px
 }
 
 .content {

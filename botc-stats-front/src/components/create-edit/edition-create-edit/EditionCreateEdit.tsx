@@ -1,70 +1,81 @@
+import RolesSelector from "@/components/selector/RolesSelector";
 import { Edition } from "@/entities/Edition";
-import { Fragment } from "react";
-import { Button, Container, Input, Spacer, Textarea } from "@nextui-org/react";
 import { Role } from "@/entities/Role";
-import RolesSelector from "@/components/roles-selector/RolesSelector";
+import { stringsAreEqual } from "@/helper/string";
+import { Button, Input, Spacer } from "@nextui-org/react";
 
-export default function EditionCreateEdit(props: {
+export default function EditionCreateEdit({
+  title,
+  edition,
+  setEdition,
+  editions,
+  btnPressed,
+  btnText,
+  roles,
+  isLoadingRoles,
+}: {
   title: JSX.Element;
   edition: Edition;
   setEdition: any;
-  message: JSX.Element;
+  editions: Edition[];
   btnPressed: any;
   btnText: string;
   roles: Role[];
+  isLoadingRoles?: boolean;
 }) {
+  const editionNameIsInvalid = editions?.some(
+    (p) => p.id !== edition.id && stringsAreEqual(p.name, edition.name)
+  );
+
   function editionNameChanged(editionName: string) {
-    const newEdition = { ...props.edition, name: editionName };
-    props.setEdition(newEdition);
+    setEdition({ ...edition, name: editionName });
   }
 
   function rolesInEditionChanged(roles: Role[]) {
-    const newEdition = { ...props.edition, roles: roles };
-    props.setEdition(newEdition);
+    setEdition({ ...edition, roles: roles });
   }
 
-  function canPressButton() {
-    if (props.edition.name === "") {
-      return false;
-    }
-    return true;
+  function getExistingEditionName() {
+    return editions.find((e) => stringsAreEqual(e.name, edition.name))?.name;
   }
 
   return (
-    <Fragment>
-      {props.title}
-      <Spacer y={2} />
-      {props.message}
-      <Spacer y={2} />
-      <Container fluid css={{ display: "flex", flexDirection: "column" }}>
-        <Input
-          clearable
-          bordered
-          labelPlaceholder="Nom"
-          aria-label="Nom"
-          initialValue={props.edition.name}
-          onChange={(event) => editionNameChanged(event.target.value)}
-        />
-        <Spacer y={3} />
-        <RolesSelector
-          selectedRoles={props.edition.roles}
-          setSelectedRoles={rolesInEditionChanged}
-          placeholderText="Rôles"
-          roles={props.roles}
-        />
-        <Spacer y={3} />
-      </Container>
+    <>
+      {title}
+      <Spacer y={4} />
+      <Input
+        label="Nom"
+        aria-label="Nom"
+        value={edition.name}
+        onChange={(event: { target: { value: string } }) =>
+          editionNameChanged(event.target.value)
+        }
+        isRequired
+        isInvalid={editionNameIsInvalid}
+        errorMessage={
+          editionNameIsInvalid
+            ? `Le module '${getExistingEditionName()}' existe déjà`
+            : ""
+        }
+      />
+      <Spacer y={3} />
+      <RolesSelector
+        selectedRoles={edition.roles}
+        setSelectedRoles={rolesInEditionChanged}
+        autocompleteLabel="Rôles"
+        roles={roles}
+        isLoadingRoles={isLoadingRoles}
+      />
+      <Spacer y={3} />
 
       <Button
-        shadow
-        ghost
         color="success"
-        onPress={props.btnPressed}
-        disabled={!canPressButton()}
+        onPress={btnPressed}
+        isDisabled={editionNameIsInvalid || !edition.name}
       >
-        {props.btnText}
+        {btnText}
       </Button>
       <Spacer y={3} />
-    </Fragment>
+    </>
   );
 }
