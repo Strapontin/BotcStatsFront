@@ -50,8 +50,9 @@ export async function createNewPlayer(
   console.log("createPlayer");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;
@@ -82,8 +83,9 @@ export async function updatePlayer(
   console.log("updatePlayer");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;

@@ -1,4 +1,5 @@
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
+import { toastPromise } from "@/components/toast/toast";
 import Title from "@/components/ui/title";
 import { createNewGame } from "@/data/back-api/back-api-game";
 import useApi from "@/data/back-api/useApi";
@@ -15,26 +16,13 @@ export default function CreateGame() {
   const title = <Title>Création d{"'"}une nouvelle partie</Title>;
 
   async function createGame() {
-    if (!canCreateGame()) return;
+    const createGame = createNewGame(game, api);
+    toastPromise(createGame, "Enregistrement de la partie...");
 
-    if (await createNewGame(game, api)) {
+    if (await createGame) {
       mutate(`${api.apiUrl}/Games`);
       setGame(getNewEmptyGame());
     }
-  }
-
-  function canCreateGame() {
-    if (game.edition.id === -1) {
-      return false;
-    }
-    if (game.storyTeller.id === -1) {
-      return false;
-    }
-    if (game.winningAlignment === Alignment.None) {
-      return false;
-    }
-
-    return true;
   }
 
   return (

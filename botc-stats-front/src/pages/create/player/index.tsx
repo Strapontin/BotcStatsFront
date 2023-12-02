@@ -1,5 +1,6 @@
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
 import Title from "@/components/ui/title";
+import { toastPromise } from "@/components/toast/toast";
 import {
   createNewPlayer,
   useGetPlayers,
@@ -18,9 +19,10 @@ export default function CreatePlayer() {
   const title = <Title>Création d{"'"}un nouveau joueur</Title>;
 
   async function createPlayer() {
-    if (player.name === "") return;
+    const createPlayer = createNewPlayer(player, api);
+    toastPromise(createPlayer, "Enregistrement de l'utilisateur...");
 
-    if (await createNewPlayer(player, api)) {
+    if (await createPlayer) {
       mutate(`${api.apiUrl}/Players`);
       setPlayer(getNewEmptyPlayer());
     }

@@ -3,6 +3,7 @@ import Title from "@/components/ui/title";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import { useState } from "react";
 
+import { toastPromise } from "@/components/toast/toast";
 import {
   createNewEdition,
   useGetEditions,
@@ -14,16 +15,18 @@ import { mutate } from "swr";
 export default function CreateEdition() {
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
-  const { data: editions, isLoading: isLoadingEditions } = useGetEditions();
+  const { data: editions } = useGetEditions();
   const { data: roles, isLoading: isLoadingRoles } = useGetRoles();
   const api = useApi();
 
   const title = <Title>Création d{"'"}un nouveau module</Title>;
 
   async function createEdition() {
-    if (await createNewEdition(edition, api)) {
+    const createEdition = createNewEdition(edition, api);
+    toastPromise(createEdition, "Enregistrement du module...");
+
+    if (await createEdition) {
       mutate(`${api.apiUrl}/Editions`);
-      editions.push(edition);
       setEdition(getNewEmptyEdition());
     }
   }

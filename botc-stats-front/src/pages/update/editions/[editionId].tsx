@@ -1,4 +1,5 @@
 import EditionCreateEdit from "@/components/create-edit/edition-create-edit/EditionCreateEdit";
+import { toastPromise } from "@/components/toast/toast";
 import Title from "@/components/ui/title";
 import {
   deleteEdition,
@@ -57,22 +58,11 @@ export default function UpdateEditionPage() {
 
   const title = <Title>Modification du module {`'${oldEdition.name}'`}</Title>;
 
-  function canUpdateEdition() {
-    if (
-      !edition ||
-      edition.name === "" ||
-      editions.some(
-        (p: Edition) => p.id !== edition.id && p.name === edition.name
-      )
-    )
-      return false;
-    return true;
-  }
-
   async function btnUpdateEdition() {
-    if (!canUpdateEdition()) return;
+    const update = updateEdition(edition, api);
+    toastPromise(update, `Mise à jour du module '${oldEdition.name}'`);
 
-    if (await updateEdition(edition, api)) {
+    if (await update) {
       mutateRoutes();
     }
   }

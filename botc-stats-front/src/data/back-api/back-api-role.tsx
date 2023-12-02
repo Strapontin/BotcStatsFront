@@ -50,8 +50,9 @@ export async function createNewRole(
   console.log("createPlayer");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;
@@ -83,8 +84,9 @@ export async function updateRole(
   console.log("updateRole");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;

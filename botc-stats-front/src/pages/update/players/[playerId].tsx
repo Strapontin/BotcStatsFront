@@ -1,4 +1,5 @@
 import PlayerCreateEdit from "@/components/create-edit/player-create-edit/PlayerCreateEdit";
+import { toastPromise } from "@/components/toast/toast";
 import Title from "@/components/ui/title";
 import {
   deletePlayer,
@@ -57,25 +58,14 @@ export default function UpdatePlayerPage() {
     <Title>Modification du joueur {getPlayerFullName(oldPlayer)}</Title>
   );
 
-  function canUpdatePlayer() {
-    if (
-      !player ||
-      player.name === "" ||
-      players.some(
-        (p: Player) =>
-          p.id !== player.id &&
-          p.name === player.name &&
-          p.pseudo === player.pseudo
-      )
-    )
-      return false;
-    return true;
-  }
-
   async function btnUpdatePlayer() {
-    if (!canUpdatePlayer()) return;
+    const update = updatePlayer(player, api);
+    toastPromise(
+      update,
+      `Mise à jour du joueur '${getPlayerFullName(oldPlayer)}'`
+    );
 
-    if (await updatePlayer(player, api)) {
+    if (await update) {
       mutateRoutes();
     }
   }

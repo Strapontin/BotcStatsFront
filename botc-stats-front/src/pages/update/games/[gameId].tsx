@@ -1,4 +1,5 @@
 import GameCreateEdit from "@/components/create-edit/game-create-edit/GameCreateEdit";
+import { toastPromise } from "@/components/toast/toast";
 import Title from "@/components/ui/title";
 import {
   deleteGame,
@@ -32,10 +33,12 @@ export default function UpdateGamePage() {
 
   const { data: gameData, isLoading } = useGetGameById(gameId);
   const [game, setGame] = useState<Game>(gameData);
+  const [oldGame, setOldGame] = useState<Game>(gameData);
   const api = useApi();
 
   useEffect(() => {
     setGame(gameData);
+    setOldGame(gameData);
   }, [gameData]);
 
   if (isLoading || !game) {
@@ -54,22 +57,11 @@ export default function UpdateGamePage() {
 
   const title = <Title>Modification d{"'"}une partie existante</Title>;
 
-  function canUpdateGame() {
-    if (
-      !game ||
-      game.edition.id === -1 ||
-      game.storyTeller.id === -1 ||
-      dateToString(game.datePlayed) === "" ||
-      game.winningAlignment === Alignment.None
-    )
-      return false;
-    return true;
-  }
-
   async function btnUpdateGame() {
-    if (!canUpdateGame()) return;
+    const update = updateGame(game, api);
+    toastPromise(update, `Mise à jour de la partie...`);
 
-    if (await updateGame(game, api)) {
+    if (await update) {
       mutateRoutes();
     }
   }
@@ -116,8 +108,8 @@ export default function UpdateGamePage() {
               Voulez-vous vraiment supprimer la partie du{" "}
               <span>{dateToString(game.datePlayed)}</span> contée par{" '"}
               <span>
-                {game.storyTeller.name}
-                {getPlayerPseudoString(game.storyTeller.pseudo)}
+                {oldGame.storyTeller.name}
+                {getPlayerPseudoString(oldGame.storyTeller.pseudo)}
               </span>
               {"' "}?
             </span>

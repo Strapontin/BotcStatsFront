@@ -62,8 +62,9 @@ export async function createNewGame(
   console.log("createNewGame");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;
@@ -94,8 +95,8 @@ export async function updateGame(
     referrerPolicy: "no-referrer",
     body: JSON.stringify({
       gameId: game.id,
-      editionId: game.edition.id,
-      storyTellerId: game.storyTeller.id,
+      editionId: game?.edition?.id,
+      storyTellerId: game?.storyTeller?.id,
       datePlayed: game.datePlayed,
       notes: game.notes,
       winningAlignment: game.winningAlignment,
@@ -107,8 +108,9 @@ export async function updateGame(
   console.log("updateGame");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;
