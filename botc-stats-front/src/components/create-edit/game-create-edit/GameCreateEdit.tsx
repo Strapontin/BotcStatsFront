@@ -70,7 +70,7 @@ export default function GameCreateEdit({
         isLoading={isEditionsLoading}
         setSelectedEdition={(edition: Edition) => editionSelected(edition)}
         autocompleteLabel="Module"
-        defaultSelectedKey={String(game.edition.id)}
+        defaultSelectedKey={String(game?.edition?.id)}
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
@@ -78,7 +78,7 @@ export default function GameCreateEdit({
         isLoading={isPlayersLoading}
         setSelectedPlayer={storyTellerSelected}
         autocompleteLabel="Conteur"
-        defaultSelectedKey={String(game.storyTeller.id)}
+        defaultSelectedKey={String(game?.storyTeller?.id)}
       />
       <Spacer y={1.5} />
       <Input

@@ -1,4 +1,5 @@
 import RoleCreateEdit from "@/components/create-edit/role-create-edit/RoleCreateEdit";
+import { toastPromise } from "@/components/toast/toast";
 import Title from "@/components/ui/title";
 import {
   deleteRole,
@@ -55,20 +56,11 @@ export default function UpdateRolePage() {
 
   const title = <Title>Modification du rôle {`'${oldRole.name}'`}</Title>;
 
-  function canUpdateRole() {
-    if (
-      !role ||
-      role.name === "" ||
-      roles.some((p: Role) => p.id !== role.id && p.name === role.name)
-    )
-      return false;
-    return true;
-  }
-
   async function btnUpdateRole() {
-    if (!canUpdateRole()) return;
+    const update = updateRole(role, api);
+    toastPromise(update, `Mise à jour du rôle '${oldRole.name}'`);
 
-    if (await updateRole(role, api)) {
+    if (await update) {
       mutateRoutes();
     }
   }

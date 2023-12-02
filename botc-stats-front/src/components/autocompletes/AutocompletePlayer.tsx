@@ -1,4 +1,4 @@
-import { Player } from "@/entities/Player";
+import { Player, getPlayerFullName } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
@@ -40,7 +40,7 @@ export default function AutocompletePlayer({
         return (
           <AutocompleteItem
             key={player.id}
-            aria-label={`${player.name} (${player.pseudo})`}
+            aria-label={getPlayerFullName(player)}
           >
             <div className="flex flex-col">
               <span>{player.name}</span>

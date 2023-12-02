@@ -46,8 +46,9 @@ export async function createNewEdition(
   console.log("createNewEdition");
 
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;
@@ -78,8 +79,9 @@ export async function updateEdition(
   console.log("updateEdition");
 
   if (!response.ok) {
-    console.log("ERROR :", response, await response.text());
-    return false;
+    const error = response.text();
+    console.log("ERROR :", await error);
+    throw await error;
   }
 
   return true;
