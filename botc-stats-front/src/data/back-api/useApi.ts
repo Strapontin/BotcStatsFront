@@ -11,11 +11,14 @@ export type Api = {
 
 export default function useApi(): Api {
   const session: any = useSession();
-  const { data: urlBackend, isLoading } = useSWR("/api/urlBackend", fetcher);
 
   if (session.status === "loading") return { isLoadingApi: true };
 
   const accessToken = session.data?.accessToken;
 
-  return { accessToken, apiUrl: urlBackend?.url, isLoadingApi: isLoading };
+  return {
+    accessToken,
+    apiUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
+    isLoadingApi: session.status === "loading",
+  };
 }
