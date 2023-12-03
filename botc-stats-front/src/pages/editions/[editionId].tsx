@@ -15,7 +15,7 @@ export default function EditionIdPage() {
 
   const { data: edition, isLoading } = useGetEditionById(editionId);
 
-  if (isLoading || !editionId) {
+  if (isLoading) {
     return (
       <>
         <Spinner />

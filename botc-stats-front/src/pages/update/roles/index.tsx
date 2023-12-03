@@ -3,9 +3,9 @@ import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import Title from "@/components/ui/title";
 import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role } from "@/entities/Role";
-import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString } from "@/helper/string";
 import { Spacer, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function UpdateRolesPage() {
   const [filter, setFilter] = useState<string>("");

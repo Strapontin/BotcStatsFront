@@ -5,21 +5,24 @@ import useApi, { Api } from "./useApi";
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
 export function useGetRoles() {
-  const { apiUrl } = useApi();
-  const { data, error, isLoading } = useSWR(`${apiUrl}/Roles`, fetcher);
-
-  return { data, error, isLoading };
-}
-
-export function useGetRoleById(roleId: number) {
-  const { apiUrl } = useApi();
-
+  const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
-    roleId && !isNaN(roleId) ? `${apiUrl}/Roles/${roleId}` : null,
+    !isLoadingApi ? `${apiUrl}/Roles` : null,
     fetcher
   );
 
-  return { data, error, isLoading };
+  return { data, error, isLoading: isLoading || isLoadingApi };
+}
+
+export function useGetRoleById(roleId: number) {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, error, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(roleId) ? `${apiUrl}/Roles/${roleId}` : null,
+    fetcher
+  );
+
+  return { data, error, isLoading: isLoading || isLoadingApi || isNaN(roleId) };
 }
 
 export async function createNewRole(

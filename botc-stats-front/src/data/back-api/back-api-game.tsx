@@ -5,21 +5,24 @@ import useApi, { Api } from "./useApi";
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
 export function useGetGames() {
-  const { apiUrl } = useApi();
-  const { data, error, isLoading } = useSWR(`${apiUrl}/Games`, fetcher);
-
-  return { data, error, isLoading };
-}
-
-export function useGetGameById(gameId: number) {
-  const { apiUrl } = useApi();
-
+  const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
-    gameId && !isNaN(gameId) ? `${apiUrl}/Games/${gameId}` : null,
+    !isLoadingApi ? `${apiUrl}/Games` : null,
     fetcher
   );
 
-  return { data, error, isLoading };
+  return { data, error, isLoading: isLoading || isLoadingApi };
+}
+
+export function useGetGameById(gameId: number) {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, error, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(gameId) ? `${apiUrl}/Games/${gameId}` : null,
+    fetcher
+  );
+
+  return { data, error, isLoading: isLoading || isLoadingApi || isNaN(gameId) };
 }
 
 export async function createNewGame(

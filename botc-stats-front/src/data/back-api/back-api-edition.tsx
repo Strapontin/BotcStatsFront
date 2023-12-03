@@ -5,21 +5,30 @@ import useApi, { Api } from "./useApi";
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
 export function useGetEditions() {
-  const { apiUrl } = useApi();
-  const { data, error, isLoading } = useSWR(`${apiUrl}/Editions`, fetcher);
-
-  return { data, error, isLoading };
-}
-
-export function useGetEditionById(editionId: number) {
-  const { apiUrl } = useApi();
-
+  const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
-    editionId && !isNaN(editionId) ? `${apiUrl}/Editions/${editionId}` : null,
+    !isLoadingApi ? `${apiUrl}/Editions` : null,
     fetcher
   );
 
-  return { data, error, isLoading };
+  return { data, error, isLoading: isLoading || isLoadingApi };
+}
+
+export function useGetEditionById(editionId: number) {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, error, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(editionId)
+      ? `${apiUrl}/Editions/${editionId}`
+      : null,
+    fetcher
+  );
+
+  return {
+    data,
+    error,
+    isLoading: isLoading || isLoadingApi || isNaN(editionId),
+  };
 }
 
 export async function createNewEdition(

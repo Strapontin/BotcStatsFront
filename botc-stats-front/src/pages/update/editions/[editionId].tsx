@@ -42,7 +42,7 @@ export default function UpdateEditionPage() {
     setOldEdition(editionData);
   }, [editionData]);
 
-  if (isLoading || !editionId || !edition || !oldEdition) {
+  if (isLoading || !edition) {
     return (
       <>
         <Spinner />

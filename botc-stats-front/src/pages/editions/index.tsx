@@ -2,9 +2,9 @@ import Filter from "@/components/filter/Filter";
 import Title from "@/components/ui/title";
 import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { Edition } from "@/entities/Edition";
-import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString } from "@/helper/string";
 import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function EditionsPage() {
   const [filter, setFilter] = useState<string>("");

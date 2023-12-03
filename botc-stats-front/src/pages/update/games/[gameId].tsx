@@ -41,7 +41,7 @@ export default function UpdateGamePage() {
     setOldGame(gameData);
   }, [gameData]);
 
-  if (isLoading || !gameId || !game || !oldGame) {
+  if (isLoading || !game) {
     return (
       <>
         <Spinner />
