@@ -16,6 +16,8 @@ export default function useApi(): Api {
 
   const accessToken = session.data?.accessToken;
 
+  console.log("NEXT_PUBLIC_BACKEND_URL =", process.env.NEXT_PUBLIC_BACKEND_URL);
+
   return {
     accessToken,
     apiUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
