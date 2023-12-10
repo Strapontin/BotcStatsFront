@@ -14,6 +14,7 @@ import {
   ListboxItem,
   Spacer,
   Spinner,
+  Textarea,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 
@@ -82,18 +83,18 @@ export default function GamePage() {
         >
           Alignement gagnant
         </ListboxItem>
-        <ListboxItem key={5} classNames={classNamesListBoxItem}>
-          Notes
-        </ListboxItem>
-        <ListboxItem
-          key={6}
-          className="text-justify"
-          endContent={`${game.notes}`}
-          classNames={classNamesListBoxItem}
-          textValue={game.notes}
-          showDivider
-        />
       </Listbox>
+      <Textarea
+        isReadOnly
+        classNames={{
+          label: "pl-[9px] font-extrabold",
+          innerWrapper: "pl-6",
+        }}
+        variant="underlined"
+        label="Notes"
+        aria-label="Notes"
+        value={game.notes}
+      />
       <Spacer y={12} />
       <Accordion selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
         <AccordionItem
