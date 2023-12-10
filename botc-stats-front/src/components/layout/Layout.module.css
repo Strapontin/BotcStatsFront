@@ -34,6 +34,15 @@
   top: 50px;
 }
 
+.recette {
+  background: url(/images/Recette.png);
+  background-position: center;
+}
+
+.header:before {
+  top: 50px;
+}
+
 .content {
   padding-top: 2rem;
   width: 100%;
