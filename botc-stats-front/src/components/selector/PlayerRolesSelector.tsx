@@ -53,6 +53,7 @@ export default function PlayerRolesSelector({
           setSelectedPlayer={(p: Player) => setPlayer(p)}
           autocompleteLabel="Joueur"
           isLoading={isPlayersLoading}
+          canAddNewPlayer
         />
         <AutocompleteRoles
           roles={roles}
