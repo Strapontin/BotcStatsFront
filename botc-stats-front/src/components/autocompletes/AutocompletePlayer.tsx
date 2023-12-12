@@ -1,6 +1,14 @@
 import { Player, getPlayerFullName } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import CreatePlayer from "@/pages/create/player";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Modal,
+  ModalContent,
+} from "@nextui-org/react";
+import { useState } from "react";
 
 export default function AutocompletePlayer({
   players,
@@ -17,6 +25,10 @@ export default function AutocompletePlayer({
   autocompletePlaceholder?: string;
   defaultSelectedKey?: string;
 }) {
+  const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
+  const [showModalCreatePlayer, setShowModalCreatePlayer] =
+    useState<boolean>(false);
+
   const playersSorted = isLoading
     ? []
     : players.sort((a, b) =>
@@ -25,30 +37,61 @@ export default function AutocompletePlayer({
           : 1
       );
 
+  const items = playersSorted.map((player) => {
+    return (
+      <AutocompleteItem key={player.id} aria-label={getPlayerFullName(player)}>
+        <div className="flex flex-col">
+          <span>{player.name}</span>
+          <span className="text-default-400 text-sm">{player.pseudo}</span>
+        </div>
+      </AutocompleteItem>
+    );
+  });
+
+  function ButtonEmptyPlayer() {
+    return (
+      <Button
+        className="w-full whitespace-normal"
+        onPress={() => {
+          setAutocompleteKey((prev) => prev + 1);
+          setShowModalCreatePlayer(true);
+        }}
+      >
+        Ajouter un nouveau joueur
+      </Button>
+    );
+  }
+
   return (
-    <Autocomplete
-      label={autocompleteLabel}
-      variant="bordered"
-      placeholder={autocompletePlaceholder}
-      onSelectionChange={(playerId) => {
-        setSelectedPlayer(players.find((e) => e.id === +playerId)!);
-      }}
-      isLoading={isLoading}
-      defaultSelectedKey={defaultSelectedKey}
-    >
-      {playersSorted.map((player) => {
-        return (
-          <AutocompleteItem
-            key={player.id}
-            aria-label={getPlayerFullName(player)}
-          >
-            <div className="flex flex-col">
-              <span>{player.name}</span>
-              <span className="text-default-400 text-sm">{player.pseudo}</span>
-            </div>
-          </AutocompleteItem>
-        );
-      })}
-    </Autocomplete>
+    <>
+      <Autocomplete
+        key={autocompleteKey}
+        label={autocompleteLabel}
+        variant="bordered"
+        placeholder={autocompletePlaceholder}
+        onSelectionChange={(playerId) => {
+          setSelectedPlayer(players.find((e) => e.id === +playerId)!);
+        }}
+        isLoading={isLoading}
+        defaultSelectedKey={defaultSelectedKey}
+        listboxProps={{
+          emptyContent: <ButtonEmptyPlayer />,
+        }}
+      >
+        {items}
+      </Autocomplete>
+
+      <Modal
+        backdrop="blur"
+        isOpen={showModalCreatePlayer}
+        onClose={() => setShowModalCreatePlayer(false)}
+      >
+        <ModalContent>
+          <div className="p-5 flex flex-col items-center text-center">
+            <CreatePlayer />
+          </div>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
