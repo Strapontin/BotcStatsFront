@@ -17,6 +17,7 @@ export default function AutocompletePlayer({
   autocompleteLabel,
   autocompletePlaceholder,
   defaultSelectedKey,
+  canAddNewPlayer,
 }: {
   players: Player[];
   isLoading?: boolean;
@@ -24,6 +25,7 @@ export default function AutocompletePlayer({
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
   defaultSelectedKey?: string;
+  canAddNewPlayer?: boolean;
 }) {
   const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
   const [showModalCreatePlayer, setShowModalCreatePlayer] =
@@ -49,7 +51,7 @@ export default function AutocompletePlayer({
   });
 
   function ButtonEmptyPlayer() {
-    return (
+    return canAddNewPlayer ? (
       <Button
         className="w-full whitespace-normal"
         onPress={() => {
@@ -59,6 +61,8 @@ export default function AutocompletePlayer({
       >
         Ajouter un nouveau joueur
       </Button>
+    ) : (
+      "Aucun joueur trouvé."
     );
   }
 
