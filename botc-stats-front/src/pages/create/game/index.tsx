@@ -21,7 +21,12 @@ export default function CreateGame() {
 
     if (await createGame) {
       mutate(`${api.apiUrl}/Games`);
-      setGame(getNewEmptyGame());
+      setGame((prevGame) => ({
+        ...getNewEmptyGame(),
+        edition: prevGame.edition,
+        storyTeller: prevGame.storyTeller,
+        datePlayed: prevGame.datePlayed,
+      }));
     }
   }
 
