@@ -1,3 +1,4 @@
+import { useSortPlayerRoles } from "@/components/player-roles/sort";
 import { getAvatarRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { useGetPlayerById } from "@/data/back-api/back-api-player";
@@ -6,6 +7,7 @@ import { Role } from "@/entities/Role";
 import {
   Accordion,
   AccordionItem,
+  Divider,
   Listbox,
   ListboxItem,
   Spinner,
@@ -18,6 +20,9 @@ export default function PlayerPage() {
   const playerId: number = Number(router.query.playerId);
 
   const { data: player, isLoading } = useGetPlayerById(playerId);
+  const { select, sortedRoles, sortedByKey } = useSortPlayerRoles(
+    player?.timesPlayedRole
+  );
 
   if (isLoading) {
     return (
@@ -86,18 +91,40 @@ export default function PlayerPage() {
       aria-label="Détails des rôles joués"
       title="Détails des rôles joués"
     >
+      {select}
       <Listbox aria-label="Rôles sélectionnés">
-        {player.timesPlayedRole.map((role: Role) => (
-          <ListboxItem
-            key={role.id}
-            // href={`/roles/${role.id}`} //TODO when roles details are implemented
-            startContent={getAvatarRole(role)}
-            endContent={`${role.timesWonByPlayer} | ${role.timesLostByPlayer} | ${role.timesPlayedByPlayer}`}
-            classNames={classNamesListBoxItem}
-          >
-            {role.name}
-          </ListboxItem>
-        ))}
+        {sortedRoles!.map((role: Role) => {
+          const endContentStat =
+            sortedByKey === "Wins"
+              ? rolesRightStat(
+                  `${role.timesWonByPlayer} V`,
+                  `${role.timesPlayedByPlayer} T`,
+                  `${role.timesLostByPlayer} D`
+                )
+              : sortedByKey === "Loses"
+              ? rolesRightStat(
+                  `${role.timesLostByPlayer} D`,
+                  `${role.timesPlayedByPlayer} T`,
+                  `${role.timesWonByPlayer} V`
+                )
+              : rolesRightStat(
+                  `${role.timesPlayedByPlayer} T`,
+                  `${role.timesWonByPlayer} V`,
+                  `${role.timesLostByPlayer} D`
+                );
+
+          return (
+            <ListboxItem
+              key={role.id}
+              // href={`/roles/${role.id}`} //TODO when roles details are implemented
+              startContent={getAvatarRole(role)}
+              endContent={endContentStat}
+              classNames={classNamesListBoxItem}
+            >
+              {role.name}
+            </ListboxItem>
+          );
+        })}
       </Listbox>
     </AccordionItem>
   );
@@ -110,5 +137,22 @@ export default function PlayerPage() {
         {detailsRolesPlayed}
       </Accordion>
     </>
+  );
+}
+
+function rolesRightStat(
+  main: string,
+  firstSecondary: string,
+  secondSecondary: string
+) {
+  return (
+    <div className="flex items-center gap-5">
+      <div>{main}</div>
+      <div className="text-neutral-600 text-xs">
+        <p>{firstSecondary}</p>
+        <Divider />
+        <p>{secondSecondary}</p>
+      </div>
+    </div>
   );
 }

@@ -18,7 +18,7 @@ export default function SelectionStats() {
 
   let connexion: JSX.Element = <DropdownItem className="hidden"></DropdownItem>;
   let storyTeller: JSX.Element = (
-    <DropdownItem className="hidden"></DropdownItem>
+    <DropdownItem className="hidden" textValue="hidden"></DropdownItem>
   );
 
   if (user) {
