@@ -1,5 +1,7 @@
-import { useSortPlayerRoles } from "@/components/player-roles/sort";
-import { getAvatarRole } from "@/components/ui/image-role-name";
+import {
+  getCssClassesFromCharacterType,
+  getRoleIconPath,
+} from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { useGetPlayerById } from "@/data/back-api/back-api-player";
 import { getPlayerPseudoString } from "@/entities/Player";
@@ -7,22 +9,86 @@ import { Role } from "@/entities/Role";
 import {
   Accordion,
   AccordionItem,
-  Divider,
   Listbox,
   ListboxItem,
   Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+  User,
 } from "@nextui-org/react";
+import { useAsyncList } from "@react-stately/data";
 import { useRouter } from "next/router";
+import { Key, useCallback, useMemo } from "react";
 import NotFoundPage from "../404";
 
 export default function PlayerPage() {
+  const classNamesListBoxItem = useMemo(() => {
+    return { title: "text-left font-bold" };
+  }, []);
+
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
   const { data: player, isLoading } = useGetPlayerById(playerId);
-  const { select, sortedRoles, sortedByKey } = useSortPlayerRoles(
-    player?.timesPlayedRole
-  );
+
+  const renderCell = useCallback((role: Role, columnKey: Key) => {
+    const cellValue: string = role[columnKey as keyof Role] as string;
+
+    switch (columnKey) {
+      case "name":
+        return (
+          <div className="flex justify-left text-left">
+            <User
+              name={cellValue}
+              classNames={{ wrapper: "flex-1" }}
+              avatarProps={{
+                src: getRoleIconPath(cellValue),
+                size: "sm",
+                radius: "lg",
+                isBordered: true,
+                classNames: {
+                  base:
+                    getCssClassesFromCharacterType(role.characterType)
+                      .ringColorClass + " w-8 ",
+                },
+              }}
+            />
+          </div>
+        );
+      default:
+        return cellValue;
+    }
+  }, []);
+
+  let list = useAsyncList({
+    load() {
+      if (!player?.timesPlayedRole) return { items: [] };
+
+      return {
+        items: player.timesPlayedRole,
+      };
+    },
+    async sort({ items, sortDescriptor }) {
+      return {
+        items: items.sort((a: Role, b: Role) => {
+          let first = a[sortDescriptor.column];
+          let second = b[sortDescriptor.column];
+          let cmp =
+            (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+
+          if (sortDescriptor.direction === "descending") {
+            cmp *= -1;
+          }
+
+          return cmp;
+        }),
+      };
+    },
+  });
 
   if (isLoading) {
     return (
@@ -44,10 +110,6 @@ export default function PlayerPage() {
       {getPlayerPseudoString(player.pseudo)}
     </Title>
   );
-
-  const classNamesListBoxItem = {
-    title: "text-left font-bold",
-  };
 
   const playerComponent = player ? (
     <AccordionItem
@@ -91,41 +153,38 @@ export default function PlayerPage() {
       aria-label="Détails des rôles joués"
       title="Détails des rôles joués"
     >
-      {select}
-      <Listbox aria-label="Rôles sélectionnés">
-        {sortedRoles!.map((role: Role) => {
-          const endContentStat =
-            sortedByKey === "Wins"
-              ? rolesRightStat(
-                  `${role.timesWonByPlayer} V`,
-                  `${role.timesPlayedByPlayer} T`,
-                  `${role.timesLostByPlayer} D`
-                )
-              : sortedByKey === "Loses"
-              ? rolesRightStat(
-                  `${role.timesLostByPlayer} D`,
-                  `${role.timesPlayedByPlayer} T`,
-                  `${role.timesWonByPlayer} V`
-                )
-              : rolesRightStat(
-                  `${role.timesPlayedByPlayer} T`,
-                  `${role.timesWonByPlayer} V`,
-                  `${role.timesLostByPlayer} D`
-                );
-
-          return (
-            <ListboxItem
-              key={role.id}
-              // href={`/roles/${role.id}`} //TODO when roles details are implemented
-              startContent={getAvatarRole(role)}
-              endContent={endContentStat}
-              classNames={classNamesListBoxItem}
-            >
-              {role.name}
-            </ListboxItem>
-          );
-        })}
-      </Listbox>
+      <Table
+        aria-label="Player role list"
+        removeWrapper
+        sortDescriptor={list.sortDescriptor}
+        onSortChange={list.sort}
+      >
+        <TableHeader>
+          <TableColumn key="name" align="end" className="px-0 pl-3 ">
+            Role
+          </TableColumn>
+          <TableColumn key="timesPlayedByPlayer" allowsSorting className="px-0">
+            Total
+          </TableColumn>
+          <TableColumn key="timesWonByPlayer" allowsSorting className="px-0">
+            Wins
+          </TableColumn>
+          <TableColumn key="timesLostByPlayer" allowsSorting className="px-0">
+            Loses
+          </TableColumn>
+        </TableHeader>
+        <TableBody items={player.timesPlayedRole}>
+          {(item) => (
+            <TableRow key={item.name}>
+              {(columnKey) => (
+                <TableCell className="">
+                  {renderCell(item, columnKey)}
+                </TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </AccordionItem>
   );
 
@@ -137,22 +196,5 @@ export default function PlayerPage() {
         {detailsRolesPlayed}
       </Accordion>
     </>
-  );
-}
-
-function rolesRightStat(
-  main: string,
-  firstSecondary: string,
-  secondSecondary: string
-) {
-  return (
-    <div className="flex items-center gap-5">
-      <div>{main}</div>
-      <div className="text-neutral-600 text-xs">
-        <p>{firstSecondary}</p>
-        <Divider />
-        <p>{secondSecondary}</p>
-      </div>
-    </div>
   );
 }

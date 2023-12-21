@@ -14,17 +14,19 @@ export function useGetPlayers() {
   return { data, error, isLoading: isLoading || isLoadingApi };
 }
 
-export function useGetPlayerById(playerId: number) {
+export function useGetPlayerById(playerId: number): {
+  data: Player;
+  isLoading: boolean;
+} {
   const { apiUrl, isLoadingApi } = useApi();
 
-  const { data, error, isLoading } = useSWR(
+  const { data, isLoading } = useSWR(
     !isLoadingApi && !isNaN(playerId) ? `${apiUrl}/Players/${playerId}` : null,
     fetcher
   );
 
   return {
     data,
-    error,
     isLoading: isLoading || isLoadingApi || isNaN(playerId),
   };
 }

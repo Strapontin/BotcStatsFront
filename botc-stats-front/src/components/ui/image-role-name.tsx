@@ -44,7 +44,7 @@ export default function ImageIconName(props: {
   }
 }
 
-export function getRoleIconPath(roleName: string) {
+export function getRoleIconPath(roleName: string): string {
   const imgFileName = removeDiacritics(roleName.replaceAll("'", "-"))
     .replaceAll(" ", "-")
     .replaceAll("'", "");
