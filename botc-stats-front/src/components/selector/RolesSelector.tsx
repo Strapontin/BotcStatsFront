@@ -30,7 +30,8 @@ export default function RolesSelector({
         setSelectedRoles={setSelectedRoles}
         autocompleteLabel={autocompleteLabel}
         isLoading={isLoadingRoles}
-        multiple
+        multipleSelection
+        autoRefocus
       />
     </>
   );
