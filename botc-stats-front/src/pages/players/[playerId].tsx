@@ -1,8 +1,7 @@
-import { getAvatarRole } from "@/components/ui/image-role-name";
+import { PlayerRolesTable } from "@/components/player-roles/PlayerRolesTable";
 import Title from "@/components/ui/title";
 import { useGetPlayerById } from "@/data/back-api/back-api-player";
 import { getPlayerPseudoString } from "@/entities/Player";
-import { Role } from "@/entities/Role";
 import {
   Accordion,
   AccordionItem,
@@ -11,9 +10,14 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 import NotFoundPage from "../404";
 
 export default function PlayerPage() {
+  const classNamesListBoxItem = useMemo(() => {
+    return { title: "text-left font-bold" };
+  }, []);
+
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
@@ -25,7 +29,7 @@ export default function PlayerPage() {
         <Spinner />
       </>
     );
-  } else if (player.status === 404) {
+  } else if (!player) {
     return (
       <>
         <NotFoundPage />
@@ -39,10 +43,6 @@ export default function PlayerPage() {
       {getPlayerPseudoString(player.pseudo)}
     </Title>
   );
-
-  const classNamesListBoxItem = {
-    title: "text-left font-bold",
-  };
 
   const playerComponent = player ? (
     <AccordionItem
@@ -86,19 +86,7 @@ export default function PlayerPage() {
       aria-label="Détails des rôles joués"
       title="Détails des rôles joués"
     >
-      <Listbox aria-label="Rôles sélectionnés">
-        {player.timesPlayedRole.map((role: Role) => (
-          <ListboxItem
-            key={role.id}
-            // href={`/roles/${role.id}`} //TODO when roles details are implemented
-            startContent={getAvatarRole(role)}
-            endContent={`${role.timesWonByPlayer} | ${role.timesLostByPlayer} | ${role.timesPlayedByPlayer}`}
-            classNames={classNamesListBoxItem}
-          >
-            {role.name}
-          </ListboxItem>
-        ))}
-      </Listbox>
+      <PlayerRolesTable playerRoles={player?.timesPlayedRole} />
     </AccordionItem>
   );
 
