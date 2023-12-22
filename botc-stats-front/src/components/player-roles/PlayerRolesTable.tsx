@@ -67,7 +67,7 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
               avatarProps={{
                 src: getRoleIconPath(cellValue),
                 size: "sm",
-                radius: "lg",
+                radius: "sm",
                 isBordered: true,
                 classNames: {
                   base:
