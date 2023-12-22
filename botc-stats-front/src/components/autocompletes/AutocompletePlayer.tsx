@@ -18,6 +18,7 @@ export default function AutocompletePlayer({
   autocompletePlaceholder,
   defaultSelectedKey,
   canAddNewPlayer,
+  autoFocus,
 }: {
   players: Player[];
   isLoading?: boolean;
@@ -26,6 +27,7 @@ export default function AutocompletePlayer({
   autocompletePlaceholder?: string;
   defaultSelectedKey?: string;
   canAddNewPlayer?: boolean;
+  autoFocus?: boolean;
 }) {
   const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
   const [showModalCreatePlayer, setShowModalCreatePlayer] =
@@ -81,6 +83,7 @@ export default function AutocompletePlayer({
         listboxProps={{
           emptyContent: <ButtonEmptyPlayer />,
         }}
+        autoFocus={autoFocus}
       >
         {items}
       </Autocomplete>

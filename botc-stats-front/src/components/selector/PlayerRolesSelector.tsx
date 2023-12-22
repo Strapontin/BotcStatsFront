@@ -24,21 +24,20 @@ export default function PlayerRolesSelector({
   const [player, setPlayer] = useState<Player>();
   const [role, setRole] = useState<Role>();
   const [autocompleteKey, setAutocompleteKey] = useState(0);
+  const [autoFocus, setAutoFocus] = useState<string>();
 
-  useEffect(() => {
-    if (!player || !role) return;
-
+  function addPlayerRole(p: Player, r: Role) {
     const newPlayerRole: PlayerRole = {
-      player: player,
-      role: role,
-      finalAlignment: role.alignment,
+      player: p,
+      role: r,
+      finalAlignment: r.alignment,
     };
 
     setSelectedPlayerRoles([...selectedPlayerRoles, newPlayerRole]);
     setPlayer(undefined);
     setRole(undefined);
     setAutocompleteKey((oldVal) => oldVal + 1);
-  }, [player, role, setSelectedPlayerRoles, selectedPlayerRoles]);
+  }
 
   return (
     <>
@@ -49,16 +48,28 @@ export default function PlayerRolesSelector({
       />
       <div className="flex gap-1" key={autocompleteKey}>
         <AutocompletePlayer
+          key={`autocompletePlayer_${role?.name}`}
           players={allPlayers}
-          setSelectedPlayer={(p: Player) => setPlayer(p)}
+          setSelectedPlayer={(p: Player) => {
+            if (!role) setPlayer(p);
+            else addPlayerRole(p, role);
+            setAutoFocus("Role");
+          }}
+          autoFocus={autoFocus === "Player"}
           autocompleteLabel="Joueur"
           isLoading={isPlayersLoading}
           canAddNewPlayer
         />
         <AutocompleteRoles
+          key={`autocompleteRole_${player?.name}`}
           roles={roles}
           selectedRoles={[]}
-          setSelectedRoles={(r: Role) => setRole(r)}
+          setSelectedRoles={(r: Role) => {
+            if (!player) setRole(r);
+            else addPlayerRole(player, r);
+            setAutoFocus("Player");
+          }}
+          autoFocus={autoFocus === "Role"}
           autocompleteLabel="Rôle"
           isLoading={isRolesLoading}
         />

@@ -18,7 +18,9 @@ export default function AutocompleteRoles({
   autocompleteLabel,
   autocompletePlaceholder,
   isLoading,
-  multiple,
+  multipleSelection,
+  autoRefocus,
+  autoFocus,
 }: {
   roles: Role[];
   selectedRoles: Role[];
@@ -26,7 +28,9 @@ export default function AutocompleteRoles({
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
   isLoading?: boolean;
-  multiple?: boolean;
+  multipleSelection?: boolean;
+  autoRefocus?: boolean;
+  autoFocus?: boolean;
 }) {
   const rolesGroupedByCharacterType = groupRolesByCharacterType(
     isLoading || !roles ? [] : roles
@@ -44,13 +48,10 @@ export default function AutocompleteRoles({
   function setRoleSelected(roleId: number) {
     const roleSelected = roles.find((r) => r.id === roleId);
 
-    if (multiple) {
-      setSelectedRoles([...selectedRoles, roleSelected]);
-      // Refocus the autocomplete to select other roles
-      setAutocompleteKey((oldVal) => oldVal + 1);
-    } else {
-      setSelectedRoles(roleSelected);
-    }
+    if (multipleSelection) setSelectedRoles([...selectedRoles, roleSelected]);
+    else setSelectedRoles(roleSelected);
+
+    if (autoRefocus) setAutocompleteKey((oldVal) => oldVal + 1);
   }
 
   return (
@@ -67,6 +68,7 @@ export default function AutocompleteRoles({
       }}
       inputProps={{ baseRef: autocompleteRef }}
       isLoading={isLoading}
+      autoFocus={autoFocus}
     >
       {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
         return (
