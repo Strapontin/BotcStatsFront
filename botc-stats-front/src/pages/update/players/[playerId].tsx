@@ -46,7 +46,7 @@ export default function UpdatePlayerPage() {
         <Spinner />
       </>
     );
-  } else if (playerData.status === 404) {
+  } else if (!playerData) {
     return (
       <>
         <NotFoundPage />

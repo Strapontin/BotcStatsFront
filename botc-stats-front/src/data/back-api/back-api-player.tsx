@@ -26,7 +26,7 @@ export function useGetPlayerById(playerId: number): {
   );
 
   return {
-    data,
+    data: data?.status === 404 ? null : data,
     isLoading: isLoading || isLoadingApi || isNaN(playerId),
   };
 }
