@@ -7,7 +7,6 @@ import {
   useGetEditionById,
   useGetEditions,
 } from "@/data/back-api/back-api-edition";
-import { useGetRoles } from "@/data/back-api/back-api-role";
 import useApi from "@/data/back-api/useApi";
 import { Edition } from "@/entities/Edition";
 import NotFoundPage from "@/pages/404";
@@ -32,7 +31,6 @@ export default function UpdateEditionPage() {
 
   const { data: editionData, isLoading } = useGetEditionById(editionId);
   const { data: editions } = useGetEditions();
-  const { data: roles } = useGetRoles();
   const [edition, setEdition] = useState<Edition>(editionData);
   const [oldEdition, setOldEdition] = useState<Edition>(editionData);
   const api = useApi();
@@ -91,7 +89,6 @@ export default function UpdateEditionPage() {
         editions={editions}
         btnPressed={btnUpdateEdition}
         btnText="Modifier le module"
-        roles={roles}
       />
 
       <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>

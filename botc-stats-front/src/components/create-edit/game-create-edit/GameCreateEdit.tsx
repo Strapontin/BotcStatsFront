@@ -6,12 +6,14 @@ import {
   useGetEditions,
 } from "@/data/back-api/back-api-edition";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
+import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Edition } from "@/entities/Edition";
 import { Game } from "@/entities/Game";
 import { Player } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
+import { CharacterType } from "@/entities/enums/characterType";
 import { dateToStringOrderByFormat } from "@/helper/date";
 import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
 import DropdownAlignment from "../../dropdowns/DropdownAlignment";
@@ -38,6 +40,7 @@ export default function GameCreateEdit({
   }: { data: Edition; isLoading: boolean } = useGetEditionById(
     game?.edition?.id
   );
+  const { data: allTravellers } = useGetRoles([CharacterType.Traveller]);
 
   async function editionSelected(edition: Edition) {
     setGame({ ...game, edition: edition });
@@ -107,7 +110,7 @@ export default function GameCreateEdit({
       <PlayerRolesSelector
         selectedPlayerRoles={game.playerRoles}
         setSelectedPlayerRoles={selectedPlayerRolesChanged}
-        roles={edition?.roles}
+        roles={[...(allTravellers ?? []), ...(edition?.roles ?? [])]}
         allPlayers={players}
         isPlayersLoading={isPlayersLoading}
         isRolesLoading={isEditionByIdLoading}

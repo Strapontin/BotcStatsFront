@@ -7,6 +7,7 @@ import {
   DropdownTrigger,
   Spinner,
 } from "@nextui-org/react";
+import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import AuthContext from "../../stores/authContext";
@@ -34,7 +35,11 @@ export default function SelectionStats() {
       // User connected
       if (user.isConnected) {
         connexion = (
-          <DropdownItem key="/api/auth/signout" showDivider>
+          <DropdownItem
+            key="signout"
+            showDivider
+            onPress={() => signOut({ redirect: false })}
+          >
             Se déconnecter
           </DropdownItem>
         );
@@ -71,7 +76,11 @@ export default function SelectionStats() {
       // User not connected
       else {
         connexion = (
-          <DropdownItem key="/api/auth/signin" showDivider>
+          <DropdownItem
+            key="signin"
+            showDivider
+            onPress={() => signIn("discord")}
+          >
             Se connecter
           </DropdownItem>
         );
@@ -88,7 +97,8 @@ export default function SelectionStats() {
         <DropdownMenu
           disabledKeys={[router.asPath, "/games-role", "Connecting"]}
           onAction={(key) => {
-            router.push(key.toString());
+            if (key && key !== "signin" && key !== "signout")
+              router.push(key.toString());
           }}
           aria-label="Static Actions"
         >
