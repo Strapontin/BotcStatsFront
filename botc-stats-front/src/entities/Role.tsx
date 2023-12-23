@@ -6,7 +6,6 @@ export type Role = {
   id: number;
   name: string;
   characterType: CharacterType;
-  alignment: Alignment;
 
   timesPlayedByPlayer: number;
   timesWonByPlayer: number;
@@ -21,7 +20,6 @@ export function getNewEmptyRole() {
     id: -1,
     name: "",
     characterType: CharacterType.None,
-    alignment: Alignment.None,
     timesPlayedByPlayer: 0,
     timesWonByPlayer: 0,
     timesLostByPlayer: 0,
@@ -55,4 +53,16 @@ export function sortRoles(roles: Role[]) {
     }
     return a.characterType < b.characterType ? -1 : 1;
   });
+}
+
+export function getDefaultAlignmentFromRole(role: Role): Alignment {
+  return [
+    CharacterType.Townsfolk,
+    CharacterType.Outsider,
+    CharacterType.Traveller,
+  ].includes(role.characterType)
+    ? Alignment.Good
+    : [CharacterType.Minion, CharacterType.Demon].includes(role.characterType)
+    ? Alignment.Evil
+    : Alignment.None;
 }

@@ -1,6 +1,8 @@
 import RolesSelector from "@/components/selector/RolesSelector";
+import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Edition } from "@/entities/Edition";
 import { Role } from "@/entities/Role";
+import { CharacterType } from "@/entities/enums/characterType";
 import { stringsAreEqual } from "@/helper/string";
 import { Button, Input, Spacer } from "@nextui-org/react";
 
@@ -11,8 +13,6 @@ export default function EditionCreateEdit({
   editions,
   btnPressed,
   btnText,
-  roles,
-  isLoadingRoles,
 }: {
   title: JSX.Element;
   edition: Edition;
@@ -20,9 +20,13 @@ export default function EditionCreateEdit({
   editions: Edition[];
   btnPressed: any;
   btnText: string;
-  roles: Role[];
-  isLoadingRoles?: boolean;
 }) {
+  const { data: roles, isLoading: isLoadingRoles } = useGetRoles([
+    CharacterType.Townsfolk,
+    CharacterType.Outsider,
+    CharacterType.Minion,
+    CharacterType.Demon,
+  ]);
   const editionNameIsInvalid = editions?.some(
     (p) => p.id !== edition.id && stringsAreEqual(p.name, edition.name)
   );

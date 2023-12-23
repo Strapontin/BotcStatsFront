@@ -8,7 +8,6 @@ import {
   createNewEdition,
   useGetEditions,
 } from "@/data/back-api/back-api-edition";
-import { useGetRoles } from "@/data/back-api/back-api-role";
 import useApi from "@/data/back-api/useApi";
 import { mutate } from "swr";
 
@@ -16,7 +15,6 @@ export default function CreateEdition() {
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
 
   const { data: editions } = useGetEditions();
-  const { data: roles, isLoading: isLoadingRoles } = useGetRoles();
   const api = useApi();
 
   const title = <Title>Création d{"'"}un nouveau module</Title>;
@@ -37,8 +35,6 @@ export default function CreateEdition() {
       edition={edition}
       setEdition={setEdition}
       editions={editions}
-      roles={roles}
-      isLoadingRoles={isLoadingRoles}
       btnPressed={createEdition}
       btnText="Créer un module"
     />

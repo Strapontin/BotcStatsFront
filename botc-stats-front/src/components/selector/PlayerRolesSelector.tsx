@@ -1,7 +1,7 @@
 import { Player } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
-import { Role } from "@/entities/Role";
-import { useEffect, useState } from "react";
+import { Role, getDefaultAlignmentFromRole } from "@/entities/Role";
+import { useState } from "react";
 import AutocompletePlayer from "../autocompletes/AutocompletePlayer";
 import AutocompleteRoles from "../autocompletes/AutocompleteRoles";
 import ListboxPlayerRolesComponent from "../listbox/ListboxPlayerRolesComponent";
@@ -30,7 +30,7 @@ export default function PlayerRolesSelector({
     const newPlayerRole: PlayerRole = {
       player: p,
       role: r,
-      finalAlignment: r.alignment,
+      finalAlignment: getDefaultAlignmentFromRole(r),
     };
 
     setSelectedPlayerRoles([...selectedPlayerRoles, newPlayerRole]);

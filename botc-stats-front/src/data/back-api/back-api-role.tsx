@@ -4,10 +4,16 @@ import useApi, { Api } from "./useApi";
 
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-export function useGetRoles() {
+export function useGetRoles(characterTypes?: number[]) {
+  const searchParams = new URLSearchParams(
+    characterTypes
+      ? characterTypes.map((c) => ["characterTypes", c.toString()])
+      : {}
+  );
+
   const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
-    !isLoadingApi ? `${apiUrl}/Roles` : null,
+    !isLoadingApi ? `${apiUrl}/Roles?${searchParams}` : null,
     fetcher
   );
 
@@ -43,11 +49,10 @@ export async function createNewRole(
     body: JSON.stringify({
       roleName: role.name,
       characterType: role.characterType,
-      alignment: role.alignment,
     }),
   });
 
-  console.log("createPlayer");
+  console.log("createRole");
 
   if (!response.ok) {
     const error = response.text();
@@ -77,7 +82,6 @@ export async function updateRole(
       roleId: role.id,
       roleName: role.name,
       characterType: role.characterType,
-      alignment: role.alignment,
     }),
   });
 
