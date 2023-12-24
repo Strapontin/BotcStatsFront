@@ -25,6 +25,44 @@ export function useGetGameById(gameId: number) {
   return { data, error, isLoading: isLoading || isLoadingApi || isNaN(gameId) };
 }
 
+export function useGetGamesByPlayerId(playerId: number): {
+  data?: Game[];
+  isLoading: boolean;
+} {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(playerId)
+      ? `${apiUrl}/Games/ByPlayerId/${playerId}`
+      : null,
+    fetcher
+  );
+
+  return {
+    data: data?.status === 404 ? null : data,
+    isLoading: isLoading || isLoadingApi || isNaN(playerId),
+  };
+}
+
+export function useGetGamesByStorytellerId(storyTellerId: number): {
+  data?: Game[];
+  isLoading: boolean;
+} {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(storyTellerId)
+      ? `${apiUrl}/Games/ByStorytellerId/${storyTellerId}`
+      : null,
+    fetcher
+  );
+
+  return {
+    data: data?.status === 404 ? null : data,
+    isLoading: isLoading || isLoadingApi || isNaN(storyTellerId),
+  };
+}
+
 export async function createNewGame(
   game: Game,
   { apiUrl, accessToken }: Api
