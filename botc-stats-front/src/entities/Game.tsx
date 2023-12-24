@@ -1,5 +1,7 @@
+import PlayerName from "@/components/ui/playerName";
+import { dateToString } from "@/helper/date";
 import { Edition, getNewEmptyEdition } from "./Edition";
-import { Player, getNewEmptyPlayer } from "./Player";
+import { Player, getNewEmptyPlayer, getPlayerPseudoString } from "./Player";
 import { PlayerRole } from "./PlayerRole";
 import { Role } from "./Role";
 import { Alignment } from "./enums/alignment";
@@ -28,4 +30,19 @@ export function getNewEmptyGame() {
     demonBluffs: [],
   };
   return game;
+}
+
+export function getGameDisplayName(game: Game): JSX.Element {
+  return (
+    <>
+      {dateToString(game.datePlayed)} - Contée par{" "}
+      {
+        <PlayerName
+          name={`${game.storyTeller.name}${getPlayerPseudoString(
+            game.storyTeller.pseudo
+          )}`}
+        />
+      }
+    </>
+  );
 }

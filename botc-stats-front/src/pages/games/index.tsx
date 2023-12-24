@@ -1,9 +1,6 @@
-import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
 import { useGetGames } from "@/data/back-api/back-api-game";
-import { Game } from "@/entities/Game";
-import { getPlayerPseudoString } from "@/entities/Player";
-import { dateToString } from "@/helper/date";
+import { Game, getGameDisplayName } from "@/entities/Game";
 import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
 
 export default function GamesListPage() {
@@ -34,14 +31,7 @@ export default function GamesListPage() {
             textValue={String(game.id)}
             showDivider
           >
-            {dateToString(game.datePlayed)} - Contée par{" "}
-            {
-              <PlayerName
-                name={`${game.storyTeller.name}${getPlayerPseudoString(
-                  game.storyTeller.pseudo
-                )}`}
-              />
-            }
+            {getGameDisplayName(game)}
           </ListboxItem>
         ))}
       </Listbox>
