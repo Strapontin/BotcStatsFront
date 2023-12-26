@@ -21,7 +21,7 @@ import { Key, useCallback, useMemo, useState } from "react";
 import {
   getCssClassesFromCharacterType,
   getRoleIconPath,
-} from "../ui/image-role-name";
+} from "../../ui/image-role-name";
 
 export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
   const [characterTypeFilter, setCharacterTypeFilter] =
