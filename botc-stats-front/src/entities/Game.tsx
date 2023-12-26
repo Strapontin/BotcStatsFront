@@ -46,3 +46,18 @@ export function getGameDisplayName(game: Game): JSX.Element {
     </>
   );
 }
+
+export interface GrouppedGames {
+  [key: string]: Game[];
+}
+
+export function groupGamesByMonthPlayed(games: Game[]): GrouppedGames {
+  return games.reduce((acc: GrouppedGames, current: Game) => {
+    const key = new Date(current.datePlayed).getMonth();
+    if (key && !acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(current);
+    return acc;
+  }, {});
+}

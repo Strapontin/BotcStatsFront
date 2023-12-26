@@ -1,4 +1,4 @@
-import { PlayerRolesTable } from "@/components/player-roles/PlayerRolesTable";
+import { PlayerRolesTable } from "@/components/table/player-roles/PlayerRolesTable";
 import Title from "@/components/ui/title";
 import {
   useGetGamesByPlayerId,
