@@ -132,7 +132,7 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
         }}
       >
         <TableHeader>
-          <TableColumn key="name" align="end" className="px-0 pl-3 ">
+          <TableColumn key="name" className="px-0 pl-3">
             Role
           </TableColumn>
           <TableColumn key="timesPlayedByPlayer" className="px-0" allowsSorting>
@@ -149,7 +149,7 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
           {(item) => (
             <TableRow key={item.name}>
               {(columnKey) => (
-                <TableCell className="">
+                <TableCell>
                   {renderCell(item, columnKey)}
                 </TableCell>
               )}

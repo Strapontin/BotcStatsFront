@@ -1,4 +1,5 @@
 import Filter from "@/components/filter/Filter";
+import { GenericTable } from "@/components/table/generic-table/GenericTable";
 import Title from "@/components/ui/title";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player } from "@/entities/Player";

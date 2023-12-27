@@ -1,4 +1,5 @@
 import { Toaster } from "react-hot-toast";
+import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar";
 import SelectionStats from "../select-stats/SelectionStats";
 import classes from "./Layout.module.css";
 
@@ -14,6 +15,9 @@ export default function Layout(props: { children: any }) {
         <div className={classes.Layout + " w-96 max-w-[90%] flex flex-col"}>
           <div className={headerClasses}>
             <SelectionStats />
+            <div className="flex justify-end absolute w-96 max-w-[90%]">
+              <ConnectionWithAvatar />
+            </div>
           </div>
           <div className={classes.content}>{props.children}</div>
         </div>
