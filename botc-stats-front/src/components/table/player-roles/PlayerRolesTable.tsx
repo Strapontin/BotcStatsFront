@@ -95,7 +95,7 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
 
   return (
     <>
-      <div className="flex gap-3">
+      <div className="flex">
         <Dropdown>
           <DropdownTrigger>
             <Button variant="flat">Type de rôle</Button>
@@ -118,6 +118,7 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
       </div>
       <Spacer y={5} />
       <Table
+        className="overflow-auto"
         aria-label="Player role list"
         removeWrapper
         sortDescriptor={sortDescriptor}
@@ -149,9 +150,7 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
           {(item) => (
             <TableRow key={item.name}>
               {(columnKey) => (
-                <TableCell>
-                  {renderCell(item, columnKey)}
-                </TableCell>
+                <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}
             </TableRow>
           )}

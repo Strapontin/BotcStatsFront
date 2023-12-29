@@ -1,9 +1,8 @@
 import { useGetGames } from "@/data/back-api/back-api-game";
 import { GrouppedGames, groupGamesByMonthPlayed } from "@/entities/Game";
 import { Alignment } from "@/entities/enums/alignment";
-import { Selection, Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { Chart as ChartJS, registerables } from "chart.js";
-import { useState } from "react";
 import { Bar } from "react-chartjs-2";
 
 ChartJS.register(...registerables);

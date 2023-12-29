@@ -12,7 +12,7 @@ export interface Player {
   timesPlayedRole: Role[];
 }
 
-export function getNewEmptyPlayer() {
+export function getNewEmptyPlayer(): Player {
   const edition: Player = {
     id: -1,
     name: "",
@@ -27,14 +27,14 @@ export function getNewEmptyPlayer() {
   return edition;
 }
 
-export function getPlayerPseudoString(pseudo: string) {
+export function getPlayerPseudoString(pseudo: string): string {
   const pseudoFormatted =
     pseudo !== undefined && pseudo.length > 0 ? ` (${pseudo})` : "";
 
   return pseudoFormatted;
 }
 
-export function getPlayerFullName(player: Player) {
-  if (!player) return;
+export function getPlayerFullName(player: Player): string {
+  if (!player) return "";
   return `${player.name}${getPlayerPseudoString(player.pseudo)}`;
 }
