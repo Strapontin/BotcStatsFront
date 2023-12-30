@@ -98,6 +98,7 @@ export default function ConnectionWithAvatar() {
         {dropdownItems.map((item) => (
           <DropdownItem
             key={item.key}
+            textValue={item.key}
             onPress={item.onPress}
             startContent={item.showStartContentSpinner && <Spinner />}
           >

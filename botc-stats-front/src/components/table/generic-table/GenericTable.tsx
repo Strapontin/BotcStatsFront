@@ -1,12 +1,9 @@
-import AuthContext from "@/stores/authContext";
 import {
   Button,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Listbox,
-  ListboxItem,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -20,13 +17,14 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { Key, useContext, useEffect, useMemo, useState } from "react";
+import { Key, useMemo, useState } from "react";
 import { ChevronDown } from "react-feather";
 
-interface GenericTableColumnProps {
+export interface GenericTableColumnProps {
   key: string;
   name: string;
   allowSorting?: boolean;
+  defaultFilter?: boolean;
 }
 
 export interface GenericTableProps<T> {
@@ -57,23 +55,16 @@ export function groupColumns(
 export function GenericTable<
   T extends {
     id: string | number;
-    popoverListboxContent?: JSX.Element;
-    popoverListboxContentStoryTeller?: JSX.Element;
+    popoverContent?: JSX.Element;
   }
 >({ columns, rows }: GenericTableProps<T>) {
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(columns.map((column) => column.key))
   );
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: columns[0].key,
+    column: columns.find((column) => column.defaultFilter)?.key,
     direction: "descending",
   });
-  const user = useContext(AuthContext);
-  const [tableBodyKey, setTableBodyKey] = useState(0);
-
-  useEffect(() => {
-    setTableBodyKey((prev) => prev + 1);
-  }, [user.isStoryTeller]);
 
   const sortedItems = useMemo(() => {
     return [...rows].sort((a: T, b: T) => {
@@ -96,7 +87,7 @@ export function GenericTable<
   }, [rows, sortDescriptor]);
 
   function renderCell(row: T, columnKey: Key): JSX.Element {
-    if (row.popoverListboxContent) {
+    if (row.popoverContent) {
       return (
         <Popover showArrow>
           <PopoverTrigger>
@@ -104,14 +95,7 @@ export function GenericTable<
               {row[columnKey as keyof T] as string}
             </div>
           </PopoverTrigger>
-          <PopoverContent>
-            <Listbox aria-label="popover-items">
-              {row.popoverListboxContent}
-              {(user.isStoryTeller && row.popoverListboxContentStoryTeller) || (
-                <ListboxItem className="hidden" key={""} />
-              )}
-            </Listbox>
-          </PopoverContent>
+          <PopoverContent>{row.popoverContent}</PopoverContent>
         </Popover>
       );
     } else {
@@ -142,7 +126,6 @@ export function GenericTable<
       </Dropdown>
       <Spacer y={2.5} />
       <Table
-        key={tableBodyKey}
         className="overflow-auto"
         aria-label="table"
         removeWrapper
