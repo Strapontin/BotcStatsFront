@@ -1,6 +1,7 @@
 import {
   GenericTable,
   GenericTableColumnProps,
+  GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
 import Title from "@/components/ui/title";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
@@ -35,14 +36,26 @@ export default function PlayersPage() {
   }
 
   const genericTableColumns: GenericTableColumnProps[] = [
-    { key: "name", name: "Name", allowSorting: true },
+    {
+      key: "name",
+      name: "Nom",
+      allowSorting: true,
+      isFilterable: true,
+      isDefaultVisible: true,
+    },
     {
       key: "total",
       name: "Total",
       allowSorting: true,
-      defaultFilter: true,
+      isDefaultSort: true,
+      isDefaultVisible: true,
     },
-    { key: "wins", name: "Victoires", allowSorting: true },
+    {
+      key: "wins",
+      name: "Victoires",
+      allowSorting: true,
+      isDefaultVisible: true,
+    },
     { key: "loses", name: "Défaites", allowSorting: true },
     {
       key: "gamesGood",
@@ -67,7 +80,7 @@ export default function PlayersPage() {
           className="w-full"
           onPress={() => router.push(`/players/${player.id}`)}
         >
-          Détails de '{getPlayerFullName(player)}'
+          Détails de &apos;{getPlayerFullName(player)}&apos;
         </ListboxItem>
         <ListboxItem
           key={"player-update"}
@@ -75,28 +88,68 @@ export default function PlayersPage() {
           className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
           onPress={() => router.push(`/update/players/${player.id}`)}
         >
-          Modifier '{getPlayerFullName(player)}'
+          Modifier &apos;{getPlayerFullName(player)}&apos;
         </ListboxItem>
       </Listbox>
     );
   }
 
-  const tableRows = players.map((player) => ({
-    id: "player" + player.id,
-    name: getPlayerFullName(player),
-    total: player.nbGamesPlayed,
+  type RowType = GenericTableRowsExtendedProps & {
+    name: string;
+    total: number | string;
+    wins: number | string;
+    loses: number | string;
+    gamesGood: number | string;
+    gamesEvil: number | string;
+    winsGood: number | string;
+    winsEvil: number | string;
+  };
 
-    wins: -1, //TODO : fetch values in backend
-    loses: -1,
+  const tableRows = players.map((player: Player) => {
+    const result: RowType = {
+      id: "player" + player.id,
+      name: getPlayerFullName(player),
+      total: player.nbGamesPlayed,
 
-    gamesGood: player.nbGamesGood,
-    gamesEvil: player.nbGamesEvil,
+      wins: player.nbGamesWon,
+      loses: player.nbGamesLost,
 
-    winsGood: -1,
-    winsEvil: -1,
+      gamesGood: player.nbGamesGood,
+      gamesEvil: player.nbGamesEvil,
 
-    popoverContent: tableRowPopover(player),
-  }));
+      winsGood: player.nbGamesGoodWon,
+      winsEvil: player.nbGamesEvilWon,
+
+      popoverContent: tableRowPopover(player),
+    };
+    return result;
+  });
+
+  function computePercentage(
+    total: number | string,
+    value: number | string
+  ): string {
+    if (typeof total === "string" || typeof value === "string") return "-";
+    return total === 0
+      ? "-"
+      : ((value / total) * 100).toFixed() + `% (${value})`;
+  }
+
+  const tableRowsPercentage = tableRows.map((player) => {
+    const result: RowType = {
+      ...player,
+      total: player.total,
+      wins: computePercentage(player.total, player.wins),
+      loses: computePercentage(player.total, player.loses),
+
+      gamesGood: computePercentage(player.total, player.gamesGood),
+      gamesEvil: computePercentage(player.total, player.gamesEvil),
+
+      winsGood: computePercentage(player.gamesGood, player.winsGood),
+      winsEvil: computePercentage(player.gamesEvil, player.winsEvil),
+    };
+    return result;
+  });
 
   return (
     <>
@@ -112,7 +165,11 @@ export default function PlayersPage() {
         </Button>
         <Spacer y={3} />
       </div>
-      <GenericTable columns={genericTableColumns} rows={tableRows} />
+      <GenericTable
+        columns={genericTableColumns}
+        rows={tableRows}
+        rowsPercentage={tableRowsPercentage}
+      />
     </>
   );
 }

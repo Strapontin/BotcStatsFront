@@ -9,6 +9,8 @@ export interface Player {
   nbGamesLost: number;
   nbGamesGood: number;
   nbGamesEvil: number;
+  nbGamesGoodWon: number;
+  nbGamesEvilWon: number;
   timesPlayedRole: Role[];
 }
 
@@ -22,6 +24,8 @@ export function getNewEmptyPlayer(): Player {
     nbGamesLost: 0,
     nbGamesGood: 0,
     nbGamesEvil: 0,
+    nbGamesGoodWon: 0,
+    nbGamesEvilWon: 0,
     timesPlayedRole: [],
   };
   return edition;

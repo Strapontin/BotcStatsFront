@@ -1,3 +1,5 @@
+import Filter from "@/components/filter/Filter";
+import { stringContainsString } from "@/helper/string";
 import {
   Button,
   Dropdown,
@@ -10,6 +12,7 @@ import {
   Selection,
   SortDescriptor,
   Spacer,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -17,20 +20,28 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { Key, useMemo, useState } from "react";
+import { Key, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "react-feather";
 
-export interface GenericTableColumnProps {
+export type GenericTableColumnProps = {
   key: string;
   name: string;
   allowSorting?: boolean;
-  defaultFilter?: boolean;
-}
+  isDefaultSort?: boolean;
+  isFilterable?: boolean;
+  isDefaultVisible?: boolean;
+};
 
-export interface GenericTableProps<T> {
+export type GenericTableRowsExtendedProps = {
+  id: string | number;
+  popoverContent?: JSX.Element;
+};
+
+export type GenericTableProps<T> = {
   columns: GenericTableColumnProps[];
   rows: T[];
-}
+  rowsPercentage?: T[];
+};
 
 interface GroupedColumns {
   [key: string]: GenericTableColumnProps[];
@@ -52,29 +63,66 @@ export function groupColumns(
   );
 }
 
-export function GenericTable<
-  T extends {
-    id: string | number;
-    popoverContent?: JSX.Element;
-  }
->({ columns, rows }: GenericTableProps<T>) {
+export function GenericTable<T extends GenericTableRowsExtendedProps>({
+  columns,
+  rows,
+  rowsPercentage,
+}: GenericTableProps<T>) {
+  const [filters, setFilters] = useState<{ key: string; value: string }[]>([]);
+  const [showPercentage, setShowPercentage] = useState<boolean>(false);
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
-    new Set(columns.map((column) => column.key))
+    new Set(
+      columns
+        .filter((column) => column.isDefaultVisible)
+        .map((column) => column.key)
+    )
   );
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: columns.find((column) => column.defaultFilter)?.key,
+    column: columns.find((column) => column.isDefaultSort)?.key,
     direction: "descending",
   });
+  const columnsRef = useRef(columns);
+
+  useEffect(() => {
+    setFilters([]);
+    columnsRef.current
+      .filter((column) => column.isFilterable)
+      .forEach((column) => {
+        setFilters((prev) => [...prev, { key: column.key, value: "" }]);
+      });
+  }, []);
 
   const sortedItems = useMemo(() => {
-    return [...rows].sort((a: T, b: T) => {
+    const filteredRows = (
+      showPercentage && rowsPercentage ? rowsPercentage : rows
+    ).filter((row) => {
+      return filters.every((filter) => {
+        return stringContainsString(
+          row[filter.key as keyof T] as string,
+          filter.value
+        );
+      });
+    });
+
+    function replacePercentageValue(value: T[keyof T]) {
+      if (showPercentage && typeof value === "string") {
+        const regex = /-|%| \(|\)/g;
+        const result = (value as string).replaceAll(regex, "").replace("%", "");
+        // console.log(result);
+        return Number(result);
+      }
+      return value;
+    }
+
+    return [...filteredRows].sort((a: T, b: T) => {
       const first = a[sortDescriptor.column as keyof T];
       const second = b[sortDescriptor.column as keyof T];
+
       let cmp =
         first === second
           ? 0
-          : (parseInt(first as string) || first) <
-            (parseInt(second as string) || second)
+          : (Number(first) || replacePercentageValue(first)) <
+            (Number(second) || replacePercentageValue(second))
           ? -1
           : 1;
 
@@ -84,7 +132,7 @@ export function GenericTable<
 
       return cmp;
     });
-  }, [rows, sortDescriptor]);
+  }, [rows, rowsPercentage, showPercentage, sortDescriptor, filters]);
 
   function renderCell(row: T, columnKey: Key): JSX.Element {
     if (row.popoverContent) {
@@ -105,25 +153,64 @@ export function GenericTable<
 
   return (
     <>
-      <Dropdown>
-        <DropdownTrigger className="flex">
-          <Button endContent={<ChevronDown className="h-4" />}>Columns</Button>
-        </DropdownTrigger>
-        <DropdownMenu
-          disallowEmptySelection
-          aria-label="Table Columns"
-          closeOnSelect={false}
-          selectedKeys={visibleColumns}
-          selectionMode="multiple"
-          onSelectionChange={setVisibleColumns}
-        >
-          {columns.map((column) => (
-            <DropdownItem key={column.key} className="capitalize">
-              {column.name}
-            </DropdownItem>
+      <div className="flex justify-between items-center gap-2">
+        {filters
+          .sort((a, b) => {
+            return (
+              columns.findIndex((column) => column.key === a.key) -
+              columns.findIndex((column) => column.key === b.key)
+            );
+          })
+          .map((filter) => (
+            <div key={filter.key}>
+              <Filter
+                filterValue={filter.value}
+                setFilter={(value) => {
+                  setFilters((prev) => [
+                    ...prev.filter((p) => p.key !== filter.key),
+                    { key: filter.key, value: value },
+                  ]);
+                }}
+                placeholder={`Filtre ${
+                  columns.find((c) => c.key === filter.key)?.name
+                }`}
+              />
+              <Spacer y={3} />
+            </div>
           ))}
-        </DropdownMenu>
-      </Dropdown>
+      </div>
+      <div className="flex justify-between">
+        <Dropdown>
+          <DropdownTrigger className="flex">
+            <Button endContent={<ChevronDown className="h-4" />}>
+              Colonnes
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            disallowEmptySelection
+            aria-label="Table Columns"
+            closeOnSelect={false}
+            selectedKeys={visibleColumns}
+            selectionMode="multiple"
+            onSelectionChange={setVisibleColumns}
+          >
+            {columns.map((column) => (
+              <DropdownItem key={column.key} className="capitalize">
+                {column.name}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+        {rowsPercentage && (
+          <Switch
+            size="sm"
+            isSelected={showPercentage}
+            onValueChange={setShowPercentage}
+          >
+            Pourcentage
+          </Switch>
+        )}
+      </div>
       <Spacer y={2.5} />
       <Table
         className="overflow-auto"
