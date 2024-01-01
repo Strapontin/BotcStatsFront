@@ -13,6 +13,7 @@ export type Role = {
 
   timesPlayedTotal: number;
   timesWonTotal: number;
+  timesLostTotal: number;
 };
 
 export function getNewEmptyRole() {
@@ -20,11 +21,14 @@ export function getNewEmptyRole() {
     id: -1,
     name: "",
     characterType: CharacterType.None,
+
     timesPlayedByPlayer: 0,
     timesWonByPlayer: 0,
     timesLostByPlayer: 0,
+
     timesPlayedTotal: 0,
     timesWonTotal: 0,
+    timesLostTotal: 0,
   };
   return role;
 }

@@ -24,8 +24,6 @@ import {
 } from "../../ui/image-role-name";
 
 export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
-  const [characterTypeFilter, setCharacterTypeFilter] =
-    useState<Selection>("all");
   const characterTypeOptions = [
     { name: "Villageois", uid: CharacterType.Townsfolk },
     { name: "Etranger", uid: CharacterType.Outsider },
@@ -33,15 +31,16 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
     { name: "Démon", uid: CharacterType.Demon },
     { name: "Voyageur", uid: CharacterType.Traveller },
   ];
+  const [characterTypeFilter, setCharacterTypeFilter] = useState<Selection>(
+    new Set(characterTypeOptions.map((type) => type.uid.toString()))
+  );
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "timesPlayedByPlayer",
     direction: "descending",
   });
 
-  const filteredPlayerRoles = playerRoles.filter(
-    (role) =>
-      characterTypeFilter === "all" ||
-      Array.from(characterTypeFilter).includes(role.characterType.toString())
+  const filteredPlayerRoles = playerRoles.filter((role) =>
+    Array.from(characterTypeFilter).includes(role.characterType.toString())
   );
 
   const sortedPlayerRoles = useMemo(() => {

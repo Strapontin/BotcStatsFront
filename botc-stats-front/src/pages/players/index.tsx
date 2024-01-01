@@ -18,6 +18,17 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { Plus } from "react-feather";
 
+type RowType = GenericTableRowsExtendedProps & {
+  name: string;
+  total: number | string;
+  wins: number | string;
+  loses: number | string;
+  gamesGood: number | string;
+  gamesEvil: number | string;
+  winsGood: number | string;
+  winsEvil: number | string;
+};
+
 export default function PlayersPage() {
   const { data: players, isLoading } = useGetPlayers();
   const router = useRouter();
@@ -80,7 +91,7 @@ export default function PlayersPage() {
           className="w-full"
           onPress={() => router.push(`/players/${player.id}`)}
         >
-          Détails de &apos;{getPlayerFullName(player)}&apos;
+          Voir les détails de &apos;{getPlayerFullName(player)}&apos;
         </ListboxItem>
         <ListboxItem
           key={"player-update"}
@@ -88,22 +99,11 @@ export default function PlayersPage() {
           className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
           onPress={() => router.push(`/update/players/${player.id}`)}
         >
-          Modifier &apos;{getPlayerFullName(player)}&apos;
+          Modifier le joueur &apos;{getPlayerFullName(player)}&apos;
         </ListboxItem>
       </Listbox>
     );
   }
-
-  type RowType = GenericTableRowsExtendedProps & {
-    name: string;
-    total: number | string;
-    wins: number | string;
-    loses: number | string;
-    gamesGood: number | string;
-    gamesEvil: number | string;
-    winsGood: number | string;
-    winsEvil: number | string;
-  };
 
   const tableRows = players.map((player: Player) => {
     const result: RowType = {

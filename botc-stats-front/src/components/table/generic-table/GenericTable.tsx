@@ -26,15 +26,17 @@ import { ChevronDown } from "react-feather";
 export type GenericTableColumnProps = {
   key: string;
   name: string;
+  isFilterable?: boolean;
   allowSorting?: boolean;
   isDefaultSort?: boolean;
-  isFilterable?: boolean;
+  reverseDefaultSort?: boolean;
   isDefaultVisible?: boolean;
 };
 
 export type GenericTableRowsExtendedProps = {
   id: string | number;
   popoverContent?: JSX.Element;
+  renderJSX?: any;
 };
 
 export type GenericTableProps<T> = {
@@ -79,7 +81,10 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
   );
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: columns.find((column) => column.isDefaultSort)?.key,
-    direction: "descending",
+    direction: columns.find((column) => column.isDefaultSort)
+      ?.reverseDefaultSort
+      ? "ascending"
+      : "descending",
   });
   const columnsRef = useRef(columns);
 
@@ -106,9 +111,11 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
 
     function replacePercentageValue(value: T[keyof T]) {
       if (showPercentage && typeof value === "string") {
-        const regex = /-|%| \(|\)/g;
-        const result = (value as string).replaceAll(regex, "").replace("%", "");
-        // console.log(result);
+        const regex = / \(|\)/g;
+        const result = (value as string)
+          .replace("%", ".")
+          .replace("-", "-Infinity")
+          .replaceAll(regex, "");
         return Number(result);
       }
       return value;
@@ -135,19 +142,22 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
   }, [rows, rowsPercentage, showPercentage, sortDescriptor, filters]);
 
   function renderCell(row: T, columnKey: Key): JSX.Element {
+    const cell =
+      row?.renderJSX && Object.hasOwn(row.renderJSX, columnKey as PropertyKey)
+        ? (row.renderJSX[columnKey as PropertyKey] as string)
+        : (row[columnKey as keyof T] as string);
+
     if (row.popoverContent) {
       return (
         <Popover showArrow>
           <PopoverTrigger>
-            <div className="cursor-pointer">
-              {row[columnKey as keyof T] as string}
-            </div>
+            <div className={`cursor-pointer`}>{cell}</div>
           </PopoverTrigger>
           <PopoverContent>{row.popoverContent}</PopoverContent>
         </Popover>
       );
     } else {
-      return <>{row[columnKey as keyof T] as string}</>;
+      return <>{cell}</>;
     }
   }
 
@@ -165,13 +175,14 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
             <div key={filter.key}>
               <Filter
                 filterValue={filter.value}
+                size="sm"
                 setFilter={(value) => {
                   setFilters((prev) => [
                     ...prev.filter((p) => p.key !== filter.key),
                     { key: filter.key, value: value },
                   ]);
                 }}
-                placeholder={`Filtre ${
+                placeholder={`${
                   columns.find((c) => c.key === filter.key)?.name
                 }`}
               />
@@ -182,9 +193,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       <div className="flex justify-between">
         <Dropdown>
           <DropdownTrigger className="flex">
-            <Button endContent={<ChevronDown className="h-4" />}>
-              Colonnes
-            </Button>
+            <Button variant="flat">Colonnes</Button>
           </DropdownTrigger>
           <DropdownMenu
             disallowEmptySelection

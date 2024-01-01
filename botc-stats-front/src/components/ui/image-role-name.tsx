@@ -1,10 +1,10 @@
 import { Role } from "@/entities/Role";
 import { CharacterType } from "@/entities/enums/characterType";
+import { Avatar, User } from "@nextui-org/react";
 import Image from "next/image";
 import { useState } from "react";
 import { removeDiacritics } from "../../helper/string";
 import RoleColored from "./role-colored";
-import { Avatar } from "@nextui-org/react";
 
 export default function ImageIconName(props: {
   name: string;
@@ -44,11 +44,15 @@ export default function ImageIconName(props: {
   }
 }
 
-export function getRoleIconPath(roleName: string): string {
-  const imgFileName = removeDiacritics(roleName.replaceAll("'", "-"))
+export function getRoleImgName(roleName: string): string {
+  const roleImgName = removeDiacritics(roleName.replaceAll("'", "-"))
     .replaceAll(" ", "-")
-    .replaceAll("'", "");
-  const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png`;
+  return roleImgName;
+}
+
+export function getRoleIconPath(roleName: string): string {
+  const imgFileName = getRoleImgName(roleName);
+  const imgPath = `/images/roles-icons/${imgFileName}.png`;
 
   return imgPath;
 }
@@ -114,5 +118,26 @@ export function getAvatarRole(role: Role) {
       radius="sm"
       src={getRoleIconPath(role.name)}
     />
+  );
+}
+
+export function getUserRole(role: Role) {
+  return (
+    <div className="flex text-left">
+      <User
+        name={role.name}
+        avatarProps={{
+          isBordered: true,
+          src: `${getRoleIconPath(role.name)}`,
+          radius: "sm",
+          size: "sm",
+          classNames: {
+            base:
+              getCssClassesFromCharacterType(role.characterType)
+                .ringColorClass + " flex-none",
+          },
+        }}
+      />
+    </div>
   );
 }

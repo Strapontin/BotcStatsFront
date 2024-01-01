@@ -44,6 +44,7 @@ export default function ConnectionWithAvatar() {
     text: string | JSX.Element;
     onPress?: () => {};
     showStartContentSpinner?: boolean;
+    showDivider?: boolean;
   }[] = user.isLoading
     ? [
         {
@@ -63,6 +64,7 @@ export default function ConnectionWithAvatar() {
               {discordUserData?.username}
             </div>
           ),
+          showDivider: true,
         },
         {
           key: "signout",
@@ -101,6 +103,7 @@ export default function ConnectionWithAvatar() {
             textValue={item.key}
             onPress={item.onPress}
             startContent={item.showStartContentSpinner && <Spinner />}
+            showDivider={item.showDivider}
           >
             {item.text}
           </DropdownItem>
