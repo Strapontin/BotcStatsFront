@@ -1,40 +1,132 @@
+import {
+  GenericTable,
+  GenericTableColumnProps,
+  GenericTableRowsExtendedProps,
+} from "@/components/table/generic-table/GenericTable";
 import Title from "@/components/ui/title";
 import { useGetGames } from "@/data/back-api/back-api-game";
-import { Game, getGameDisplayName } from "@/entities/Game";
-import { Listbox, ListboxItem, Spacer, Spinner } from "@nextui-org/react";
+import { Game } from "@/entities/Game";
+import { alignmentToString } from "@/entities/enums/alignment";
+import { dateToString } from "@/helper/date";
+import AuthContext from "@/stores/authContext";
+import {
+  Button,
+  Listbox,
+  ListboxItem,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
+import { useRouter } from "next/router";
+import { useContext } from "react";
+import { Plus } from "react-feather";
+
+type RowType = GenericTableRowsExtendedProps & {
+  datePlayed: Date | string;
+  storyteller: string;
+  edition: string;
+  nbPlayers: number;
+  winningAlignment: string;
+};
 
 export default function GamesListPage() {
-  const title = "Dernières parties jouées";
-
   const { data: games, isLoading } = useGetGames();
+  const router = useRouter();
+  const user = useContext(AuthContext);
+
+  const title = <Title>Dernières parties jouées</Title>;
 
   if (isLoading) {
     return (
       <>
-        <Title>{title}</Title>
+        {title}
         <Spacer y={3} />
         <Spinner />
       </>
     );
   }
 
+  const genericTableColumns: GenericTableColumnProps[] = [
+    {
+      key: "datePlayed",
+      name: "Date de la partie",
+      allowSorting: true,
+      isDefaultVisible: true,
+      isDefaultSort: true,
+    },
+    {
+      key: "storyteller",
+      name: "Conteur",
+      isFilterable: true,
+      allowSorting: true,
+      isDefaultVisible: true,
+    },
+    {
+      key: "edition",
+      name: "Module",
+      isFilterable: true,
+      allowSorting: true,
+      isDefaultVisible: true,
+    },
+    { key: "nbPlayers", name: "Nombre de joueurs", allowSorting: true },
+    { key: "winningAlignment", name: "Alignement gagnant", allowSorting: true },
+  ];
+
+  function tableRowPopover(game: Game): JSX.Element {
+    return (
+      <Listbox aria-label="popover-items">
+        <ListboxItem
+          key={"game-details"}
+          aria-label="game-details"
+          className="w-full"
+          onPress={() => router.push(`/games/${game.id}`)}
+        >
+          Voir les détails de la partie
+        </ListboxItem>
+        <ListboxItem
+          key={"game-update"}
+          aria-label="game-update"
+          className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
+          onPress={() => router.push(`/update/games/${game.id}`)}
+        >
+          Modifier la partie
+        </ListboxItem>
+      </Listbox>
+    );
+  }
+
+  const tableRows = games.map((game: Game) => {
+    const result: RowType = {
+      id: "game" + game.id,
+
+      datePlayed: game.datePlayed,
+      storyteller: game.storyTeller.name,
+      edition: game.edition.name,
+      nbPlayers: game.playerRoles.length,
+      winningAlignment: alignmentToString(game.winningAlignment),
+
+      renderJSX: { datePlayed: dateToString(new Date(game.datePlayed)) },
+
+      popoverContent: tableRowPopover(game),
+    };
+    return result;
+  });
+
   return (
     <>
-      <Title>{title}</Title>
-      <Spacer y={5} />
-      <Listbox aria-label="Parties jouées">
-        {games.map((game: Game) => (
-          <ListboxItem
-            key={game.id}
-            className="text-left"
-            href={`/games/${game.id}`}
-            textValue={String(game.id)}
-            showDivider
-          >
-            {getGameDisplayName(game)}
-          </ListboxItem>
-        ))}
-      </Listbox>
+      {title}
+      <Spacer y={1} />
+      <div className={user.isStoryTeller ? "" : "hidden"}>
+        <Button
+          className="flex"
+          color="success"
+          startContent={<Plus className="h-4" />}
+          onPress={() => router.push(`/create/game`)}
+        >
+          Ajouter une nouvelle partie
+        </Button>
+        <Spacer y={3} />
+      </div>
+      <GenericTable columns={genericTableColumns} rows={tableRows} />
     </>
   );
 }

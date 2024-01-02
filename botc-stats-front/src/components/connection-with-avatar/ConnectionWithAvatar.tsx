@@ -59,7 +59,7 @@ export default function ConnectionWithAvatar() {
           key: "connected-as",
           text: (
             <div>
-              {`Connecté en tant que :`}
+              Connecté en tant que :
               <br />
               {discordUserData?.username}
             </div>

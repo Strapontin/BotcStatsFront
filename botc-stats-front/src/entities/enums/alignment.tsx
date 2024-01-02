@@ -5,7 +5,11 @@ export enum Alignment {
 }
 
 export function alignmentToString(alignment: Alignment) {
-  return alignment === Alignment.Good ? "Gentil" : "Maléfique";
+  return alignment === Alignment.Good
+    ? "Gentil"
+    : alignment === Alignment.Evil
+    ? "Maléfique"
+    : "-";
 }
 
 export function alignmentList(): { key: number; value: string }[] {

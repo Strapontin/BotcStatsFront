@@ -6,6 +6,7 @@ export type Edition = {
   roles: Role[];
   timesPlayed: number;
   timesGoodWon: number;
+  timesEvilWon: number;
 };
 
 export function getNewEmptyEdition() {
@@ -15,6 +16,7 @@ export function getNewEmptyEdition() {
     roles: [],
     timesPlayed: 0,
     timesGoodWon: 0,
+    timesEvilWon: 0,
   };
   return edition;
 }
