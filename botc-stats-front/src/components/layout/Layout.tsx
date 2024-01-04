@@ -1,23 +1,16 @@
 import { Toaster } from "react-hot-toast";
-import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar";
-import SelectionStats from "../select-stats/SelectionStats";
+import HeaderNavbar from "./HeaderNavbar";
 import classes from "./Layout.module.css";
 
 export default function Layout(props: { children: any }) {
-  const headerClasses =
-    process.env.NEXT_PUBLIC_IS_RECETTE === "True"
-      ? classes.header + ` ${classes.recette}`
-      : classes.header;
   return (
     <>
       <div className="w-full">
         <Toaster position="bottom-right" reverseOrder={true} />
         <div className={classes.Layout + " w-96 max-w-[90%] flex flex-col"}>
-          <div className={headerClasses}>
-            <SelectionStats />
-            <div className="flex justify-end absolute w-96 max-w-[90%]">
-              <ConnectionWithAvatar />
-            </div>
+          <div className={classes.header}>
+            {/* <SelectionStats /> */}
+            <HeaderNavbar />
           </div>
           <div className={classes.content}>{props.children}</div>
         </div>
