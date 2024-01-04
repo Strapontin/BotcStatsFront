@@ -3,12 +3,10 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
-import { getRoleImgName, getUserRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { Edition } from "@/entities/Edition";
-import { getCharacterTypeTextById } from "@/entities/enums/characterType";
-import AuthContext from "@/stores/authContext";
 import {
   Button,
   Listbox,
@@ -17,7 +15,6 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 import { Plus } from "react-feather";
 
 type RowType = GenericTableRowsExtendedProps & {
@@ -30,9 +27,9 @@ type RowType = GenericTableRowsExtendedProps & {
 export default function UpdateEditionsPage() {
   const { data: editions, isLoading } = useGetEditions();
   const router = useRouter();
-  const user = useContext(AuthContext);
+  const user = useUserHasStoryTellerRights();
 
-  const title = <Title>Modifier un module</Title>;
+  const title = <Title>Liste des modules</Title>;
 
   if (isLoading) {
     return (

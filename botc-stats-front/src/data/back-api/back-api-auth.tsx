@@ -2,7 +2,7 @@ import useSWR from "swr";
 import useApi from "./useApi";
 
 export function useUserHasStoryTellerRights(): {
-  data: boolean;
+  isStoryTeller: boolean;
   error: string;
   isLoading: boolean;
   isConnected: boolean;
@@ -26,7 +26,7 @@ export function useUserHasStoryTellerRights(): {
   );
 
   return {
-    data,
+    isStoryTeller: data,
     error,
     isLoading: isLoading || isLoadingApi,
     isConnected: accessToken ? true : false,

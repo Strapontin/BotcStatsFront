@@ -4,11 +4,12 @@ import {
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
 import Title from "@/components/ui/title";
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetGames } from "@/data/back-api/back-api-game";
 import { Game } from "@/entities/Game";
+import { getPlayerFullName } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
-import AuthContext from "@/stores/authContext";
 import {
   Button,
   Listbox,
@@ -17,7 +18,6 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 import { Plus } from "react-feather";
 
 type RowType = GenericTableRowsExtendedProps & {
@@ -31,7 +31,7 @@ type RowType = GenericTableRowsExtendedProps & {
 export default function GamesListPage() {
   const { data: games, isLoading } = useGetGames();
   const router = useRouter();
-  const user = useContext(AuthContext);
+  const user = useUserHasStoryTellerRights();
 
   const title = <Title>Dernières parties jouées</Title>;
 
@@ -67,7 +67,7 @@ export default function GamesListPage() {
       allowSorting: true,
       isDefaultVisible: true,
     },
-    { key: "nbPlayers", name: "Nombre de joueurs", allowSorting: true },
+    { key: "nbPlayers", name: "Nb joueurs", allowSorting: true },
     { key: "winningAlignment", name: "Alignement gagnant", allowSorting: true },
   ];
 
@@ -99,7 +99,7 @@ export default function GamesListPage() {
       id: "game" + game.id,
 
       datePlayed: game.datePlayed,
-      storyteller: game.storyTeller.name,
+      storyteller: getPlayerFullName(game.storyteller),
       edition: game.edition.name,
       nbPlayers: game.playerRoles.length,
       winningAlignment: alignmentToString(game.winningAlignment),

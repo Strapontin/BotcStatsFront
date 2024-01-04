@@ -24,7 +24,7 @@ export default function CreateGame() {
       setGame((prevGame) => ({
         ...getNewEmptyGame(),
         edition: prevGame.edition,
-        storyTeller: prevGame.storyTeller,
+        storyteller: prevGame.storyteller,
         datePlayed: prevGame.datePlayed,
       }));
     }

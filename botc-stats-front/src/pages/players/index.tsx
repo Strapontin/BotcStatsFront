@@ -4,9 +4,9 @@ import {
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
 import Title from "@/components/ui/title";
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player, getPlayerFullName } from "@/entities/Player";
-import AuthContext from "@/stores/authContext";
 import {
   Button,
   Listbox,
@@ -15,7 +15,6 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 import { Plus } from "react-feather";
 
 type RowType = GenericTableRowsExtendedProps & {
@@ -32,7 +31,7 @@ type RowType = GenericTableRowsExtendedProps & {
 export default function PlayersPage() {
   const { data: players, isLoading } = useGetPlayers();
   const router = useRouter();
-  const user = useContext(AuthContext);
+  const user = useUserHasStoryTellerRights();
 
   const title = <Title>Liste des joueurs</Title>;
 

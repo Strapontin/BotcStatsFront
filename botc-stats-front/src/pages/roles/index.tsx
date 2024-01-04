@@ -5,13 +5,13 @@ import {
 } from "@/components/table/generic-table/GenericTable";
 import { getRoleImgName, getUserRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role } from "@/entities/Role";
 import {
   CharacterType,
   getCharacterTypeTextById,
 } from "@/entities/enums/characterType";
-import AuthContext from "@/stores/authContext";
 import {
   Button,
   Dropdown,
@@ -25,7 +25,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Plus } from "react-feather";
 
 type RowType = GenericTableRowsExtendedProps & {
@@ -39,7 +39,7 @@ type RowType = GenericTableRowsExtendedProps & {
 export default function RolesPage() {
   const { data: roles, isLoading } = useGetRoles();
   const router = useRouter();
-  const user = useContext(AuthContext);
+  const user = useUserHasStoryTellerRights();
 
   const characterTypeOptions = [
     { name: "Villageois", uid: CharacterType.Townsfolk },

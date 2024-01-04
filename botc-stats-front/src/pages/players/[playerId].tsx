@@ -6,7 +6,7 @@ import {
 } from "@/data/back-api/back-api-game";
 import { useGetPlayerById } from "@/data/back-api/back-api-player";
 import { Game, getGameDisplayName } from "@/entities/Game";
-import { getPlayerPseudoString } from "@/entities/Player";
+import { getPlayerFullName } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import {
   Accordion,
@@ -47,12 +47,7 @@ export default function PlayerPage() {
     );
   }
 
-  const title = (
-    <Title>
-      Détails {player.name}
-      {getPlayerPseudoString(player.pseudo)}
-    </Title>
-  );
+  const title = <Title>Détails {getPlayerFullName(player)}</Title>;
 
   const playerComponent = player ? (
     <AccordionItem

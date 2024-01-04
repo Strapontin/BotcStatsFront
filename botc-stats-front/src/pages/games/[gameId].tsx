@@ -4,7 +4,8 @@ import DateUi from "@/components/ui/date-ui";
 import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
 import { useGetGameById } from "@/data/back-api/back-api-game";
-import { getPlayerPseudoString } from "@/entities/Player";
+import { Game } from "@/entities/Game";
+import { getPlayerFullName } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
 import {
@@ -22,7 +23,8 @@ export default function GamePage() {
   const router = useRouter();
   const gameId: number = Number(router.query.gameId);
 
-  const { data: game, isLoading } = useGetGameById(gameId);
+  const { data: game, isLoading }: { data: Game; isLoading: boolean } =
+    useGetGameById(gameId);
 
   if (isLoading) {
     return (
@@ -32,12 +34,10 @@ export default function GamePage() {
     );
   }
 
-  const storyTellerPseudo = getPlayerPseudoString(game.storyTeller.pseudo);
-
   const title = (
     <Title>
       Détails de la partie du <DateUi date={game.datePlayed} /> contée par{" "}
-      <PlayerName name={`${game.storyTeller.name}${storyTellerPseudo}`} />
+      <PlayerName name={getPlayerFullName(game.storyteller)} />
     </Title>
   );
 
@@ -61,7 +61,7 @@ export default function GamePage() {
         </ListboxItem>
         <ListboxItem
           key={2}
-          endContent={`${game.storyTeller.name}${storyTellerPseudo}`}
+          endContent={getPlayerFullName(game.storyteller)}
           classNames={classNamesListBoxItem}
           showDivider
         >

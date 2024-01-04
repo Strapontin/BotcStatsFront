@@ -44,22 +44,22 @@ export function useGetGamesByPlayerId(playerId: number): {
   };
 }
 
-export function useGetGamesByStorytellerId(storyTellerId: number): {
+export function useGetGamesByStorytellerId(storytellerId: number): {
   data?: Game[];
   isLoading: boolean;
 } {
   const { apiUrl, isLoadingApi } = useApi();
 
   const { data, isLoading } = useSWR(
-    !isLoadingApi && !isNaN(storyTellerId)
-      ? `${apiUrl}/Games/ByStorytellerId/${storyTellerId}`
+    !isLoadingApi && !isNaN(storytellerId)
+      ? `${apiUrl}/Games/ByStorytellerId/${storytellerId}`
       : null,
     fetcher
   );
 
   return {
     data: data?.status === 404 ? null : data,
-    isLoading: isLoading || isLoadingApi || isNaN(storyTellerId),
+    isLoading: isLoading || isLoadingApi || isNaN(storytellerId),
   };
 }
 
@@ -88,7 +88,7 @@ export async function createNewGame(
     referrerPolicy: "no-referrer",
     body: JSON.stringify({
       editionId: game.edition.id,
-      storyTellerId: game.storyTeller.id,
+      storytellerId: game.storyteller.id,
       datePlayed: game.datePlayed,
       notes: game.notes,
       winningAlignment: game.winningAlignment,
@@ -134,7 +134,7 @@ export async function updateGame(
     body: JSON.stringify({
       gameId: game.id,
       editionId: game?.edition?.id,
-      storyTellerId: game?.storyTeller?.id,
+      storytellerId: game?.storyteller?.id,
       datePlayed: game.datePlayed,
       notes: game.notes,
       winningAlignment: game.winningAlignment,

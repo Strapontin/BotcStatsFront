@@ -1,3 +1,4 @@
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import {
   Button,
   Dropdown,
@@ -7,19 +8,17 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useContext } from "react";
-import AuthContext from "../../stores/authContext";
 
 export default function SelectionStats() {
   const router = useRouter();
-  const user = useContext(AuthContext);
+  const user = useUserHasStoryTellerRights();
 
-  let storyTeller: JSX.Element = (
+  let storyteller: JSX.Element = (
     <DropdownItem className="hidden" textValue="hidden"></DropdownItem>
   );
 
   if (user?.isStoryTeller) {
-    storyTeller = (
+    storyteller = (
       <DropdownSection title="Espace conteur" className="mb-0">
         <DropdownItem key="/create/game">
           Ajouter une nouvelle partie
@@ -55,7 +54,7 @@ export default function SelectionStats() {
           }}
           aria-label="Static Actions"
         >
-          {storyTeller}
+          {storyteller}
           <DropdownItem key="/games-player">
             Nombre de parties par joueur
           </DropdownItem>

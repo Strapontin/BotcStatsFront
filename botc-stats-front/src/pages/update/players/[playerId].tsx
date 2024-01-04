@@ -8,7 +8,11 @@ import {
   useGetPlayers,
 } from "@/data/back-api/back-api-player";
 import useApi from "@/data/back-api/useApi";
-import { Player, getPlayerFullName } from "@/entities/Player";
+import {
+  Player,
+  getNewEmptyPlayer,
+  getPlayerFullName,
+} from "@/entities/Player";
 import NotFoundPage from "@/pages/404";
 import {
   Button,
@@ -29,18 +33,19 @@ export default function UpdatePlayerPage() {
 
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const { data: playerData, isLoading } = useGetPlayerById(playerId);
-  const { data: players } = useGetPlayers();
-  const [player, setPlayer] = useState<Player>(playerData);
-  const [oldPlayer, setOldPlayer] = useState<Player>(playerData);
+  const { data: players, isLoading } = useGetPlayers();
+  const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
+  const [oldPlayer, setOldPlayer] = useState<Player>(getNewEmptyPlayer());
   const api = useApi();
+  const playerData = players?.find((p: Player) => p.id === playerId);
 
   useEffect(() => {
+    if (!playerData) return;
     setPlayer(playerData);
     setOldPlayer(playerData);
   }, [playerData]);
 
-  if (isLoading || !player) {
+  if (isLoading || !player || !oldPlayer) {
     return (
       <>
         <Spinner />

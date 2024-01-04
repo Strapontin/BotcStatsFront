@@ -1,3 +1,4 @@
+import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import useApi from "@/data/back-api/useApi";
 import {
   Avatar,
@@ -8,12 +9,10 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { signIn, signOut } from "next-auth/react";
-import { useContext } from "react";
 import useSWR from "swr";
-import AuthContext from "../../stores/authContext";
 
 export default function ConnectionWithAvatar() {
-  const user = useContext(AuthContext);
+  const user = useUserHasStoryTellerRights();
   const { accessToken, isLoadingApi } = useApi();
   const { data: discordUserData, isLoading: isLoadingDiscordUserData } = useSWR(
     accessToken ? `https://discord.com/api/users/@me` : "",
