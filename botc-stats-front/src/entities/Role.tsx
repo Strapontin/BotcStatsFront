@@ -32,13 +32,13 @@ export function getNewEmptyRole() {
     name: "",
     characterType: CharacterType.None,
 
-    timesPlayedByPlayer: 0,
-    timesWonByPlayer: 0,
-    timesLostByPlayer: 0,
+    timesPlayedByPlayer: -1,
+    timesWonByPlayer: -1,
+    timesLostByPlayer: -1,
 
-    timesPlayedTotal: 0,
-    timesWonTotal: 0,
-    timesLostTotal: 0,
+    timesPlayedTotal: -1,
+    timesWonTotal: -1,
+    timesLostTotal: -1,
   };
   return role;
 }

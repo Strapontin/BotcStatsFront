@@ -1,4 +1,3 @@
-import PlayerName from "@/components/ui/playerName";
 import { dateToString } from "@/helper/date";
 import { Edition, getNewEmptyEdition } from "./Edition";
 import { Player, getNewEmptyPlayer, getPlayerFullName } from "./Player";
@@ -36,7 +35,7 @@ export function getGameDisplayName(game: Game): JSX.Element {
   return (
     <>
       {dateToString(game.datePlayed)} - Contée par{" "}
-      {<PlayerName name={getPlayerFullName(game.storyteller)} />}
+      {getPlayerFullName(game.storyteller)}
     </>
   );
 }

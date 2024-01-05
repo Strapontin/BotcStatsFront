@@ -3,7 +3,7 @@ import { Alignment } from "@/entities/enums/alignment";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import { X } from "react-feather";
 import IconAlignment from "../ui/icon-alignment";
-import ImageIconName from "../ui/image-role-name";
+import { RoleImageName } from "../ui/image-role-name";
 
 export default function ListboxPlayerRolesComponent({
   playerRoles,
@@ -20,7 +20,7 @@ export default function ListboxPlayerRolesComponent({
 
   function switchAlignment(playerRole: PlayerRole) {
     if (!setSelectedPlayerRoles) return;
-    
+
     const newPlayerRoles = playerRoles.map((pr) => {
       if (pr === playerRole) {
         pr.finalAlignment =
@@ -66,7 +66,7 @@ export default function ListboxPlayerRolesComponent({
           }
         >
           <div className="flex items-center">
-            <ImageIconName
+            <RoleImageName
               name={playerRole.role.name}
               characterType={playerRole.role.characterType}
             />

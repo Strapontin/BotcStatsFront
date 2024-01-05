@@ -16,13 +16,12 @@ export function useGetEditions() {
 
 export function useGetEditionById(editionId: number) {
   const { apiUrl, isLoadingApi } = useApi();
-
-  const { data, error, isLoading } = useSWR(
-    !isLoadingApi && !isNaN(editionId)
+  const url =
+    !isLoadingApi && !isNaN(editionId) && editionId > -1
       ? `${apiUrl}/Editions/${editionId}`
-      : null,
-    fetcher
-  );
+      : null;
+
+  const { data, error, isLoading } = useSWR(url, fetcher);
 
   return {
     data,

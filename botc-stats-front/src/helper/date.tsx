@@ -8,7 +8,7 @@ export function dateToString(date: Date) {
   return `${day}/${month}/${year}`;
 }
 
-export function dateToStringOrderByFormat(date: Date) {
+export function dateToStringYMD(date: Date) {
   const d = new Date(date);
 
   const day = d.getDate().toString().padStart(2, "0");

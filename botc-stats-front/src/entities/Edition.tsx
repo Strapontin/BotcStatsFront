@@ -14,9 +14,9 @@ export function getNewEmptyEdition() {
     id: -1,
     name: "",
     roles: [],
-    timesPlayed: 0,
-    timesGoodWon: 0,
-    timesEvilWon: 0,
+    timesPlayed: -1,
+    timesGoodWon: -1,
+    timesEvilWon: -1,
   };
   return edition;
 }

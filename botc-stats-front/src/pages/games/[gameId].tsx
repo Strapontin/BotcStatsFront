@@ -1,7 +1,5 @@
 import ListboxPlayerRolesComponent from "@/components/listbox/ListboxPlayerRolesComponent";
 import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
-import DateUi from "@/components/ui/date-ui";
-import PlayerName from "@/components/ui/playerName";
 import Title from "@/components/ui/title";
 import { useGetGameById } from "@/data/back-api/back-api-game";
 import { Game } from "@/entities/Game";
@@ -36,8 +34,8 @@ export default function GamePage() {
 
   const title = (
     <Title>
-      Détails de la partie du <DateUi date={game.datePlayed} /> contée par{" "}
-      <PlayerName name={getPlayerFullName(game.storyteller)} />
+      Détails de la partie du {dateToString(game.datePlayed)} contée par{" "}
+      {getPlayerFullName(game.storyteller)}
     </Title>
   );
 

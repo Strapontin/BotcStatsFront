@@ -14,7 +14,7 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
-import { dateToStringOrderByFormat } from "@/helper/date";
+import { dateToStringYMD } from "@/helper/date";
 import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
 import DropdownAlignment from "../../dropdowns/DropdownAlignment";
 import PlayerRolesSelector from "../../selector/PlayerRolesSelector";
@@ -89,7 +89,7 @@ export default function GameCreateEdit({
         type="date"
         label="Date à laquelle la partie a été jouée"
         aria-label="Date à laquelle la partie a été jouée"
-        value={dateToStringOrderByFormat(game.datePlayed)}
+        value={dateToStringYMD(game.datePlayed)}
         onChange={(event) => datePlayedSelected(event.target.value)}
       />
       <Spacer y={1.5} />

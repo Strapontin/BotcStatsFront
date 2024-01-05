@@ -3,7 +3,7 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
-import { getRoleImgName, getUserRole } from "@/components/ui/image-role-name";
+import { getUserRole, getWikiLinkrole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetRoles } from "@/data/back-api/back-api-role";
@@ -117,13 +117,7 @@ export default function RolesPage() {
           key={"wiki-link"}
           aria-label="wik-link"
           className={`w-full`}
-          onPress={() =>
-            window.open(
-              `https://brain-academy.github.io/botc-wiki/docs/roles/${getRoleImgName(
-                role.name
-              )}`
-            )
-          }
+          onPress={() => window.open(getWikiLinkrole(role.name))}
         >
           Voir le rôle sur le wiki
         </ListboxItem>

@@ -4,12 +4,10 @@ import { Avatar, User } from "@nextui-org/react";
 import Image from "next/image";
 import { useState } from "react";
 import { removeDiacritics } from "../../helper/string";
-import RoleColored from "./role-colored";
 
-export default function ImageIconName(props: {
+export function RoleImageName(props: {
   name: string;
   characterType: CharacterType;
-  setNameAtLeftOfImage?: boolean;
 }) {
   const imgPath = getRoleIconPath(props.name);
 
@@ -27,27 +25,25 @@ export default function ImageIconName(props: {
     />
   );
 
-  if (props.setNameAtLeftOfImage) {
-    return (
-      <div className="flex items-center">
-        {image}
-        <RoleColored name={props.name} characterType={props.characterType} />
-      </div>
-    );
-  } else {
-    return (
-      <div className="flex items-center">
-        <RoleColored name={props.name} characterType={props.characterType} />
-        {image}
-      </div>
-    );
-  }
+  return (
+    <div className="flex items-center">
+      {props.name}
+      {image}
+    </div>
+  );
 }
 
-export function getRoleImgName(roleName: string): string {
-  const roleImgName = removeDiacritics(roleName.replaceAll("'", "-"))
-    .replaceAll(" ", "-")
+function getRoleImgName(roleName: string): string {
+  const roleImgName = removeDiacritics(
+    roleName.replaceAll("'", "-")
+  ).replaceAll(" ", "-");
   return roleImgName;
+}
+
+export function getWikiLinkrole(roleName: string): string {
+  return `https://brain-academy.github.io/botc-wiki/docs/roles/${getRoleImgName(
+    roleName
+  )}`;
 }
 
 export function getRoleIconPath(roleName: string): string {

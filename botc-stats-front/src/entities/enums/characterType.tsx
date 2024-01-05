@@ -26,7 +26,7 @@ export function getCharacterTypeTextById(
   defaultValue: string = ""
 ): string {
   const result = characterTypeList()[id];
-  if (result === undefined) {
+  if (result == undefined) {
     return defaultValue;
   }
   return result.value;

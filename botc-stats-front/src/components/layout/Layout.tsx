@@ -9,7 +9,6 @@ export default function Layout(props: { children: any }) {
         <Toaster position="bottom-right" reverseOrder={true} />
         <div className={classes.Layout + " w-96 max-w-[90%] flex flex-col"}>
           <div className={classes.header}>
-            {/* <SelectionStats /> */}
             <HeaderNavbar />
           </div>
           <div className={classes.content}>{props.children}</div>
