@@ -16,7 +16,6 @@ import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar
 export default function HeaderNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  // TODO : isActive
 
   const menuItems: { name: string; href: string }[] = [
     { name: "Joueurs", href: "/players" },
@@ -28,6 +27,7 @@ export default function HeaderNavbar() {
   return (
     <Navbar
       isBordered
+      isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       style={{
         backgroundImage:
@@ -43,9 +43,7 @@ export default function HeaderNavbar() {
           "data-[active=true]:border-blue-500",
           "data-[active=true]:border-b-2",
         ],
-        menuItem: [
-          "data-[active=true]:text-blue-500",
-        ],
+        menuItem: ["data-[active=true]:text-blue-500"],
       }}
     >
       <NavbarMenuToggle
@@ -54,7 +52,7 @@ export default function HeaderNavbar() {
       />
       <NavbarBrand>
         <Link href="/" color="foreground">
-          BOTC Stats
+            BOTC Stats
         </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex" justify="center">
@@ -73,7 +71,11 @@ export default function HeaderNavbar() {
       <NavbarMenu>
         {menuItems.map((item) => (
           <NavbarMenuItem key={item.href} isActive={pathname === item.href}>
-            <Link href={item.href} color="foreground">
+            <Link
+              href={item.href}
+              color="foreground"
+              onClick={() => setIsMenuOpen(false)}
+            >
               {item.name}
             </Link>
           </NavbarMenuItem>

@@ -98,7 +98,7 @@ export default function ListboxPlayerRolesComponent({
   }
 
   return (
-    <div aria-label="ListboxPlayerRolesComponent">
+    <>
       {playerRoles.map((playerRole: PlayerRole, index) => {
         const iconAlignment = (
           <IconAlignment
@@ -149,6 +149,6 @@ export default function ListboxPlayerRolesComponent({
           </Popover>
         );
       })}
-    </div>
+    </>
   );
 }
