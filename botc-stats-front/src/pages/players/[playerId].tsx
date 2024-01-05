@@ -30,8 +30,7 @@ export default function PlayerPage() {
   const { data: player, isLoading } = useGetPlayerById(playerId);
   const { data: gamesPlayed, isLoading: isLoadingGamesPlayed } =
     useGetGamesByPlayerId(playerId);
-  const { data: gamesStorytelled, isLoading: isLoadingGamesStorytelled } =
-    useGetGamesByStorytellerId(playerId);
+  const { data: gamesStorytelled } = useGetGamesByStorytellerId(playerId);
 
   if (isLoading) {
     return (
@@ -95,6 +94,7 @@ export default function PlayerPage() {
     </AccordionItem>
   );
 
+  console.log(gamesPlayed)
   const listGamesPlayed = (
     <AccordionItem
       key="games-played"
@@ -108,23 +108,37 @@ export default function PlayerPage() {
           aria-label="Parties jouées"
           variant="light"
         >
-          {gamesPlayed.map((game: Game) => (
-            <ListboxItem
-              key={`game-${game.id}`}
-              className="text-left"
-              href={`/games/${game.id}`}
-              textValue={String(game.id)}
-              showDivider
-            >
-              {getGameDisplayName(game)}
-            </ListboxItem>
-          ))}
+          {gamesPlayed.map((game: Game) => {
+            const playerRole = game.playerRoles.find(
+              (pr) => pr.player.id === player.id
+            )!;
+
+            return (
+              <ListboxItem
+                key={`game-${game.id}`}
+                className="text-left"
+                href={`/games/${game.id}`}
+                textValue={String(game.id)}
+                showDivider
+              >
+                <div className="flex flex-col leading-none">
+                  <span>{getGameDisplayName(game)}</span>
+                  <span className="text-slate-600 text-xs">
+                    {game.winningAlignment === playerRole.finalAlignment
+                      ? "Victoire - "
+                      : "Défaite - "}
+                    Rôle joué : {playerRole.role.name}
+                  </span>
+                </div>
+              </ListboxItem>
+            );
+          })}
         </Listbox>
       )}
     </AccordionItem>
   );
 
-  const listGamesStorytelled = (
+  const listGamesStorytelled = gamesStorytelled ? (
     <AccordionItem
       key="games-storytelled"
       aria-label="Parties contées"
@@ -135,29 +149,27 @@ export default function PlayerPage() {
         aria-label="Parties contées"
         variant="light"
       >
-        {gamesStorytelled ? (
-          gamesStorytelled.map((game: Game) => (
-            <ListboxItem
-              key={`game-${game.id}`}
-              className="text-left"
-              href={`/games/${game.id}`}
-              textValue={String(game.id)}
-              showDivider
-            >
-              <div>
-                {dateToString(game.datePlayed)} -{" "}
-                {game.playerRoles?.length.toLocaleString("fr-FR", {
-                  minimumIntegerDigits: 2,
-                })}{" "}
-                joueurs - {game.edition?.name}
-              </div>
-            </ListboxItem>
-          ))
-        ) : (
-          <></>
-        )}
+        {gamesStorytelled.map((game: Game) => (
+          <ListboxItem
+            key={`game-${game.id}`}
+            className="text-left"
+            href={`/games/${game.id}`}
+            textValue={String(game.id)}
+            showDivider
+          >
+            <div>
+              {dateToString(game.datePlayed)} -{" "}
+              {game.playerRoles?.length.toLocaleString("fr-FR", {
+                minimumIntegerDigits: 2,
+              })}{" "}
+              joueurs - {game.edition?.name}
+            </div>
+          </ListboxItem>
+        ))}
       </Listbox>
     </AccordionItem>
+  ) : (
+    <></>
   );
 
   return (

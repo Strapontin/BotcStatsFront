@@ -1,4 +1,5 @@
 import { toLowerRemoveDiacritics } from "@/helper/string";
+import { Player } from "./Player";
 import { Alignment } from "./enums/alignment";
 import { CharacterType } from "./enums/characterType";
 
@@ -14,6 +15,15 @@ export type Role = {
   timesPlayedTotal: number;
   timesWonTotal: number;
   timesLostTotal: number;
+
+  playersWhoPlayedRole?: PlayersWhoPlayedRole[];
+};
+
+export type PlayersWhoPlayedRole = {
+  player: Player;
+  timesPlayedRole: number;
+  timesWon: number;
+  timesLost: number;
 };
 
 export function getNewEmptyRole() {

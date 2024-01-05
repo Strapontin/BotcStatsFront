@@ -1,8 +1,6 @@
-import { Role } from "@/entities/Role";
-import {
-  CharacterType,
-  getCharacterTypeTextById,
-} from "@/entities/enums/characterType";
+import { getPlayerFullName } from "@/entities/Player";
+import { PlayersWhoPlayedRole } from "@/entities/Role";
+import { CharacterType } from "@/entities/enums/characterType";
 import {
   Button,
   Dropdown,
@@ -21,7 +19,6 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "../generic-table/GenericTable";
-import { getUserRole } from "@/components/ui/image-role-name";
 
 type RowType = GenericTableRowsExtendedProps & {
   name: string;
@@ -30,7 +27,12 @@ type RowType = GenericTableRowsExtendedProps & {
   loses: number | string;
 };
 
-export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
+export function RolePlayersTable({
+  playersWhoPlayedRole,
+}: {
+  playersWhoPlayedRole: PlayersWhoPlayedRole[];
+}) {
+  // TODO : create roles object that retrieves players who played this role
   const router = useRouter();
   const characterTypeOptions = [
     { name: "Villageois", uid: CharacterType.Townsfolk },
@@ -67,36 +69,31 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
     { key: "loses", name: "Défaites", allowSorting: true },
   ];
 
-  function tableRowPopover(role: Role): JSX.Element {
+  function tableRowPopover(pwpr: PlayersWhoPlayedRole): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
         <ListboxItem
-          key={"role-details"}
-          aria-label="role-details"
+          key={"player-details"}
+          aria-label="player-details"
           className="w-full"
-          onPress={() => router.push(`/roles/${role.id}`)}
+          onPress={() => router.push(`/players/${pwpr.player.id}`)}
         >
-          Voir les détails du rôle &apos;{role.name}&apos;
+          Voir les détails de &apos;{pwpr.player.name}&apos;
         </ListboxItem>
       </Listbox>
     );
   }
 
-  const tableRows = playerRoles.map((role: Role) => {
+  const tableRows = playersWhoPlayedRole.map((pwpr: PlayersWhoPlayedRole) => {
     const result: RowType = {
-      id: "role" + role.id,
-      name: role.name,
-      total: role.timesPlayedTotal,
+      id: "pwpr" + pwpr.player.id,
+      name: getPlayerFullName(pwpr.player),
+      total: pwpr.timesPlayedRole,
 
-      wins: role.timesWonTotal,
-      loses: role.timesLostTotal,
+      wins: pwpr.timesWon,
+      loses: pwpr.timesLost,
 
-      renderJSX: {
-        characterType: getCharacterTypeTextById(role.characterType),
-        name: getUserRole(role),
-      },
-
-      popoverContent: tableRowPopover(role),
+      popoverContent: tableRowPopover(pwpr),
     };
     return result;
   });

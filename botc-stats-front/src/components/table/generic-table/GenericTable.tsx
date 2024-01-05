@@ -244,6 +244,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
               return (
                 <TableColumn
                   key={columnKey}
+                  className="text-center"
                   allowsSorting={column.allowSorting}
                 >
                   {column.name}

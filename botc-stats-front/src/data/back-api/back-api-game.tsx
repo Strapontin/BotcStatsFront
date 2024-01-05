@@ -44,6 +44,25 @@ export function useGetGamesByPlayerId(playerId: number): {
   };
 }
 
+export function useGetGamesByRoleId(roleId: number): {
+  data?: Game[];
+  isLoading: boolean;
+} {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(roleId)
+      ? `${apiUrl}/Games/ByRoleId/${roleId}`
+      : null,
+    fetcher
+  );
+
+  return {
+    data: data?.status === 404 ? null : data,
+    isLoading: isLoading || isLoadingApi || isNaN(roleId),
+  };
+}
+
 export function useGetGamesByStorytellerId(storytellerId: number): {
   data?: Game[];
   isLoading: boolean;

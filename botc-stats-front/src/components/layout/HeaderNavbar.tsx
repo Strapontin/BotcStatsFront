@@ -1,5 +1,4 @@
 import {
-  Link,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -8,12 +7,16 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@nextui-org/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import imgRecette from "../../../public/images/Recette.png";
 import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar";
 
 export default function HeaderNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  // TODO : isActive
 
   const menuItems: { name: string; href: string }[] = [
     { name: "Joueurs", href: "/players" },
@@ -34,6 +37,16 @@ export default function HeaderNavbar() {
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
       }}
+      classNames={{
+        item: [
+          "data-[active=true]:text-blue-500",
+          "data-[active=true]:border-blue-500",
+          "data-[active=true]:border-b-2",
+        ],
+        menuItem: [
+          "data-[active=true]:text-blue-500",
+        ],
+      }}
     >
       <NavbarMenuToggle
         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -46,7 +59,7 @@ export default function HeaderNavbar() {
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex" justify="center">
         {menuItems.map((item) => (
-          <NavbarItem key={item.href}>
+          <NavbarItem key={item.href} isActive={pathname === item.href}>
             <Link href={item.href} color="foreground">
               {item.name}
             </Link>
@@ -59,7 +72,7 @@ export default function HeaderNavbar() {
 
       <NavbarMenu>
         {menuItems.map((item) => (
-          <NavbarMenuItem key={item.href}>
+          <NavbarMenuItem key={item.href} isActive={pathname === item.href}>
             <Link href={item.href} color="foreground">
               {item.name}
             </Link>
