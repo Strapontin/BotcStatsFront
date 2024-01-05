@@ -4,8 +4,7 @@ import Title from "@/components/ui/title";
 import {
   deleteEdition,
   updateEdition,
-  useGetEditionById,
-  useGetEditions,
+  useGetEditions
 } from "@/data/back-api/back-api-edition";
 import useApi from "@/data/back-api/useApi";
 import { Edition, getNewEmptyEdition } from "@/entities/Edition";

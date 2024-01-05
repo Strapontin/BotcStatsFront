@@ -112,6 +112,7 @@ export function getAvatarRole(role: Role) {
         base: getCssClassesFromCharacterType(role.characterType).ringColorClass,
       }}
       radius="sm"
+      size="sm"
       src={getRoleIconPath(role.name)}
     />
   );

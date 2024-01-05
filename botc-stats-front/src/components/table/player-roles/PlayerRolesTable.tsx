@@ -1,3 +1,4 @@
+import { getUserRole, getWikiLinkrole } from "@/components/ui/image-role-name";
 import { Role } from "@/entities/Role";
 import {
   CharacterType,
@@ -21,7 +22,6 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "../generic-table/GenericTable";
-import { getUserRole } from "@/components/ui/image-role-name";
 
 type RowType = GenericTableRowsExtendedProps & {
   name: string;
@@ -77,6 +77,14 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
           onPress={() => router.push(`/roles/${role.id}`)}
         >
           Voir les détails du rôle &apos;{role.name}&apos;
+        </ListboxItem>
+        <ListboxItem
+          key={"wiki-link"}
+          aria-label="wik-link"
+          className="w-full"
+          onPress={() => window.open(getWikiLinkrole(role.name))}
+        >
+          Voir le rôle sur le wiki
         </ListboxItem>
       </Listbox>
     );

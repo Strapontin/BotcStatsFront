@@ -32,7 +32,6 @@ export function RolePlayersTable({
 }: {
   playersWhoPlayedRole: PlayersWhoPlayedRole[];
 }) {
-  // TODO : create roles object that retrieves players who played this role
   const router = useRouter();
   const characterTypeOptions = [
     { name: "Villageois", uid: CharacterType.Townsfolk },

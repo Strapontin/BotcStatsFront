@@ -6,12 +6,10 @@ import { getAvatarRole } from "../ui/image-role-name";
 export default function ListboxRolesComponent({
   roles,
   setSelectedRoles,
-  hrefRoles,
   showDelete,
 }: {
   roles: Role[];
   setSelectedRoles?: any;
-  hrefRoles?: string;
   showDelete?: boolean;
 }) {
   const sortedSelectedRoles = sortRoles(roles);
@@ -27,7 +25,6 @@ export default function ListboxRolesComponent({
           key={role.id}
           classNames={{ title: "text-left pl-1" }}
           startContent={getAvatarRole(role)}
-          href={hrefRoles?.replace("ROLE_ID", String(role.id))}
           endContent={
             showDelete && (
               <Button

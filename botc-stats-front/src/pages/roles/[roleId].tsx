@@ -1,5 +1,8 @@
 import { RolePlayersTable } from "@/components/table/role-players/RolePlayersTable";
-import { getRoleIconPath } from "@/components/ui/image-role-name";
+import {
+  getRoleIconPath,
+  getWikiLinkrole,
+} from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { useGetGamesByRoleId } from "@/data/back-api/back-api-game";
 import { useGetRoleById } from "@/data/back-api/back-api-role";
@@ -9,11 +12,13 @@ import { Role } from "@/entities/Role";
 import {
   Accordion,
   AccordionItem,
+  Button,
   Listbox,
   ListboxItem,
   Spinner,
 } from "@nextui-org/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import NotFoundPage from "../404";
@@ -62,54 +67,51 @@ export default function RoleIdPage() {
     </>
   );
 
-  const roleComponent = role ? (
-    <AccordionItem
-      key="main-details"
-      aria-label="Détails généraux"
-      title="Détails généraux"
-    >
-      <Listbox aria-label="Détails généraux" variant="light">
-        <ListboxItem
-          key={1}
-          endContent={role.timesPlayedTotal}
-          classNames={classNamesListBoxItem}
-          showDivider
-        >
-          Parties jouées
-        </ListboxItem>
-        <ListboxItem
-          key={3}
-          endContent={`${role.timesWonTotal} | ${role.timesLostTotal}`}
-          classNames={classNamesListBoxItem}
-        >
-          Victoires | Défaites
-        </ListboxItem>
-      </Listbox>
-    </AccordionItem>
-  ) : (
-    <></>
-  );
+  const accordionItems: {
+    key: string;
+    title: string;
+    children: JSX.Element;
+  }[] = [
+    {
+      key: "main-details",
+      title: "Détails généraux",
+      children: (
+        <Listbox aria-label="Détails généraux" variant="light">
+          <ListboxItem
+            key={1}
+            endContent={role.timesPlayedTotal}
+            classNames={classNamesListBoxItem}
+            showDivider
+          >
+            Parties jouées
+          </ListboxItem>
+          <ListboxItem
+            key={3}
+            endContent={`${role.timesWonTotal} | ${role.timesLostTotal}`}
+            classNames={classNamesListBoxItem}
+          >
+            Victoires | Défaites
+          </ListboxItem>
+        </Listbox>
+      ),
+    },
+  ];
 
-  const detailsPlayersPlayedThisRole = role?.playersWhoPlayedRole ? (
-    <AccordionItem
-      key="table-players-who-played-role"
-      aria-label="Détails des joueurs de ce rôle"
-      title="Détails des joueurs de ce rôle"
-    >
-      <RolePlayersTable playersWhoPlayedRole={role?.playersWhoPlayedRole} />
-    </AccordionItem>
-  ) : (
-    <></>
-  );
+  if (role.playersWhoPlayedRole) {
+    accordionItems.push({
+      key: "table-players-who-played-role",
+      title: "Détails des joueurs de ce rôle",
+      children: (
+        <RolePlayersTable playersWhoPlayedRole={role.playersWhoPlayedRole} />
+      ),
+    });
+  }
 
-  const listGamesPlayed = (
-    <AccordionItem
-      key="games-played"
-      aria-label="Parties jouées"
-      title="Parties jouées"
-    >
-      {isLoadingGamesPlayed && <Spinner />}
-      {!isLoadingGamesPlayed && gamesPlayed && (
+  if (gamesPlayed) {
+    accordionItems.push({
+      key: "games-played",
+      title: "Parties jouées",
+      children: (
         <Listbox
           className="text-left"
           aria-label="Parties jouées"
@@ -124,11 +126,13 @@ export default function RoleIdPage() {
               <ListboxItem
                 key={`game-${game.id}`}
                 className="text-left"
-                href={`/games/${game.id}`}
                 textValue={String(game.id)}
                 showDivider
               >
-                <div className="flex flex-col leading-none">
+                <Link
+                  className="flex flex-col leading-none"
+                  href={`/games/${game.id}`}
+                >
                   <span>{getGameDisplayName(game)}</span>
                   <span className="text-slate-600 text-xs">
                     {game.winningAlignment === playerRole.finalAlignment
@@ -136,25 +140,37 @@ export default function RoleIdPage() {
                       : "Défaite - "}
                     Joueur : {getPlayerFullName(playerRole.player)}
                   </span>
-                </div>
+                </Link>
               </ListboxItem>
             );
           })}
         </Listbox>
-      )}
-    </AccordionItem>
-  );
+      ),
+    });
+  }
 
   return (
     <>
       {title}
+      <Button
+        variant="faded"
+        onPress={() => window.open(getWikiLinkrole(role.name))}
+      >
+        Voir le rôle sur le wiki
+      </Button>
       <Accordion
         selectionMode={"multiple"}
-        defaultExpandedKeys={["main-details", "table-players-who-played-role"]}
+        defaultExpandedKeys={["main-details"]}
       >
-        {roleComponent}
-        {detailsPlayersPlayedThisRole}
-        {listGamesPlayed}
+        {accordionItems.map((item) => (
+          <AccordionItem
+            key={item.key}
+            aria-label={item.title}
+            title={item.title}
+          >
+            {item.children}
+          </AccordionItem>
+        ))}
       </Accordion>
     </>
   );

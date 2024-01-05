@@ -1,3 +1,4 @@
+import { Player } from "./Player";
 import { Role } from "./Role";
 
 export type Edition = {
@@ -7,6 +8,15 @@ export type Edition = {
   timesPlayed: number;
   timesGoodWon: number;
   timesEvilWon: number;
+
+  playersWhoPlayedEdition?: PlayersWhoPlayedEdition[];
+};
+
+export type PlayersWhoPlayedEdition = {
+  player: Player;
+  timesPlayedEdition: number;
+  timesWon: number;
+  timesLost: number;
 };
 
 export function getNewEmptyEdition() {

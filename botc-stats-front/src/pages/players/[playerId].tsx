@@ -15,6 +15,7 @@ import {
   ListboxItem,
   Spinner,
 } from "@nextui-org/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import NotFoundPage from "../404";
@@ -48,61 +49,54 @@ export default function PlayerPage() {
 
   const title = <Title>Détails {getPlayerFullName(player)}</Title>;
 
-  const playerComponent = player ? (
-    <AccordionItem
-      key="main-details"
-      aria-label="Détails généraux"
-      title="Détails généraux"
-    >
-      <Listbox aria-label="Détails généraux" variant="light">
-        <ListboxItem
-          key={1}
-          endContent={player.nbGamesPlayed}
-          classNames={classNamesListBoxItem}
-          showDivider
-        >
-          Parties jouées
-        </ListboxItem>
-        <ListboxItem
-          key={2}
-          endContent={`${player.nbGamesGood} | ${player.nbGamesEvil}`}
-          classNames={classNamesListBoxItem}
-          showDivider
-        >
-          Gentil | Maléfique
-        </ListboxItem>
-        <ListboxItem
-          key={3}
-          endContent={`${player.nbGamesWon} | ${player.nbGamesLost}`}
-          classNames={classNamesListBoxItem}
-        >
-          Victoires | Défaites
-        </ListboxItem>
-      </Listbox>
-    </AccordionItem>
-  ) : (
-    <></>
-  );
+  const accordionItems: {
+    key: string;
+    title: string;
+    children: JSX.Element;
+  }[] = [
+    {
+      key: "main-details",
+      title: "Détails généraux",
+      children: (
+        <Listbox aria-label="Détails généraux" variant="light">
+          <ListboxItem
+            key={1}
+            endContent={player.nbGamesPlayed}
+            classNames={classNamesListBoxItem}
+            showDivider
+          >
+            Parties jouées
+          </ListboxItem>
+          <ListboxItem
+            key={2}
+            endContent={`${player.nbGamesGood} | ${player.nbGamesEvil}`}
+            classNames={classNamesListBoxItem}
+            showDivider
+          >
+            Gentil | Maléfique
+          </ListboxItem>
+          <ListboxItem
+            key={3}
+            endContent={`${player.nbGamesWon} | ${player.nbGamesLost}`}
+            classNames={classNamesListBoxItem}
+          >
+            Victoires | Défaites
+          </ListboxItem>
+        </Listbox>
+      ),
+    },
+    {
+      key: "table-roles-played",
+      title: "Détails des rôles joués",
+      children: <PlayerRolesTable playerRoles={player.timesPlayedRole} />,
+    },
+  ];
 
-  const detailsRolesPlayed = (
-    <AccordionItem
-      key="table-roles-played"
-      aria-label="Détails des rôles joués"
-      title="Détails des rôles joués"
-    >
-      <PlayerRolesTable playerRoles={player?.timesPlayedRole} />
-    </AccordionItem>
-  );
-
-  console.log(gamesPlayed)
-  const listGamesPlayed = (
-    <AccordionItem
-      key="games-played"
-      aria-label="Parties jouées"
-      title="Parties jouées"
-    >
-      {isLoadingGamesPlayed && <Spinner />}
-      {!isLoadingGamesPlayed && gamesPlayed && (
+  if (gamesPlayed) {
+    accordionItems.push({
+      key: "games-played",
+      title: "Parties jouées",
+      children: (
         <Listbox
           className="text-left"
           aria-label="Parties jouées"
@@ -117,11 +111,13 @@ export default function PlayerPage() {
               <ListboxItem
                 key={`game-${game.id}`}
                 className="text-left"
-                href={`/games/${game.id}`}
                 textValue={String(game.id)}
                 showDivider
               >
-                <div className="flex flex-col leading-none">
+                <Link
+                  className="flex flex-col leading-none"
+                  href={`/games/${game.id}`}
+                >
                   <span>{getGameDisplayName(game)}</span>
                   <span className="text-slate-600 text-xs">
                     {game.winningAlignment === playerRole.finalAlignment
@@ -129,48 +125,45 @@ export default function PlayerPage() {
                       : "Défaite - "}
                     Rôle joué : {playerRole.role.name}
                   </span>
-                </div>
+                </Link>
               </ListboxItem>
             );
           })}
         </Listbox>
-      )}
-    </AccordionItem>
-  );
+      ),
+    });
+  }
 
-  const listGamesStorytelled = gamesStorytelled ? (
-    <AccordionItem
-      key="games-storytelled"
-      aria-label="Parties contées"
-      title="Parties contées"
-    >
-      <Listbox
-        className="text-left"
-        aria-label="Parties contées"
-        variant="light"
-      >
-        {gamesStorytelled.map((game: Game) => (
-          <ListboxItem
-            key={`game-${game.id}`}
-            className="text-left"
-            href={`/games/${game.id}`}
-            textValue={String(game.id)}
-            showDivider
-          >
-            <div>
-              {dateToString(game.datePlayed)} -{" "}
-              {game.playerRoles?.length.toLocaleString("fr-FR", {
-                minimumIntegerDigits: 2,
-              })}{" "}
-              joueurs - {game.edition?.name}
-            </div>
-          </ListboxItem>
-        ))}
-      </Listbox>
-    </AccordionItem>
-  ) : (
-    <></>
-  );
+  if (gamesStorytelled?.length) {
+    accordionItems.push({
+      key: "games-storytelled",
+      title: "Parties contées",
+      children: (
+        <Listbox
+          className="text-left"
+          aria-label="Parties contées"
+          variant="light"
+        >
+          {gamesStorytelled.map((game: Game) => (
+            <ListboxItem
+              key={`game-${game.id}`}
+              className="text-left"
+              textValue={String(game.id)}
+              showDivider
+            >
+              <Link href={`/games/${game.id}`}>
+                {dateToString(game.datePlayed)} -{" "}
+                {game.playerRoles?.length.toLocaleString("fr-FR", {
+                  minimumIntegerDigits: 2,
+                })}{" "}
+                joueurs - {game.edition?.name}
+              </Link>
+            </ListboxItem>
+          ))}
+        </Listbox>
+      ),
+    });
+  }
 
   return (
     <>
@@ -179,10 +172,15 @@ export default function PlayerPage() {
         selectionMode={"multiple"}
         defaultExpandedKeys={["main-details", "table-roles-played"]}
       >
-        {playerComponent}
-        {detailsRolesPlayed}
-        {listGamesPlayed}
-        {(gamesStorytelled?.length && listGamesStorytelled) as JSX.Element}
+        {accordionItems.map((item) => (
+          <AccordionItem
+            key={item.key}
+            aria-label={item.title}
+            title={item.title}
+          >
+            {item.children}
+          </AccordionItem>
+        ))}
       </Accordion>
     </>
   );

@@ -116,7 +116,7 @@ export default function RolesPage() {
         <ListboxItem
           key={"wiki-link"}
           aria-label="wik-link"
-          className={`w-full`}
+          className="w-full"
           onPress={() => window.open(getWikiLinkrole(role.name))}
         >
           Voir le rôle sur le wiki

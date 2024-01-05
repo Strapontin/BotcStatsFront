@@ -11,6 +11,9 @@ import {
   AccordionItem,
   Listbox,
   ListboxItem,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Spacer,
   Spinner,
   Textarea,
@@ -44,6 +47,24 @@ export default function GamePage() {
     base: "whitespace-pre-line",
   };
 
+  const storytellerWithPopover = (
+    <Popover showArrow>
+      <PopoverTrigger>{getPlayerFullName(game.storyteller)}</PopoverTrigger>
+      <PopoverContent>
+        <Listbox aria-label="popover-items">
+          <ListboxItem
+            key={"player-details"}
+            aria-label="player-details"
+            className="w-full"
+            onPress={() => router.push(`/players/${game.storyteller.id}`)}
+          >
+            Voir les détails du joueur &apos;{game.storyteller.name}&apos;
+          </ListboxItem>
+        </Listbox>
+      </PopoverContent>
+    </Popover>
+  );
+
   return (
     <>
       {title}
@@ -59,7 +80,7 @@ export default function GamePage() {
         </ListboxItem>
         <ListboxItem
           key={2}
-          endContent={getPlayerFullName(game.storyteller)}
+          endContent={storytellerWithPopover}
           classNames={classNamesListBoxItem}
           showDivider
         >
@@ -93,7 +114,7 @@ export default function GamePage() {
         aria-label="Notes"
         value={game.notes}
       />
-      <Spacer y={12} />
+      <Spacer y={5} />
       <Accordion selectionMode="multiple" defaultExpandedKeys={["1", "2"]}>
         <AccordionItem
           key="1"
@@ -110,7 +131,6 @@ export default function GamePage() {
           <ListboxRolesComponent roles={game.demonBluffs} />
         </AccordionItem>
       </Accordion>
-
       <Spacer y={5} />
     </>
   );

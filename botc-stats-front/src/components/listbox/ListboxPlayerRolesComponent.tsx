@@ -1,9 +1,18 @@
+import { Player } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Alignment } from "@/entities/enums/alignment";
-import { Button, Listbox, ListboxItem } from "@nextui-org/react";
+import {
+  Button,
+  Listbox,
+  ListboxItem,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@nextui-org/react";
+import { useRouter } from "next/router";
 import { X } from "react-feather";
 import IconAlignment from "../ui/icon-alignment";
-import { RoleImageName } from "../ui/image-role-name";
+import { RoleImageName, getWikiLinkrole } from "../ui/image-role-name";
 
 export default function ListboxPlayerRolesComponent({
   playerRoles,
@@ -14,6 +23,8 @@ export default function ListboxPlayerRolesComponent({
   setSelectedPlayerRoles?: any;
   showBtnDelete?: boolean;
 }) {
+  const router = useRouter();
+
   function onClickRemovePlayerRole(playerRole: PlayerRole) {
     setSelectedPlayerRoles(playerRoles.filter((pr) => pr !== playerRole));
   }
@@ -33,57 +44,111 @@ export default function ListboxPlayerRolesComponent({
     setSelectedPlayerRoles(newPlayerRoles);
   }
 
-  return (
-    <Listbox aria-label="ListboxPlayerRolesComponent">
-      {playerRoles.map((playerRole: PlayerRole, index) => (
+  const ListboxItemStartContent = ({ player }: { player: Player }) => (
+    <div className="flex flex-col items-start">
+      <span>{player.name}</span>
+      <span className="text-default-400 text-sm">{player.pseudo}</span>
+    </div>
+  );
+
+  const ListboxItemEndContent = ({ playerRole }: { playerRole: PlayerRole }) =>
+    showBtnDelete ? (
+      <Button
+        onClick={() => onClickRemovePlayerRole(playerRole)}
+        isIconOnly
+        color="danger"
+        aria-label="delete"
+        variant="flat"
+      >
+        <X />
+      </Button>
+    ) : (
+      <></>
+    );
+
+  function getPopoverContent(playerRole: PlayerRole) {
+    return (
+      <Listbox aria-label="popover-items">
         <ListboxItem
-          key={`${playerRole.player.id}-${playerRole.role.id}-${index}`}
-          // href={`/players/${playerRole.player.id}`} TODO : Mettre un popover pour proposer à l'utilisateur de se rendre sur la page des détails de l'utilisateur sur lequel il a cliqué
-          classNames={{ title: "flex justify-end" }}
-          startContent={
-            <div className="flex flex-col items-start">
-              <span>{playerRole.player.name}</span>
-              <span className="text-default-400 text-sm">
-                {playerRole.player.pseudo}
-              </span>
-            </div>
-          }
-          textValue={`${playerRole.player.name} ${playerRole.role.name} ${playerRole.finalAlignment}`}
-          endContent={
-            showBtnDelete ? (
-              <Button
-                onClick={() => onClickRemovePlayerRole(playerRole)}
-                isIconOnly
-                color="danger"
-                aria-label="delete"
-                variant="flat"
-              >
-                <X />
-              </Button>
-            ) : (
-              <></>
-            )
-          }
+          key={"player-details"}
+          aria-label="player-details"
+          className="w-full"
+          onPress={() => router.push(`/players/${playerRole.player.id}`)}
         >
-          <div className="flex items-center">
-            <RoleImageName
-              name={playerRole.role.name}
-              characterType={playerRole.role.characterType}
-            />
-            <Button
-              variant="light"
-              onClick={() => switchAlignment(playerRole)}
-              disableRipple={setSelectedPlayerRoles === undefined}
-              isIconOnly
-            >
-              <IconAlignment
-                editable={true}
-                alignment={playerRole.finalAlignment}
-              />
-            </Button>
-          </div>
+          Voir les détails du joueur &apos;{playerRole.player.name}&apos;
         </ListboxItem>
-      ))}
-    </Listbox>
+        <ListboxItem
+          key={"role-details"}
+          aria-label="role-details"
+          className="w-full"
+          onPress={() => router.push(`/roles/${playerRole.role.id}`)}
+        >
+          Voir les détails du rôle &apos;{playerRole.role.name}&apos;
+        </ListboxItem>
+        <ListboxItem
+          key={"wiki-link"}
+          aria-label="wik-link"
+          className="w-full"
+          onPress={() => window.open(getWikiLinkrole(playerRole.role.name))}
+        >
+          Voir le rôle sur le wiki
+        </ListboxItem>
+      </Listbox>
+    );
+  }
+
+  return (
+    <div aria-label="ListboxPlayerRolesComponent">
+      {playerRoles.map((playerRole: PlayerRole, index) => {
+        const iconAlignment = (
+          <IconAlignment
+            editable={true}
+            alignment={playerRole.finalAlignment}
+          />
+        );
+
+        return (
+          <Popover
+            key={`${playerRole.player.id}-${playerRole.role.id}-${index}`}
+            showArrow
+          >
+            <PopoverTrigger>
+              <div
+                className={[
+                  "flex",
+                  "items-center",
+                  "justify-between",
+                  "px-1.5",
+                  "py-0.5",
+                  "cursor-pointer",
+                  index < playerRoles.length - 1 && "border-b-1",
+                  "border-zinc-800",
+                ].join(" ")}
+              >
+                <ListboxItemStartContent player={playerRole.player} />
+                <div className="flex items-center">
+                  <RoleImageName
+                    name={playerRole.role.name}
+                    characterType={playerRole.role.characterType}
+                  />
+                  {(setSelectedPlayerRoles && (
+                    <Button
+                      variant="light"
+                      onClick={() => switchAlignment(playerRole)}
+                      disableRipple={setSelectedPlayerRoles === undefined}
+                      isIconOnly
+                    >
+                      {iconAlignment}
+                    </Button>
+                  )) || <>{iconAlignment}</>}
+                  <ListboxItemEndContent playerRole={playerRole} />
+                </div>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent>{getPopoverContent(playerRole)}</PopoverContent>
+          </Popover>
+        );
+      })}
+    </div>
   );
 }

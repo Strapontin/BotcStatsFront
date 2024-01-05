@@ -63,6 +63,25 @@ export function useGetGamesByRoleId(roleId: number): {
   };
 }
 
+export function useGetGamesByEditionId(editionId: number): {
+  data?: Game[];
+  isLoading: boolean;
+} {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, isLoading } = useSWR(
+    !isLoadingApi && !isNaN(editionId)
+      ? `${apiUrl}/Games/ByEditionId/${editionId}`
+      : null,
+    fetcher
+  );
+
+  return {
+    data: data?.status === 404 ? null : data,
+    isLoading: isLoading || isLoadingApi || isNaN(editionId),
+  };
+}
+
 export function useGetGamesByStorytellerId(storytellerId: number): {
   data?: Game[];
   isLoading: boolean;
