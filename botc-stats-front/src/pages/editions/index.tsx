@@ -3,6 +3,7 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
+import { getListboxItemEditionDetails } from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetEditions } from "@/data/back-api/back-api-edition";
@@ -68,14 +69,7 @@ export default function UpdateEditionsPage() {
   function tableRowPopover(edition: Edition): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"edition-details"}
-          aria-label="edition-details"
-          className="w-full"
-          onPress={() => router.push(`/editions/${edition.id}`)}
-        >
-          Voir les détails du module &apos;{edition.name}&apos;
-        </ListboxItem>
+        {getListboxItemEditionDetails(edition, router)}
         <ListboxItem
           key={"edition-update"}
           aria-label="edition-update"

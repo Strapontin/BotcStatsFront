@@ -4,15 +4,19 @@ import { Alignment } from "@/entities/enums/alignment";
 import {
   Button,
   Listbox,
-  ListboxItem,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { X } from "react-feather";
+import {
+  getListboxItemPlayerDetails,
+  getListboxItemRoleDetails,
+  getListboxItemRoleWikiLink,
+} from "../table/generic-table/popover/listbox-items";
 import IconAlignment from "../ui/icon-alignment";
-import { RoleImageName, getWikiLinkrole } from "../ui/image-role-name";
+import { RoleImageName } from "../ui/image-role-name";
 
 export default function ListboxPlayerRolesComponent({
   playerRoles,
@@ -54,6 +58,7 @@ export default function ListboxPlayerRolesComponent({
   const ListboxItemEndContent = ({ playerRole }: { playerRole: PlayerRole }) =>
     showBtnDelete ? (
       <Button
+        className="ml-1"
         onClick={() => onClickRemovePlayerRole(playerRole)}
         isIconOnly
         color="danger"
@@ -69,36 +74,15 @@ export default function ListboxPlayerRolesComponent({
   function getPopoverContent(playerRole: PlayerRole) {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"player-details"}
-          aria-label="player-details"
-          className="w-full"
-          onPress={() => router.push(`/players/${playerRole.player.id}`)}
-        >
-          Voir les détails du joueur &apos;{playerRole.player.name}&apos;
-        </ListboxItem>
-        <ListboxItem
-          key={"role-details"}
-          aria-label="role-details"
-          className="w-full"
-          onPress={() => router.push(`/roles/${playerRole.role.id}`)}
-        >
-          Voir les détails du rôle &apos;{playerRole.role.name}&apos;
-        </ListboxItem>
-        <ListboxItem
-          key={"wiki-link"}
-          aria-label="wik-link"
-          className="w-full"
-          onPress={() => window.open(getWikiLinkrole(playerRole.role.name))}
-        >
-          Voir le rôle sur le wiki
-        </ListboxItem>
+        {getListboxItemPlayerDetails(playerRole.player, router)}
+        {getListboxItemRoleDetails(playerRole.role, router)}
+        {getListboxItemRoleWikiLink(playerRole.role, router)}
       </Listbox>
     );
   }
 
   return (
-    <>
+    <div className="px-1">
       {playerRoles.map((playerRole: PlayerRole, index) => {
         const iconAlignment = (
           <IconAlignment
@@ -149,6 +133,6 @@ export default function ListboxPlayerRolesComponent({
           </Popover>
         );
       })}
-    </>
+    </div>
   );
 }

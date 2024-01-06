@@ -2,14 +2,17 @@ import { Role, sortRoles } from "@/entities/Role";
 import {
   Button,
   Listbox,
-  ListboxItem,
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { X } from "react-feather";
-import { getUserRole, getWikiLinkrole } from "../ui/image-role-name";
+import {
+  getListboxItemRoleDetails,
+  getListboxItemRoleWikiLink,
+} from "../table/generic-table/popover/listbox-items";
+import { getUserRole } from "../ui/image-role-name";
 
 export default function ListboxRolesComponent({
   roles,
@@ -30,22 +33,8 @@ export default function ListboxRolesComponent({
   function getPopoverContent(role: Role) {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"role-details"}
-          aria-label="role-details"
-          className="w-full"
-          onPress={() => router.push(`/roles/${role.id}`)}
-        >
-          Voir les détails du rôle &apos;{role.name}&apos;
-        </ListboxItem>
-        <ListboxItem
-          key={"wiki-link"}
-          aria-label="wik-link"
-          className="w-full"
-          onPress={() => window.open(getWikiLinkrole(role.name))}
-        >
-          Voir le rôle sur le wiki
-        </ListboxItem>
+        {getListboxItemRoleDetails(role, router)}
+        {getListboxItemRoleWikiLink(role, router)}
       </Listbox>
     );
   }

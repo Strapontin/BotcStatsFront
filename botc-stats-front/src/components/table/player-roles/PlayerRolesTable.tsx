@@ -1,4 +1,4 @@
-import { getUserRole, getWikiLinkrole } from "@/components/ui/image-role-name";
+import { getUserRole } from "@/components/ui/image-role-name";
 import { Role } from "@/entities/Role";
 import {
   CharacterType,
@@ -11,7 +11,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Listbox,
-  ListboxItem,
   Selection,
   Spacer,
 } from "@nextui-org/react";
@@ -22,6 +21,10 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "../generic-table/GenericTable";
+import {
+  getListboxItemRoleDetails,
+  getListboxItemRoleWikiLink,
+} from "../generic-table/popover/listbox-items";
 
 type RowType = GenericTableRowsExtendedProps & {
   name: string;
@@ -70,22 +73,8 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
   function tableRowPopover(role: Role): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"role-details"}
-          aria-label="role-details"
-          className="w-full"
-          onPress={() => router.push(`/roles/${role.id}`)}
-        >
-          Voir les détails du rôle &apos;{role.name}&apos;
-        </ListboxItem>
-        <ListboxItem
-          key={"wiki-link"}
-          aria-label="wik-link"
-          className="w-full"
-          onPress={() => window.open(getWikiLinkrole(role.name))}
-        >
-          Voir le rôle sur le wiki
-        </ListboxItem>
+        {getListboxItemRoleDetails(role, router)}
+        {getListboxItemRoleWikiLink(role, router)}
       </Listbox>
     );
   }

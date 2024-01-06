@@ -1,6 +1,10 @@
 import Filter from "@/components/filter/Filter";
 import { EditionPlayersTable } from "@/components/table/edition-players/EditionPlayersTable";
-import { getUserRole, getWikiLinkrole } from "@/components/ui/image-role-name";
+import {
+  getListboxItemRoleDetails,
+  getListboxItemRoleWikiLink,
+} from "@/components/table/generic-table/popover/listbox-items";
+import { getUserRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { useGetEditionById } from "@/data/back-api/back-api-edition";
 import { useGetGamesByEditionId } from "@/data/back-api/back-api-game";
@@ -53,22 +57,8 @@ export default function EditionIdPage() {
   function getPopoverContent(role: Role) {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"role-details"}
-          aria-label="role-details"
-          className="w-full"
-          onPress={() => router.push(`/roles/${role.id}`)}
-        >
-          Voir les détails du rôle &apos;{role.name}&apos;
-        </ListboxItem>
-        <ListboxItem
-          key={"wiki-link"}
-          aria-label="wik-link"
-          className="w-full"
-          onPress={() => window.open(getWikiLinkrole(role.name))}
-        >
-          Voir le rôle sur le wiki
-        </ListboxItem>
+        {getListboxItemRoleDetails(role, router)}
+        {getListboxItemRoleWikiLink(role, router)}
       </Listbox>
     );
   }

@@ -3,6 +3,7 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
+import { getListboxItemPlayerDetails } from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
@@ -84,14 +85,7 @@ export default function PlayersPage() {
   function tableRowPopover(player: Player): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"player-details"}
-          aria-label="player-details"
-          className="w-full"
-          onPress={() => router.push(`/players/${player.id}`)}
-        >
-          Voir les détails de &apos;{getPlayerFullName(player)}&apos;
-        </ListboxItem>
+        {getListboxItemPlayerDetails(player, router)}
         <ListboxItem
           key={"player-update"}
           aria-label="player-update"

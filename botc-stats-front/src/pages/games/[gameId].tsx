@@ -1,5 +1,6 @@
 import ListboxPlayerRolesComponent from "@/components/listbox/ListboxPlayerRolesComponent";
 import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
+import { getListboxItemPlayerDetails } from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useGetGameById } from "@/data/back-api/back-api-game";
 import { Game } from "@/entities/Game";
@@ -40,14 +41,7 @@ export default function GamePage() {
       <PopoverTrigger>{getPlayerFullName(game.storyteller)}</PopoverTrigger>
       <PopoverContent>
         <Listbox aria-label="popover-items">
-          <ListboxItem
-            key={"player-details"}
-            aria-label="player-details"
-            className="w-full"
-            onPress={() => router.push(`/players/${game.storyteller.id}`)}
-          >
-            Voir les détails du joueur &apos;{game.storyteller.name}&apos;
-          </ListboxItem>
+          {getListboxItemPlayerDetails(game.storyteller, router)}
         </Listbox>
       </PopoverContent>
     </Popover>

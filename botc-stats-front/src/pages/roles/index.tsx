@@ -3,7 +3,11 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
-import { getUserRole, getWikiLinkrole } from "@/components/ui/image-role-name";
+import {
+  getListboxItemRoleDetails,
+  getListboxItemRoleWikiLink,
+} from "@/components/table/generic-table/popover/listbox-items";
+import { getUserRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetRoles } from "@/data/back-api/back-api-role";
@@ -97,14 +101,7 @@ export default function RolesPage() {
   function tableRowPopover(role: Role): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"role-details"}
-          aria-label="role-details"
-          className="w-full"
-          onPress={() => router.push(`/roles/${role.id}`)}
-        >
-          Voir les détails du rôle &apos;{role.name}&apos;
-        </ListboxItem>
+        {getListboxItemRoleDetails(role, router)}
         <ListboxItem
           key={"role-update"}
           aria-label="role-update"
@@ -113,14 +110,7 @@ export default function RolesPage() {
         >
           Modifier le rôle &apos;{role.name}&apos;
         </ListboxItem>
-        <ListboxItem
-          key={"wiki-link"}
-          aria-label="wik-link"
-          className="w-full"
-          onPress={() => window.open(getWikiLinkrole(role.name))}
-        >
-          Voir le rôle sur le wiki
-        </ListboxItem>
+        {getListboxItemRoleWikiLink(role, router)}
       </Listbox>
     );
   }

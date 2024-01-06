@@ -3,6 +3,11 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
+import {
+  getListboxItemEditionDetails,
+  getListboxItemGameDetails,
+  getListboxItemPlayerDetails,
+} from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetGames } from "@/data/back-api/back-api-game";
@@ -74,14 +79,10 @@ export default function GamesListPage() {
   function tableRowPopover(game: Game): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"game-details"}
-          aria-label="game-details"
-          className="w-full"
-          onPress={() => router.push(`/games/${game.id}`)}
-        >
-          Voir les détails de la partie
-        </ListboxItem>
+        {getListboxItemGameDetails(game, router)}
+        {getListboxItemPlayerDetails(game.storyteller, router)}
+        {getListboxItemEditionDetails(game.edition, router)}
+
         <ListboxItem
           key={"game-update"}
           aria-label="game-update"

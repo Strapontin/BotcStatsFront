@@ -5,6 +5,7 @@ import { useState } from "react";
 import AutocompletePlayer from "../autocompletes/AutocompletePlayer";
 import AutocompleteRoles from "../autocompletes/AutocompleteRoles";
 import ListboxPlayerRolesComponent from "../listbox/ListboxPlayerRolesComponent";
+import { Spacer } from "@nextui-org/react";
 
 export default function PlayerRolesSelector({
   selectedPlayerRoles,
@@ -46,6 +47,7 @@ export default function PlayerRolesSelector({
         setSelectedPlayerRoles={setSelectedPlayerRoles}
         showBtnDelete
       />
+      <Spacer y={2} />
       <div className="flex gap-1" key={autocompleteKey}>
         <AutocompletePlayer
           key={`autocompletePlayer_${role?.name}`}

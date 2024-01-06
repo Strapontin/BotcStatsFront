@@ -19,6 +19,7 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "../generic-table/GenericTable";
+import { getListboxItemPlayerDetails } from "../generic-table/popover/listbox-items";
 
 type RowType = GenericTableRowsExtendedProps & {
   name: string;
@@ -71,14 +72,7 @@ export function RolePlayersTable({
   function tableRowPopover(pwpr: PlayersWhoPlayedRole): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        <ListboxItem
-          key={"player-details"}
-          aria-label="player-details"
-          className="w-full"
-          onPress={() => router.push(`/players/${pwpr.player.id}`)}
-        >
-          Voir les détails de &apos;{pwpr.player.name}&apos;
-        </ListboxItem>
+        {getListboxItemPlayerDetails(pwpr.player, router)}
       </Listbox>
     );
   }
