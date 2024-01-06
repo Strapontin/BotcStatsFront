@@ -8,8 +8,7 @@ import {
 } from "@/data/back-api/back-api-game";
 import useApi from "@/data/back-api/useApi";
 import { Game } from "@/entities/Game";
-import { getPlayerPseudoString } from "@/entities/Player";
-import { Alignment } from "@/entities/enums/alignment";
+import { getPlayerFullName } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import NotFoundPage from "@/pages/404";
 import {
@@ -107,10 +106,7 @@ export default function UpdateGamePage() {
             <span id="modal-title">
               Voulez-vous vraiment supprimer la partie du{" "}
               <span>{dateToString(game.datePlayed)}</span> contée par{" '"}
-              <span>
-                {oldGame.storyTeller.name}
-                {getPlayerPseudoString(oldGame.storyTeller.pseudo)}
-              </span>
+              <span>{getPlayerFullName(oldGame.storyteller)}</span>
               {"' "}?
             </span>
           </ModalHeader>

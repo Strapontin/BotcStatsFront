@@ -1,9 +1,6 @@
-import { getUserRole } from "@/components/ui/image-role-name";
-import { Role } from "@/entities/Role";
-import {
-  CharacterType,
-  getCharacterTypeTextById,
-} from "@/entities/enums/characterType";
+import { getPlayerFullName } from "@/entities/Player";
+import { PlayersWhoPlayedRole } from "@/entities/Role";
+import { CharacterType } from "@/entities/enums/characterType";
 import {
   Button,
   Dropdown,
@@ -21,10 +18,7 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "../generic-table/GenericTable";
-import {
-  getListboxItemRoleDetails,
-  getListboxItemRoleWikiLink,
-} from "../generic-table/popover/listbox-items";
+import { getListboxItemPlayerDetails } from "../generic-table/popover/listbox-items";
 
 type RowType = GenericTableRowsExtendedProps & {
   name: string;
@@ -33,7 +27,11 @@ type RowType = GenericTableRowsExtendedProps & {
   loses: number | string;
 };
 
-export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
+export function RolePlayersTable({
+  playersWhoPlayedRole,
+}: {
+  playersWhoPlayedRole: PlayersWhoPlayedRole[];
+}) {
   const router = useRouter();
   const characterTypeOptions = [
     { name: "Villageois", uid: CharacterType.Townsfolk },
@@ -70,30 +68,24 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
     { key: "loses", name: "Défaites", allowSorting: true },
   ];
 
-  function tableRowPopover(role: Role): JSX.Element {
+  function tableRowPopover(pwpr: PlayersWhoPlayedRole): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemRoleDetails(role, router)}
-        {getListboxItemRoleWikiLink(role, router)}
+        {getListboxItemPlayerDetails(pwpr.player, router)}
       </Listbox>
     );
   }
 
-  const tableRows = playerRoles.map((role: Role) => {
+  const tableRows = playersWhoPlayedRole.map((pwpr: PlayersWhoPlayedRole) => {
     const result: RowType = {
-      id: "role" + role.id,
-      name: role.name,
-      total: role.timesPlayedTotal,
+      id: "pwpr" + pwpr.player.id,
+      name: getPlayerFullName(pwpr.player),
+      total: pwpr.timesPlayedRole,
 
-      wins: role.timesWonTotal,
-      loses: role.timesLostTotal,
+      wins: pwpr.timesWon,
+      loses: pwpr.timesLost,
 
-      renderJSX: {
-        characterType: getCharacterTypeTextById(role.characterType),
-        name: getUserRole(role),
-      },
-
-      popoverContent: tableRowPopover(role),
+      popoverContent: tableRowPopover(pwpr),
     };
     return result;
   });

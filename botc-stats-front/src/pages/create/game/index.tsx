@@ -4,7 +4,6 @@ import Title from "@/components/ui/title";
 import { createNewGame } from "@/data/back-api/back-api-game";
 import useApi from "@/data/back-api/useApi";
 import { Game, getNewEmptyGame } from "@/entities/Game";
-import { Alignment } from "@/entities/enums/alignment";
 import { useState } from "react";
 import { mutate } from "swr";
 
@@ -24,7 +23,7 @@ export default function CreateGame() {
       setGame((prevGame) => ({
         ...getNewEmptyGame(),
         edition: prevGame.edition,
-        storyTeller: prevGame.storyTeller,
+        storyteller: prevGame.storyteller,
         datePlayed: prevGame.datePlayed,
       }));
     }

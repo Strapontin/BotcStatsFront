@@ -4,11 +4,10 @@ import Title from "@/components/ui/title";
 import {
   deleteRole,
   updateRole,
-  useGetRoleById,
   useGetRoles,
 } from "@/data/back-api/back-api-role";
 import useApi from "@/data/back-api/useApi";
-import { Role } from "@/entities/Role";
+import { Role, getNewEmptyRole } from "@/entities/Role";
 import NotFoundPage from "@/pages/404";
 import {
   Button,
@@ -29,18 +28,19 @@ export default function UpdateRolePage() {
 
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const { data: roleData, isLoading } = useGetRoleById(roleId);
-  const { data: roles } = useGetRoles();
-  const [role, setRole] = useState<Role>(roleData);
-  const [oldRole, setOldRole] = useState<Role>(roleData);
+  const { data: roles, isLoading } = useGetRoles();
+  const [role, setRole] = useState<Role>(getNewEmptyRole());
+  const [oldRole, setOldRole] = useState<Role>(getNewEmptyRole());
   const api = useApi();
+  const roleData = roles?.find((r: Role) => r.id === roleId);
 
   useEffect(() => {
+    if (!roleData) return;
     setRole(roleData);
     setOldRole(roleData);
   }, [roleData]);
 
-  if (isLoading || !role) {
+  if (isLoading || !role || !oldRole) {
     return (
       <>
         <Spinner />

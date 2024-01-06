@@ -16,10 +16,8 @@ export default function DropdownAlignment(props: {
   alignment: Alignment;
   defaultText?: string;
 }) {
-  const alignmentText = getAlignmentTextById(
-    props.alignment,
-    props.defaultText
-  );
+  const alignmentText =
+    getAlignmentTextById(props.alignment) ?? props.defaultText;
 
   function selectAlignment(key: number) {
     props.setAlignment(key);

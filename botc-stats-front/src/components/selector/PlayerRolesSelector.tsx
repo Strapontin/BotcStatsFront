@@ -1,6 +1,7 @@
 import { Player } from "@/entities/Player";
 import { PlayerRole } from "@/entities/PlayerRole";
 import { Role, getDefaultAlignmentFromRole } from "@/entities/Role";
+import { Spacer } from "@nextui-org/react";
 import { useState } from "react";
 import AutocompletePlayer from "../autocompletes/AutocompletePlayer";
 import AutocompleteRoles from "../autocompletes/AutocompleteRoles";
@@ -46,6 +47,7 @@ export default function PlayerRolesSelector({
         setSelectedPlayerRoles={setSelectedPlayerRoles}
         showBtnDelete
       />
+      <Spacer y={2} />
       <div className="flex gap-1" key={autocompleteKey}>
         <AutocompletePlayer
           key={`autocompletePlayer_${role?.name}`}

@@ -1,3 +1,4 @@
+import { Player } from "./Player";
 import { Role } from "./Role";
 
 export type Edition = {
@@ -6,6 +7,16 @@ export type Edition = {
   roles: Role[];
   timesPlayed: number;
   timesGoodWon: number;
+  timesEvilWon: number;
+
+  playersWhoPlayedEdition?: PlayersWhoPlayedEdition[];
+};
+
+export type PlayersWhoPlayedEdition = {
+  player: Player;
+  timesPlayedEdition: number;
+  timesWon: number;
+  timesLost: number;
 };
 
 export function getNewEmptyEdition() {
@@ -13,8 +24,9 @@ export function getNewEmptyEdition() {
     id: -1,
     name: "",
     roles: [],
-    timesPlayed: 0,
-    timesGoodWon: 0,
+    timesPlayed: -1,
+    timesGoodWon: -1,
+    timesEvilWon: -1,
   };
   return edition;
 }
