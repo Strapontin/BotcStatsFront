@@ -3,7 +3,7 @@ import { CharacterType } from "@/entities/enums/characterType";
 import { Avatar, User } from "@nextui-org/react";
 import Image from "next/image";
 import { useState } from "react";
-import { removeDiacritics } from "../../helper/string";
+import { toLowerRemoveDiacritics } from "../../helper/string";
 
 export function RoleImageName(props: {
   name: string;
@@ -34,7 +34,7 @@ export function RoleImageName(props: {
 }
 
 function getRoleImgName(roleName: string): string {
-  const roleImgName = removeDiacritics(
+  const roleImgName = toLowerRemoveDiacritics(
     roleName.replaceAll("'", "-")
   ).replaceAll(" ", "-");
   return roleImgName;
