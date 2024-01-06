@@ -1,15 +1,13 @@
 import { Role } from "@/entities/Role";
 import { CharacterType } from "@/entities/enums/characterType";
+import { Avatar, User } from "@nextui-org/react";
 import Image from "next/image";
 import { useState } from "react";
-import { removeDiacritics } from "../../helper/string";
-import RoleColored from "./role-colored";
-import { Avatar } from "@nextui-org/react";
+import { toLowerRemoveDiacritics } from "../../helper/string";
 
-export default function ImageIconName(props: {
+export function RoleImageName(props: {
   name: string;
   characterType: CharacterType;
-  setNameAtLeftOfImage?: boolean;
 }) {
   const imgPath = getRoleIconPath(props.name);
 
@@ -27,28 +25,30 @@ export default function ImageIconName(props: {
     />
   );
 
-  if (props.setNameAtLeftOfImage) {
-    return (
-      <div className="flex items-center">
-        {image}
-        <RoleColored name={props.name} characterType={props.characterType} />
-      </div>
-    );
-  } else {
-    return (
-      <div className="flex items-center">
-        <RoleColored name={props.name} characterType={props.characterType} />
-        {image}
-      </div>
-    );
-  }
+  return (
+    <div className="flex items-center">
+      {props.name}
+      {image}
+    </div>
+  );
+}
+
+function getRoleImgName(roleName: string): string {
+  const roleImgName = toLowerRemoveDiacritics(
+    roleName.replaceAll("'", "-")
+  ).replaceAll(" ", "-");
+  return roleImgName;
+}
+
+export function getWikiLinkrole(roleName: string): string {
+  return `https://brain-academy.github.io/botc-wiki/docs/roles/${getRoleImgName(
+    roleName
+  )}`;
 }
 
 export function getRoleIconPath(roleName: string): string {
-  const imgFileName = removeDiacritics(roleName.replaceAll("'", "-"))
-    .replaceAll(" ", "-")
-    .replaceAll("'", "");
-  const imgPath = `/images/roles-icons/${imgFileName.toLocaleLowerCase()}.png`;
+  const imgFileName = getRoleImgName(roleName);
+  const imgPath = `/images/roles-icons/${imgFileName}.png`;
 
   return imgPath;
 }
@@ -112,7 +112,29 @@ export function getAvatarRole(role: Role) {
         base: getCssClassesFromCharacterType(role.characterType).ringColorClass,
       }}
       radius="sm"
+      size="sm"
       src={getRoleIconPath(role.name)}
     />
+  );
+}
+
+export function getUserRole(role: Role) {
+  return (
+    <div className="flex text-left">
+      <User
+        name={role.name}
+        avatarProps={{
+          isBordered: true,
+          src: `${getRoleIconPath(role.name)}`,
+          radius: "sm",
+          size: "sm",
+          classNames: {
+            base:
+              getCssClassesFromCharacterType(role.characterType)
+                .ringColorClass + " flex-none",
+          },
+        }}
+      />
+    </div>
   );
 }

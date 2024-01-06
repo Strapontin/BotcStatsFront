@@ -4,7 +4,11 @@ import useApi, { Api } from "./useApi";
 
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-export function useGetPlayers() {
+export function useGetPlayers(): {
+  data: Player[];
+  error: any;
+  isLoading: boolean;
+} {
   const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
     !isLoadingApi ? `${apiUrl}/Players` : null,

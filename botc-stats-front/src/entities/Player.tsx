@@ -9,32 +9,36 @@ export interface Player {
   nbGamesLost: number;
   nbGamesGood: number;
   nbGamesEvil: number;
+  nbGamesGoodWon: number;
+  nbGamesEvilWon: number;
   timesPlayedRole: Role[];
 }
 
-export function getNewEmptyPlayer() {
+export function getNewEmptyPlayer(): Player {
   const edition: Player = {
     id: -1,
     name: "",
     pseudo: "",
-    nbGamesPlayed: 0,
-    nbGamesWon: 0,
-    nbGamesLost: 0,
-    nbGamesGood: 0,
-    nbGamesEvil: 0,
+    nbGamesPlayed: -1,
+    nbGamesWon: -1,
+    nbGamesLost: -1,
+    nbGamesGood: -1,
+    nbGamesEvil: -1,
+    nbGamesGoodWon: -1,
+    nbGamesEvilWon: -1,
     timesPlayedRole: [],
   };
   return edition;
 }
 
-export function getPlayerPseudoString(pseudo: string) {
+function getPlayerPseudoString(pseudo: string): string {
   const pseudoFormatted =
     pseudo !== undefined && pseudo.length > 0 ? ` (${pseudo})` : "";
 
   return pseudoFormatted;
 }
 
-export function getPlayerFullName(player: Player) {
-  if (!player) return;
+export function getPlayerFullName(player: Player): string {
+  if (!player) return "";
   return `${player.name}${getPlayerPseudoString(player.pseudo)}`;
 }

@@ -5,7 +5,11 @@ export enum Alignment {
 }
 
 export function alignmentToString(alignment: Alignment) {
-  return alignment === Alignment.Good ? "Gentil" : "Maléfique";
+  return alignment === Alignment.Good
+    ? "Gentil"
+    : alignment === Alignment.Evil
+    ? "Maléfique"
+    : "-";
 }
 
 export function alignmentList(): { key: number; value: string }[] {
@@ -19,15 +23,9 @@ export function alignmentList(): { key: number; value: string }[] {
   return alignments;
 }
 
-export function getAlignmentTextById(
-  id: number,
-  defaultValue: string = ""
-): string {
+export function getAlignmentTextById(id: number): string | undefined {
   const result = alignmentList()[id];
-  if (result === undefined) {
-    return defaultValue;
-  }
-  return result.value;
+  return result?.value;
 }
 
 function translate(name: string) {

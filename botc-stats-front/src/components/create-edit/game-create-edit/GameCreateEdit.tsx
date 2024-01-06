@@ -14,7 +14,7 @@ import { PlayerRole } from "@/entities/PlayerRole";
 import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { CharacterType } from "@/entities/enums/characterType";
-import { dateToStringOrderByFormat } from "@/helper/date";
+import { dateToStringYMD } from "@/helper/date";
 import { Button, Input, Spacer, Textarea } from "@nextui-org/react";
 import DropdownAlignment from "../../dropdowns/DropdownAlignment";
 import PlayerRolesSelector from "../../selector/PlayerRolesSelector";
@@ -45,8 +45,8 @@ export default function GameCreateEdit({
   async function editionSelected(edition: Edition) {
     setGame({ ...game, edition: edition });
   }
-  function storyTellerSelected(storyTeller: Player) {
-    setGame({ ...game, storyTeller: storyTeller });
+  function storytellerSelected(storyteller: Player) {
+    setGame({ ...game, storyteller: storyteller });
   }
   function datePlayedSelected(datePlayed: string) {
     setGame({ ...game, datePlayed: new Date(datePlayed) });
@@ -79,9 +79,9 @@ export default function GameCreateEdit({
       <AutocompletePlayer
         players={players}
         isLoading={isPlayersLoading}
-        setSelectedPlayer={storyTellerSelected}
+        setSelectedPlayer={storytellerSelected}
         autocompleteLabel="Conteur"
-        defaultSelectedKey={String(game?.storyTeller?.id)}
+        defaultSelectedKey={String(game?.storyteller?.id)}
       />
       <Spacer y={1.5} />
       <Input
@@ -89,7 +89,7 @@ export default function GameCreateEdit({
         type="date"
         label="Date à laquelle la partie a été jouée"
         aria-label="Date à laquelle la partie a été jouée"
-        value={dateToStringOrderByFormat(game.datePlayed)}
+        value={dateToStringYMD(game.datePlayed)}
         onChange={(event) => datePlayedSelected(event.target.value)}
       />
       <Spacer y={1.5} />
@@ -131,8 +131,8 @@ export default function GameCreateEdit({
           game.winningAlignment === Alignment.None ||
           !game.edition ||
           game.edition?.id === -1 ||
-          !game.storyTeller ||
-          game.storyTeller?.id === -1
+          !game.storyteller ||
+          game.storyteller?.id === -1
         }
       >
         {btnText}

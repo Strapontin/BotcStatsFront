@@ -4,11 +4,10 @@ import Title from "@/components/ui/title";
 import {
   deleteEdition,
   updateEdition,
-  useGetEditionById,
   useGetEditions,
 } from "@/data/back-api/back-api-edition";
 import useApi from "@/data/back-api/useApi";
-import { Edition } from "@/entities/Edition";
+import { Edition, getNewEmptyEdition } from "@/entities/Edition";
 import NotFoundPage from "@/pages/404";
 import {
   Button,
@@ -29,18 +28,20 @@ export default function UpdateEditionPage() {
 
   const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
 
-  const { data: editionData, isLoading } = useGetEditionById(editionId);
-  const { data: editions } = useGetEditions();
-  const [edition, setEdition] = useState<Edition>(editionData);
-  const [oldEdition, setOldEdition] = useState<Edition>(editionData);
+  const { data: editions, isLoading } = useGetEditions();
+  const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
+  const [oldEdition, setOldEdition] = useState<Edition>(getNewEmptyEdition());
   const api = useApi();
+  const editionData = editions?.find((e: Edition) => e.id === editionId);
 
+  console.log(editions, editionData);
   useEffect(() => {
+    if (!editionData) return;
     setEdition(editionData);
     setOldEdition(editionData);
   }, [editionData]);
 
-  if (isLoading || !edition) {
+  if (isLoading || !edition || !oldEdition) {
     return (
       <>
         <Spinner />
