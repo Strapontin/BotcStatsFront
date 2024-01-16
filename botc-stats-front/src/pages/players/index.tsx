@@ -3,18 +3,15 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
-import { getListboxItemPlayerDetails } from "@/components/table/generic-table/popover/listbox-items";
+import {
+  getListboxItemPlayerDetails,
+  getListboxItemUpdatePlayer,
+} from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player, getPlayerFullName } from "@/entities/Player";
-import {
-  Button,
-  Listbox,
-  ListboxItem,
-  Spacer,
-  Spinner,
-} from "@nextui-org/react";
+import { Button, Listbox, Spacer, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { Plus } from "react-feather";
 
@@ -85,15 +82,11 @@ export default function PlayersPage() {
   function tableRowPopover(player: Player): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemPlayerDetails(player, router)}
-        <ListboxItem
-          key={"player-update"}
-          aria-label="player-update"
-          className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
-          onPress={() => router.push(`/update/players/${player.id}`)}
-        >
-          Modifier le joueur &apos;{getPlayerFullName(player)}&apos;
-        </ListboxItem>
+        {getListboxItemPlayerDetails(player)}
+        {getListboxItemUpdatePlayer(
+          player,
+          !user.isStoryTeller ? "hidden" : ""
+        )}
       </Listbox>
     );
   }

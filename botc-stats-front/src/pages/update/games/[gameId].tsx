@@ -68,10 +68,7 @@ export default function UpdateGamePage() {
   async function btnDeletePressed() {
     if (await deleteGame(game.id, api)) {
       mutateRoutes();
-
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 0);
+      router.push("/games");
     }
   }
 

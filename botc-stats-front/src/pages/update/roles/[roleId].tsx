@@ -68,10 +68,7 @@ export default function UpdateRolePage() {
   async function btnDeletePressed() {
     if (await deleteRole(oldRole.id, api)) {
       mutateRoutes();
-
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 0);
+      router.push("/roles");
     }
   }
 

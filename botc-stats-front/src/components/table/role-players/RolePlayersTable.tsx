@@ -71,7 +71,7 @@ export function RolePlayersTable({
   function tableRowPopover(pwpr: PlayersWhoPlayedRole): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemPlayerDetails(pwpr.player, router)}
+        {getListboxItemPlayerDetails(pwpr.player)}
       </Listbox>
     );
   }

@@ -7,6 +7,7 @@ import {
   getListboxItemEditionDetails,
   getListboxItemGameDetails,
   getListboxItemPlayerDetails,
+  getListboxItemUpdateGame,
 } from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
@@ -15,13 +16,7 @@ import { Game } from "@/entities/Game";
 import { getPlayerFullName } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
-import {
-  Button,
-  Listbox,
-  ListboxItem,
-  Spacer,
-  Spinner,
-} from "@nextui-org/react";
+import { Button, Listbox, Spacer, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { Plus } from "react-feather";
 
@@ -79,18 +74,10 @@ export default function GamesListPage() {
   function tableRowPopover(game: Game): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemGameDetails(game, router)}
-        {getListboxItemPlayerDetails(game.storyteller, router)}
-        {getListboxItemEditionDetails(game.edition, router)}
-
-        <ListboxItem
-          key={"game-update"}
-          aria-label="game-update"
-          className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
-          onPress={() => router.push(`/update/games/${game.id}`)}
-        >
-          Modifier la partie
-        </ListboxItem>
+        {getListboxItemGameDetails(game)}
+        {getListboxItemPlayerDetails(game.storyteller)}
+        {getListboxItemEditionDetails(game.edition)}
+        {getListboxItemUpdateGame(game, !user.isStoryTeller ? "hidden" : "")}
       </Listbox>
     );
   }

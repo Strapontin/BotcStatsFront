@@ -77,10 +77,7 @@ export default function UpdatePlayerPage() {
   async function btnDeletePressed() {
     if (await deletePlayer(oldPlayer.id, api)) {
       mutateRoutes();
-
-      setTimeout(() => {
-        router.push(router.asPath.substring(0, router.asPath.lastIndexOf("/")));
-      }, 0);
+      router.push("/players");
     }
   }
 
