@@ -1,7 +1,6 @@
 import { PlayersWhoPlayedEdition } from "@/entities/Edition";
 import { getPlayerFullName } from "@/entities/Player";
 import { Listbox, Spacer } from "@nextui-org/react";
-import { useRouter } from "next/router";
 import {
   GenericTable,
   GenericTableColumnProps,
@@ -21,8 +20,6 @@ export function EditionPlayersTable({
 }: {
   playersWhoPlayedEdition: PlayersWhoPlayedEdition[];
 }) {
-  const router = useRouter();
-
   const genericTableColumns: GenericTableColumnProps[] = [
     {
       key: "name",
@@ -50,7 +47,7 @@ export function EditionPlayersTable({
   function tableRowPopover(pwpe: PlayersWhoPlayedEdition): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemPlayerDetails(pwpe.player, router)}
+        {getListboxItemPlayerDetails(pwpe.player)}
       </Listbox>
     );
   }

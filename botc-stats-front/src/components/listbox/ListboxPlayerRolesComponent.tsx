@@ -8,7 +8,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { useRouter } from "next/router";
 import { X } from "react-feather";
 import {
   getListboxItemPlayerDetails,
@@ -27,8 +26,6 @@ export default function ListboxPlayerRolesComponent({
   setSelectedPlayerRoles?: any;
   showBtnDelete?: boolean;
 }) {
-  const router = useRouter();
-
   function onClickRemovePlayerRole(playerRole: PlayerRole) {
     setSelectedPlayerRoles(playerRoles.filter((pr) => pr !== playerRole));
   }
@@ -74,9 +71,9 @@ export default function ListboxPlayerRolesComponent({
   function getPopoverContent(playerRole: PlayerRole) {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemPlayerDetails(playerRole.player, router)}
-        {getListboxItemRoleDetails(playerRole.role, router)}
-        {getListboxItemRoleWikiLink(playerRole.role, router)}
+        {getListboxItemPlayerDetails(playerRole.player)}
+        {getListboxItemRoleDetails(playerRole.role)}
+        {getListboxItemRoleWikiLink(playerRole.role)}
       </Listbox>
     );
   }
