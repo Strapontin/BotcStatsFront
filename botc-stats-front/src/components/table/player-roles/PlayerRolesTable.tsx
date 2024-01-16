@@ -14,7 +14,6 @@ import {
   Selection,
   Spacer,
 } from "@nextui-org/react";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import {
   GenericTable,
@@ -34,7 +33,6 @@ type RowType = GenericTableRowsExtendedProps & {
 };
 
 export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
-  const router = useRouter();
   const characterTypeOptions = [
     { name: "Villageois", uid: CharacterType.Townsfolk },
     { name: "Etranger", uid: CharacterType.Outsider },
@@ -73,8 +71,8 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
   function tableRowPopover(role: Role): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemRoleDetails(role, router)}
-        {getListboxItemRoleWikiLink(role, router)}
+        {getListboxItemRoleDetails(role)}
+        {getListboxItemRoleWikiLink(role)}
       </Listbox>
     );
   }

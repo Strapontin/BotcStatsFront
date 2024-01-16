@@ -6,7 +6,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { useRouter } from "next/router";
 import { X } from "react-feather";
 import {
   getListboxItemRoleDetails,
@@ -23,7 +22,6 @@ export default function ListboxRolesComponent({
   setSelectedRoles?: any;
   showDelete?: boolean;
 }) {
-  const router = useRouter();
   const sortedSelectedRoles = sortRoles(roles);
 
   function onClickRemoveRole(roleId: number) {
@@ -33,8 +31,8 @@ export default function ListboxRolesComponent({
   function getPopoverContent(role: Role) {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemRoleDetails(role, router)}
-        {getListboxItemRoleWikiLink(role, router)}
+        {getListboxItemRoleDetails(role)}
+        {getListboxItemRoleWikiLink(role)}
       </Listbox>
     );
   }

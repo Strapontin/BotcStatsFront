@@ -41,7 +41,7 @@ export default function GamePage() {
       <PopoverTrigger>{getPlayerFullName(game.storyteller)}</PopoverTrigger>
       <PopoverContent>
         <Listbox aria-label="popover-items">
-          {getListboxItemPlayerDetails(game.storyteller, router)}
+          {getListboxItemPlayerDetails(game.storyteller)}
         </Listbox>
       </PopoverContent>
     </Popover>

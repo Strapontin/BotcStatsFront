@@ -39,8 +39,7 @@ export default function EditionIdPage() {
 
   const { data: edition, isLoading }: { data: Edition; isLoading: boolean } =
     useGetEditionById(editionId);
-  const { data: gamesPlayed, isLoading: isLoadingGamesPlayed } =
-    useGetGamesByEditionId(editionId);
+  const { data: gamesPlayed } = useGetGamesByEditionId(editionId);
 
   if (isLoading) {
     return (
@@ -57,8 +56,8 @@ export default function EditionIdPage() {
   function getPopoverContent(role: Role) {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemRoleDetails(role, router)}
-        {getListboxItemRoleWikiLink(role, router)}
+        {getListboxItemRoleDetails(role)}
+        {getListboxItemRoleWikiLink(role)}
       </Listbox>
     );
   }
