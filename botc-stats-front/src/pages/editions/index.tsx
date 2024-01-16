@@ -3,18 +3,15 @@ import {
   GenericTableColumnProps,
   GenericTableRowsExtendedProps,
 } from "@/components/table/generic-table/GenericTable";
-import { getListboxItemEditionDetails } from "@/components/table/generic-table/popover/listbox-items";
+import {
+  getListboxItemEditionDetails,
+  getListboxItemUpdateEdition,
+} from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetEditions } from "@/data/back-api/back-api-edition";
 import { Edition } from "@/entities/Edition";
-import {
-  Button,
-  Listbox,
-  ListboxItem,
-  Spacer,
-  Spinner,
-} from "@nextui-org/react";
+import { Button, Listbox, Spacer, Spinner } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { Plus } from "react-feather";
 
@@ -69,15 +66,11 @@ export default function UpdateEditionsPage() {
   function tableRowPopover(edition: Edition): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemEditionDetails(edition, router)}
-        <ListboxItem
-          key={"edition-update"}
-          aria-label="edition-update"
-          className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
-          onPress={() => router.push(`/update/editions/${edition.id}`)}
-        >
-          Modifier le module &apos;{edition.name}&apos;
-        </ListboxItem>
+        {getListboxItemEditionDetails(edition)}
+        {getListboxItemUpdateEdition(
+          edition,
+          !user.isStoryTeller ? "hidden" : ""
+        )}
       </Listbox>
     );
   }

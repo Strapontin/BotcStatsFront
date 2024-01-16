@@ -6,6 +6,7 @@ import {
 import {
   getListboxItemRoleDetails,
   getListboxItemRoleWikiLink,
+  getListboxItemUpdateRole,
 } from "@/components/table/generic-table/popover/listbox-items";
 import { getUserRole } from "@/components/ui/image-role-name";
 import Title from "@/components/ui/title";
@@ -23,7 +24,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Listbox,
-  ListboxItem,
   Selection,
   Spacer,
   Spinner,
@@ -101,16 +101,9 @@ export default function RolesPage() {
   function tableRowPopover(role: Role): JSX.Element {
     return (
       <Listbox aria-label="popover-items">
-        {getListboxItemRoleDetails(role, router)}
-        <ListboxItem
-          key={"role-update"}
-          aria-label="role-update"
-          className={`w-full ${!user.isStoryTeller ? "hidden" : ""}`}
-          onPress={() => router.push(`/update/roles/${role.id}`)}
-        >
-          Modifier le rôle &apos;{role.name}&apos;
-        </ListboxItem>
-        {getListboxItemRoleWikiLink(role, router)}
+        {getListboxItemRoleDetails(role)}
+        {getListboxItemUpdateRole(role, !user.isStoryTeller ? "hidden" : "")}
+        {getListboxItemRoleWikiLink(role)}
       </Listbox>
     );
   }

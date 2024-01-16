@@ -4,67 +4,60 @@ import { Game } from "@/entities/Game";
 import { Player, getPlayerFullName } from "@/entities/Player";
 import { Role } from "@/entities/Role";
 import { ListboxItem } from "@nextui-org/react";
-import { NextRouter } from "next/router";
 
-export function getListboxItemPlayerDetails(
-  player: Player,
-  router: NextRouter
-) {
+export function getListboxItemPlayerDetails(player: Player) {
   return (
     <ListboxItem
       key={"player-details"}
       aria-label="player-details"
       className="w-full"
-      onPress={() => router.push(`/players/${player.id}`)}
+      href={`/players/${player.id}`}
     >
       Voir les détails du joueur &apos;{getPlayerFullName(player)}&apos;
     </ListboxItem>
   );
 }
 
-export function getListboxItemRoleDetails(role: Role, router: NextRouter) {
+export function getListboxItemRoleDetails(role: Role) {
   return (
     <ListboxItem
       key={"role-details"}
       aria-label="role-details"
       className="w-full"
-      onPress={() => router.push(`/roles/${role.id}`)}
+      href={`/roles/${role.id}`}
     >
       Voir les détails du rôle &apos;{role.name}&apos;
     </ListboxItem>
   );
 }
 
-export function getListboxItemEditionDetails(
-  edition: Edition,
-  router: NextRouter
-) {
+export function getListboxItemEditionDetails(edition: Edition) {
   return (
     <ListboxItem
       key={"edition-details"}
       aria-label="edition-details"
       className="w-full"
-      onPress={() => router.push(`/editions/${edition.id}`)}
+      href={`/editions/${edition.id}`}
     >
       Voir les détails du module &apos;{edition.name}&apos;
     </ListboxItem>
   );
 }
 
-export function getListboxItemGameDetails(game: Game, router: NextRouter) {
+export function getListboxItemGameDetails(game: Game) {
   return (
     <ListboxItem
       key={"game-details"}
       aria-label="game-details"
       className="w-full"
-      onPress={() => router.push(`/games/${game.id}`)}
+      href={`/games/${game.id}`}
     >
       Voir les détails de la partie
     </ListboxItem>
   );
 }
 
-export function getListboxItemRoleWikiLink(role: Role, router: NextRouter) {
+export function getListboxItemRoleWikiLink(role: Role) {
   return (
     <ListboxItem
       key={"wiki-link"}
@@ -73,6 +66,65 @@ export function getListboxItemRoleWikiLink(role: Role, router: NextRouter) {
       onPress={() => window.open(getWikiLinkrole(role.name))}
     >
       Voir le rôle sur le wiki
+    </ListboxItem>
+  );
+}
+
+// Update
+export function getListboxItemUpdatePlayer(
+  player: Player,
+  listboxItemClass: string
+) {
+  return (
+    <ListboxItem
+      key={"player-update"}
+      aria-label="player-update"
+      className={`w-full ${listboxItemClass}`}
+      href={`/update/players/${player.id}`}
+    >
+      Modifier le joueur &apos;{getPlayerFullName(player)}&apos;
+    </ListboxItem>
+  );
+}
+
+export function getListboxItemUpdateRole(role: Role, listboxItemClass: string) {
+  return (
+    <ListboxItem
+      key={"role-update"}
+      aria-label="role-update"
+      className={`w-full ${listboxItemClass}`}
+      href={`/update/roles/${role.id}`}
+    >
+      Modifier le rôle &apos;{role.name}&apos;
+    </ListboxItem>
+  );
+}
+
+export function getListboxItemUpdateEdition(
+  edition: Edition,
+  listboxItemClass: string
+) {
+  return (
+    <ListboxItem
+      key={"edition-update"}
+      aria-label="edition-update"
+      className={`w-full ${listboxItemClass}`}
+      href={`/update/editions/${edition.id}`}
+    >
+      Modifier le module &apos;{edition.name}&apos;
+    </ListboxItem>
+  );
+}
+
+export function getListboxItemUpdateGame(game: Game, listboxItemClass: string) {
+  return (
+    <ListboxItem
+      key={"game-update"}
+      aria-label="game-update"
+      className={`w-full ${listboxItemClass}`}
+      href={`/update/games/${game.id}`}
+    >
+      Modifier la partie
     </ListboxItem>
   );
 }
