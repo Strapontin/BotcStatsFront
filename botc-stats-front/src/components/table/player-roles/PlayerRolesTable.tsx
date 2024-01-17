@@ -77,24 +77,28 @@ export function PlayerRolesTable({ playerRoles }: { playerRoles: Role[] }) {
     );
   }
 
-  const tableRows = playerRoles.map((role: Role) => {
-    const result: RowType = {
-      id: "role" + role.id,
-      name: role.name,
-      total: role.timesPlayedTotal,
+  const tableRows = playerRoles
+    .filter((role: Role) =>
+      Array.from(characterTypeFilter).includes(role.characterType.toString())
+    )
+    .map((role: Role) => {
+      const result: RowType = {
+        id: "role" + role.id,
+        name: role.name,
+        total: role.timesPlayedTotal,
 
-      wins: role.timesWonTotal,
-      loses: role.timesLostTotal,
+        wins: role.timesWonTotal,
+        loses: role.timesLostTotal,
 
-      renderJSX: {
-        characterType: getCharacterTypeTextById(role.characterType),
-        name: getUserRole(role),
-      },
+        renderJSX: {
+          characterType: getCharacterTypeTextById(role.characterType),
+          name: getUserRole(role),
+        },
 
-      popoverContent: tableRowPopover(role),
-    };
-    return result;
-  });
+        popoverContent: tableRowPopover(role),
+      };
+      return result;
+    });
 
   function computePercentage(
     total: number | string,

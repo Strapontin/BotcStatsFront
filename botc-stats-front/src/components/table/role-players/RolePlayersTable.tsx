@@ -112,28 +112,6 @@ export function RolePlayersTable({
 
   return (
     <>
-      <div className="flex">
-        <Dropdown>
-          <DropdownTrigger>
-            <Button variant="flat">Type de rôle</Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            disallowEmptySelection
-            aria-label="Type de rôle"
-            closeOnSelect={false}
-            selectedKeys={characterTypeFilter}
-            selectionMode="multiple"
-            onSelectionChange={setCharacterTypeFilter}
-          >
-            {characterTypeOptions.map((characterType) => (
-              <DropdownItem key={characterType.uid}>
-                {characterType.name}
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </Dropdown>
-      </div>
-      <Spacer y={3} />
       <GenericTable
         columns={genericTableColumns}
         rows={tableRows}

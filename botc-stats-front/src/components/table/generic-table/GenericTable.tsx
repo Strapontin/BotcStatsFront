@@ -1,4 +1,5 @@
 import Filter from "@/components/filter/Filter";
+import { SliderX } from "@/components/slider/slider-x";
 import { stringContainsString } from "@/helper/string";
 import {
   Button,
@@ -220,47 +221,49 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
         )}
       </div>
       <Spacer y={2.5} />
-      <Table
-        className="overflow-auto"
-        aria-label="table"
-        removeWrapper
-        sortDescriptor={sortDescriptor}
-        onSortChange={(sort) => {
-          setSortDescriptor({
-            ...sort,
-            direction:
-              sort.column === sortDescriptor.column
-                ? sort.direction
-                : "descending",
-          });
-        }}
-      >
-        <TableHeader>
-          {Object.keys(groupColumns(columns))
-            .filter((column) => Array.from(visibleColumns).includes(column))
-            .map((columnKey: string) => {
-              const column = columns.find((c) => c.key === columnKey)!;
-              return (
-                <TableColumn
-                  key={columnKey}
-                  className="text-center"
-                  allowsSorting={column.allowSorting}
-                >
-                  {column.name}
-                </TableColumn>
-              );
-            })}
-        </TableHeader>
-        <TableBody items={sortedItems}>
-          {(row: T) => (
-            <TableRow key={row.id}>
-              {(columnKey: Key) => (
-                <TableCell>{renderCell(row, columnKey)}</TableCell>
-              )}
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      <SliderX>
+        <Table
+          className="w-auto"
+          aria-label="table"
+          removeWrapper
+          sortDescriptor={sortDescriptor}
+          onSortChange={(sort) => {
+            setSortDescriptor({
+              ...sort,
+              direction:
+                sort.column === sortDescriptor.column
+                  ? sort.direction
+                  : "descending",
+            });
+          }}
+        >
+          <TableHeader>
+            {Object.keys(groupColumns(columns))
+              .filter((column) => Array.from(visibleColumns).includes(column))
+              .map((columnKey: string) => {
+                const column = columns.find((c) => c.key === columnKey)!;
+                return (
+                  <TableColumn
+                    key={columnKey}
+                    className="text-center"
+                    allowsSorting={column.allowSorting}
+                  >
+                    {column.name}
+                  </TableColumn>
+                );
+              })}
+          </TableHeader>
+          <TableBody items={sortedItems}>
+            {(row: T) => (
+              <TableRow key={row.id}>
+                {(columnKey: Key) => (
+                  <TableCell>{renderCell(row, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </SliderX>
     </>
   );
 }
