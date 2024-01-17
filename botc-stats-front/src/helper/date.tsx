@@ -17,3 +17,14 @@ export function dateToStringYMD(date: Date) {
 
   return `${year}-${month}-${day}`;
 }
+
+export function dateTimeToString(date: Date) {
+  const dts = dateToString(date);
+  const d = new Date(date);
+
+  const hours = d.getHours().toString().padStart(2, "0");
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  const seconds = d.getSeconds().toString().padStart(2, "0");
+
+  return `${dts} ${hours}:${minutes}:${seconds}`;
+}
