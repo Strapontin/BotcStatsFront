@@ -72,6 +72,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
 }: GenericTableProps<T>) {
   const [filters, setFilters] = useState<{ key: string; value: string }[]>([]);
   const [showPercentage, setShowPercentage] = useState<boolean>(false);
+  const [keyTable, setKeyTable] = useState<number>(0);
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(
       columns
@@ -140,6 +141,11 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       return cmp;
     });
   }, [rows, rowsPercentage, showPercentage, sortDescriptor, filters]);
+
+  useEffect(() => {
+    // Shows the table correctly after changing the ref of <SliderX />
+    setKeyTable((prev) => prev + 1);
+  }, [sortedItems]);
 
   function renderCell(row: T, columnKey: Key): JSX.Element {
     const cell =
@@ -223,6 +229,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       <Spacer y={2.5} />
       <SliderX>
         <Table
+          key={keyTable}
           className="w-auto"
           aria-label="table"
           removeWrapper
