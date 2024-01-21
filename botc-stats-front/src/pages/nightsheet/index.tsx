@@ -16,6 +16,7 @@ import {
   useGetWikiTbaRoles,
 } from "@/data/wiki-api";
 import { Role } from "@/entities/Role";
+import { CharacterType } from "@/entities/enums/characterType";
 import {
   Button,
   Dropdown,
@@ -132,6 +133,7 @@ export default function NighsheetPage() {
       .filter(filterRolesFromEdition);
     const rolesNotWaking = roles.filter(
       (role) =>
+        role.characterType !== CharacterType.Traveller &&
         !firstNightRoles.find((r: RoleTranslated) => r.role?.id === role.id) &&
         !otherNightRoles.find((r: RoleTranslated) => r.role?.id === role.id)
     );

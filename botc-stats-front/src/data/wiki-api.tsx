@@ -1,5 +1,6 @@
 import { CharacterType } from "@/entities/enums/characterType";
 import useSWR from "swr";
+import useApi from "./back-api/useApi";
 
 export type WikiType = {
   name: string;
@@ -23,13 +24,14 @@ function getRolesWiki(
   return result;
 }
 
+const fetcher = (url: string) => fetch(url).then((d) => d.json());
+
 export function useGetWikiTbaRoles(): {
   data?: WikiType[];
   isLoading: boolean;
 } {
   const url = "https://brain-academy.github.io/botc-wiki/api/roles.json";
 
-  const fetcher = (url: string) => fetch(url).then((d) => d.json());
   const { data, isLoading } = useSWR(url, fetcher);
 
   if (data) {
@@ -51,10 +53,12 @@ export function useGetOfficialNightSheet(): {
   data: { firstNight: string[]; otherNight: string[] };
   isLoading: boolean;
 } {
-  const url = "https://script.bloodontheclocktower.com/data/nightsheet.json";
+  const { apiUrl, isLoadingApi } = useApi();
 
-  const fetcher = (url: string) => fetch(url).then((d) => d.json());
-  const { data, isLoading } = useSWR(url, fetcher);
+  const { data, isLoading } = useSWR(
+    !isLoadingApi ? `${apiUrl}/NightSheet` : null,
+    fetcher
+  );
 
-  return { data, isLoading };
+  return { data, isLoading: isLoading || isLoadingApi };
 }
