@@ -46,7 +46,7 @@ export default function UpdateRolePage() {
         <Spinner />
       </>
     );
-  } else if (roleData.status === 404) {
+  } else if (!roleData) {
     return (
       <>
         <NotFoundPage />
