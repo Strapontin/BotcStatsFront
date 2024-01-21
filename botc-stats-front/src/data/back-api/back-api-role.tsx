@@ -4,7 +4,11 @@ import useApi, { Api } from "./useApi";
 
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-export function useGetRoles(characterTypes?: number[]) {
+export function useGetRoles(characterTypes?: number[]): {
+  data: Role[];
+  error: any;
+  isLoading: boolean;
+} {
   const searchParams = new URLSearchParams(
     characterTypes
       ? characterTypes.map((c) => ["characterTypes", c.toString()])

@@ -35,7 +35,7 @@ export type GenericTableColumnProps = {
 
 export type GenericTableRowsExtendedProps = {
   id: string | number;
-  popoverContent?: JSX.Element;
+  popoverContent?: any;
   renderJSX?: any;
 };
 
@@ -149,17 +149,25 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
 
   function renderCell(row: T, columnKey: Key): JSX.Element {
     const cell =
-      row?.renderJSX && Object.hasOwn(row.renderJSX, columnKey as PropertyKey)
+      row.renderJSX &&
+      Object.hasOwn(row.renderJSX, columnKey as PropertyKey) &&
+      (row.renderJSX[columnKey as PropertyKey] as string) !== null
         ? (row.renderJSX[columnKey as PropertyKey] as string)
         : (row[columnKey as keyof T] as string);
 
     if (row.popoverContent) {
+      const popContent =
+        Object.hasOwn(row.popoverContent, columnKey as PropertyKey) &&
+        (row.popoverContent[columnKey as PropertyKey] as string) !== null
+          ? (row.popoverContent[columnKey as PropertyKey] as string)
+          : row.popoverContent;
+
       return (
         <Popover showArrow>
           <PopoverTrigger>
             <div className={`cursor-pointer`}>{cell}</div>
           </PopoverTrigger>
-          <PopoverContent>{row.popoverContent}</PopoverContent>
+          <PopoverContent>{popContent}</PopoverContent>
         </Popover>
       );
     } else {
