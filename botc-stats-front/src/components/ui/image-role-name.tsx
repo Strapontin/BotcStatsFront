@@ -35,8 +35,8 @@ export function RoleImageName(props: {
 
 function getRoleImgName(roleName: string): string {
   const roleImgName = toLowerRemoveDiacritics(
-    roleName.replaceAll("'", "-")
-  ).replaceAll(" ", "-");
+    roleName.replaceAll("'", "-").replaceAll('"', "-").replaceAll(" ", "-")
+  );
   return roleImgName;
 }
 

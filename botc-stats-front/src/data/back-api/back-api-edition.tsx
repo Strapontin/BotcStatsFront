@@ -4,7 +4,11 @@ import useApi, { Api } from "./useApi";
 
 const fetcher = (url: string) => fetch(url).then((d) => d.json());
 
-export function useGetEditions() {
+export function useGetEditions(): {
+  data: Edition[];
+  error: any;
+  isLoading: boolean;
+} {
   const { apiUrl, isLoadingApi } = useApi();
   const { data, error, isLoading } = useSWR(
     !isLoadingApi ? `${apiUrl}/Editions` : null,

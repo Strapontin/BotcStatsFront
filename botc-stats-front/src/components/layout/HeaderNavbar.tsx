@@ -13,15 +13,23 @@ import { useState } from "react";
 import imgRecette from "../../../public/images/Recette.png";
 import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar";
 
+type MenuItem = { name: string; href: string };
+
 export default function HeaderNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const menuItems: { name: string; href: string }[] = [
+  const menuItems: MenuItem[] = [
     { name: "Joueurs", href: "/players" },
     { name: "Rôles", href: "/roles" },
     { name: "Modules", href: "/editions" },
     { name: "Parties", href: "/games" },
+  ];
+  const menuItemsLeftMenuOnly: MenuItem[] = [
+    {
+      name: "Ordre de nuit",
+      href: "/nightsheet",
+    },
   ];
 
   return (
@@ -46,10 +54,7 @@ export default function HeaderNavbar() {
         menuItem: ["data-[active=true]:text-blue-500"],
       }}
     >
-      <NavbarMenuToggle
-        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        className="sm:hidden"
-      />
+      <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
       <NavbarBrand>
         <Link href="/" color="foreground">
           BOTC Stats
@@ -69,7 +74,7 @@ export default function HeaderNavbar() {
       </NavbarContent>
 
       <NavbarMenu>
-        {menuItems.map((item) => (
+        {[...menuItems, ...menuItemsLeftMenuOnly].map((item) => (
           <NavbarMenuItem key={item.href} isActive={pathname === item.href}>
             <Link
               href={item.href}
