@@ -47,7 +47,7 @@ export default function UpdateEditionPage() {
         <Spinner />
       </>
     );
-  } else if (editionData.status === 404) {
+  } else if (!editionData) {
     return (
       <>
         <NotFoundPage />
