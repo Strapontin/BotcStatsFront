@@ -9,15 +9,24 @@ import {
 } from "@nextui-org/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import imgRecette from "../../../public/images/Recette.png";
 import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar";
+import QrCode from "../qr-code/QrCode";
+import { useRouter } from "next/router";
 
 type MenuItem = { name: string; href: string };
 
 export default function HeaderNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [fullPathName, setFullPathName] = useState<string>("");
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined")
+      setFullPathName(window.location.origin + router.asPath);
+  }, [router.asPath]);
 
   const menuItems: MenuItem[] = [
     { name: "Joueurs", href: "/players" },
@@ -85,6 +94,9 @@ export default function HeaderNavbar() {
             </Link>
           </NavbarMenuItem>
         ))}
+        <NavbarMenuItem>
+          <QrCode text={fullPathName} />
+        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   );
