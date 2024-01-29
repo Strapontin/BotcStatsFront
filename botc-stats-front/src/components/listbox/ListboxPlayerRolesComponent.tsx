@@ -46,7 +46,7 @@ export default function ListboxPlayerRolesComponent({
   }
 
   const ListboxItemStartContent = ({ player }: { player: Player }) => (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-start flex-auto basis-0">
       <span>{player.name}</span>
       <span className="text-default-400 text-sm">{player.pseudo}</span>
     </div>
