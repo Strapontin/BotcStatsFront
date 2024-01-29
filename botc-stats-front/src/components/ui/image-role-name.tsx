@@ -26,7 +26,7 @@ export function RoleImageName(props: {
   );
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center flex-auto shrink-1 text-end ml-1">
       {props.name}
       {image}
     </div>
