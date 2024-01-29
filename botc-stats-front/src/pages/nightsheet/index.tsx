@@ -111,7 +111,8 @@ export default function NighsheetPage() {
   function filterRolesFromEdition(roleTranslated: RoleTranslated) {
     return (
       roleTranslated.role ||
-      Object.values(keywords).includes(roleTranslated.name)
+      Object.values(keywords).includes(roleTranslated.name) ||
+      selectedEdition === "all"
     );
   }
 
