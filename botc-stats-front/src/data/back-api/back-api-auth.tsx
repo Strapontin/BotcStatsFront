@@ -26,7 +26,7 @@ export function useUserHasStoryTellerRights(): {
     }).then((res) => res.json())
   );
 
-  if (error) {
+  if (error && !accessToken) {
     signOut({ redirect: false });
   }
 
