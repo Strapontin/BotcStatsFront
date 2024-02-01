@@ -34,7 +34,6 @@ export default function UpdateEditionPage() {
   const api = useApi();
   const editionData = editions?.find((e: Edition) => e.id === editionId);
 
-  console.log(editions, editionData);
   useEffect(() => {
     if (!editionData) return;
     setEdition(editionData);

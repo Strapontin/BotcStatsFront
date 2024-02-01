@@ -1,6 +1,4 @@
-import { useSession } from "next-auth/react";
-
-const fetcher = (url: string) => fetch(url).then((d) => d.json());
+import { signOut, useSession } from "next-auth/react";
 
 export type Api = {
   apiUrl?: string;
@@ -14,6 +12,11 @@ export default function useApi(): Api {
   if (session.status === "loading") return { isLoadingApi: true };
 
   const accessToken = session.data?.accessToken;
+
+  // If the session is expired, auto-signout
+  if (new Date(session.expires).getTime() < Date.now()) {
+    signOut({ redirect: false });
+  }
 
   return {
     accessToken,
