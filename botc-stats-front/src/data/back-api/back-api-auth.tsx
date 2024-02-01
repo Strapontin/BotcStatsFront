@@ -1,6 +1,5 @@
 import useSWR from "swr";
 import useApi from "./useApi";
-import { signOut } from "next-auth/react";
 
 export function useUserHasStoryTellerRights(): {
   isStoryTeller: boolean;
@@ -25,10 +24,6 @@ export function useUserHasStoryTellerRights(): {
       referrerPolicy: "no-referrer",
     }).then((res) => res.json())
   );
-
-  if (error && !accessToken) {
-    signOut({ redirect: false });
-  }
 
   return {
     isStoryTeller: data,

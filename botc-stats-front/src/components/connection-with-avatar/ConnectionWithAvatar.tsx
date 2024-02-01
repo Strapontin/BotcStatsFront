@@ -1,5 +1,4 @@
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
-import useApi from "@/data/back-api/useApi";
 import {
   Avatar,
   Dropdown,
@@ -8,35 +7,13 @@ import {
   DropdownTrigger,
   Spinner,
 } from "@nextui-org/react";
-import { signIn, signOut } from "next-auth/react";
-import useSWR from "swr";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function ConnectionWithAvatar() {
   const user = useUserHasStoryTellerRights();
-  const { accessToken, isLoadingApi } = useApi();
-  const { data: discordUserData, isLoading: isLoadingDiscordUserData } = useSWR(
-    accessToken ? `https://discord.com/api/users/@me` : "",
-    (url: string) =>
-      fetch(url, {
-        method: "GET",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-      }).then((d) => d.json())
-  );
+  const { data: sessionData, status } = useSession();
 
-  const avatarUrl =
-    user.isConnected && discordUserData?.id && discordUserData?.avatar
-      ? `https://cdn.discordapp.com/avatars/${discordUserData?.id}/${discordUserData?.avatar}.png`
-      : user.isConnected
-      ? "https://cdn.discordapp.com/embed/avatars/0.png"
-      : "https://cdn.discordapp.com/embed/avatars/1.png";
+  const avatarUrl = sessionData?.user?.image;
 
   const dropdownItems: {
     key: string;
@@ -60,7 +37,7 @@ export default function ConnectionWithAvatar() {
             <div>
               Connecté en tant que :
               <br />
-              {discordUserData?.username}
+              {sessionData?.user?.name}
             </div>
           ),
           showDivider: true,
@@ -82,13 +59,13 @@ export default function ConnectionWithAvatar() {
   return (
     <Dropdown type="menu">
       <DropdownTrigger>
-        {isLoadingApi || isLoadingDiscordUserData ? (
+        {status === "loading" ? (
           <Spinner />
         ) : (
           <Avatar
             as="button"
             className="transition-transform"
-            src={avatarUrl}
+            src={avatarUrl!}
           />
         )}
       </DropdownTrigger>
