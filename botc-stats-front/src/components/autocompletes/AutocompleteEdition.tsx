@@ -1,6 +1,10 @@
 import { Edition } from "@/entities/Edition";
 import { toLowerRemoveDiacritics } from "@/helper/string";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  AutocompleteSection,
+} from "@nextui-org/react";
 
 export default function AutocompleteEdition({
   editions,
@@ -25,6 +29,12 @@ export default function AutocompleteEdition({
           : 1
       );
 
+  const officialEditionNames = [
+    "Trouble Brewing",
+    "Sects And Violets",
+    "Bad Moon Rising",
+  ];
+
   return (
     <Autocomplete
       label={autocompleteLabel}
@@ -36,11 +46,28 @@ export default function AutocompleteEdition({
       isLoading={isLoading}
       defaultSelectedKey={defaultSelectedKey}
     >
-      {editionsSorted.map((edition) => {
-        return (
-          <AutocompleteItem key={edition.id}>{edition.name}</AutocompleteItem>
-        );
-      })}
+      <AutocompleteSection showDivider title="Modules officiels">
+        {editionsSorted
+          .filter((e) => officialEditionNames.includes(e.name))
+          .map((edition) => {
+            return (
+              <AutocompleteItem key={edition.id}>
+                {edition.name}
+              </AutocompleteItem>
+            );
+          })}
+      </AutocompleteSection>
+      <AutocompleteSection title="Autres modules">
+        {editionsSorted
+          .filter((e) => !officialEditionNames.includes(e.name))
+          .map((edition) => {
+            return (
+              <AutocompleteItem key={edition.id}>
+                {edition.name}
+              </AutocompleteItem>
+            );
+          })}
+      </AutocompleteSection>
     </Autocomplete>
   );
 }
