@@ -98,9 +98,12 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       });
   }, []);
 
+  const [tempRows, setTempRows] = useState(rows);
+  const [tempRowsPercentage, setTempRowsPercentage] = useState(rowsPercentage);
+
   const sortedItems = useMemo(() => {
     const filteredRows = (
-      showPercentage && rowsPercentage ? rowsPercentage : rows
+      showPercentage && tempRowsPercentage ? tempRowsPercentage : tempRows
     ).filter((row) => {
       return filters.every((filter) => {
         return stringContainsString(
@@ -122,7 +125,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       return value;
     }
 
-    return [...filteredRows].sort((a: T, b: T) => {
+    const result = [...filteredRows].sort((a: T, b: T) => {
       const first = a[sortDescriptor.column as keyof T];
       const second = b[sortDescriptor.column as keyof T];
 
@@ -140,6 +143,14 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
 
       return cmp;
     });
+
+    if (showPercentage && tempRowsPercentage) {
+      setTempRowsPercentage(result);
+    } else {
+      setTempRows(result);
+    }TODO : From the backend, order by the fetched data to have a good looking first result in the table (ie: players = total.then(wins).then(name))
+
+    return result;
   }, [rows, rowsPercentage, showPercentage, sortDescriptor, filters]);
 
   useEffect(() => {
