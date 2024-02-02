@@ -1,10 +1,11 @@
 import { Edition } from "@/entities/Edition";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
 import {
   Autocomplete,
   AutocompleteItem,
   AutocompleteSection,
 } from "@nextui-org/react";
+import { useState } from "react";
 
 export default function AutocompleteEdition({
   editions,
@@ -21,6 +22,7 @@ export default function AutocompleteEdition({
   autocompletePlaceholder?: string;
   defaultSelectedKey?: string;
 }) {
+  const [showDivider, setShowDivider] = useState(true);
   const editionsSorted = isLoading
     ? []
     : editions.sort((a, b) =>
@@ -35,6 +37,10 @@ export default function AutocompleteEdition({
     "Bad Moon Rising",
   ];
 
+  let otherEditions = editionsSorted.filter(
+    (e) => !officialEditionNames.includes(e.name)
+  );
+
   return (
     <Autocomplete
       label={autocompleteLabel}
@@ -43,10 +49,18 @@ export default function AutocompleteEdition({
       onSelectionChange={(editionId) => {
         setSelectedEdition(editions.find((e) => e.id === +editionId)!);
       }}
+      onInputChange={(text) => {
+        setShowDivider(
+          otherEditions.some((e) => stringContainsString(e.name, text))
+        );
+      }}
       isLoading={isLoading}
       defaultSelectedKey={defaultSelectedKey}
     >
-      <AutocompleteSection showDivider title="Modules officiels">
+      <AutocompleteSection
+        showDivider={showDivider}
+        title="Modules officiels"
+      >
         {editionsSorted
           .filter((e) => officialEditionNames.includes(e.name))
           .map((edition) => {
@@ -58,15 +72,11 @@ export default function AutocompleteEdition({
           })}
       </AutocompleteSection>
       <AutocompleteSection title="Autres modules">
-        {editionsSorted
-          .filter((e) => !officialEditionNames.includes(e.name))
-          .map((edition) => {
-            return (
-              <AutocompleteItem key={edition.id}>
-                {edition.name}
-              </AutocompleteItem>
-            );
-          })}
+        {otherEditions.map((edition) => {
+          return (
+            <AutocompleteItem key={edition.id}>{edition.name}</AutocompleteItem>
+          );
+        })}
       </AutocompleteSection>
     </Autocomplete>
   );
