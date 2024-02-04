@@ -98,9 +98,12 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       });
   }, []);
 
+  const memoRows = useMemo(() => rows, [rows]);
+  const memoRowsPercentage = useMemo(() => rowsPercentage, [rowsPercentage]);
+
   const sortedItems = useMemo(() => {
     const filteredRows = (
-      showPercentage && rowsPercentage ? rowsPercentage : rows
+      showPercentage && memoRowsPercentage ? memoRowsPercentage : memoRows
     ).filter((row) => {
       return filters.every((filter) => {
         return stringContainsString(
@@ -122,7 +125,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
       return value;
     }
 
-    return [...filteredRows].sort((a: T, b: T) => {
+    const result = [...filteredRows].sort((a: T, b: T) => {
       const first = a[sortDescriptor.column as keyof T];
       const second = b[sortDescriptor.column as keyof T];
 
@@ -140,7 +143,16 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
 
       return cmp;
     });
-  }, [rows, rowsPercentage, showPercentage, sortDescriptor, filters]);
+
+    return result;
+  }, [
+    memoRows,
+    memoRowsPercentage,
+    showPercentage,
+    filters,
+    sortDescriptor.column,
+    sortDescriptor.direction,
+  ]);
 
   useEffect(() => {
     // Shows the table correctly after changing the ref of <SliderX />
