@@ -6,7 +6,7 @@ import {
 } from "@/components/table/generic-table/GenericTable";
 import { useGetUpdateHistory } from "@/data/back-api/back-api-update-history";
 import { UpdateHistory } from "@/entities/UpdateHistory";
-import { dateTimeToString } from "@/helper/date";
+import { dateTimeToString, dateToStringYMDHMS } from "@/helper/date";
 import { Spacer, Spinner, Tab, Tabs } from "@nextui-org/react";
 import { useMemo, useState } from "react";
 import NotFoundPage from "../404";
@@ -69,7 +69,7 @@ export default function HistoryPage() {
       id: "uh" + uh.id,
       key: uh.id,
 
-      date: dateTimeToString(uh.date),
+      date: dateToStringYMDHMS(uh.date),
       text: uh.text,
 
       playerId: uh.playerId,
@@ -78,6 +78,7 @@ export default function HistoryPage() {
       gameId: uh.gameId,
 
       renderJSX: {
+        date: dateTimeToString(uh.date),
         text: (
           <span className="flex text-left whitespace-break-spaces">
             {uh.text}
