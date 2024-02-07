@@ -58,17 +58,13 @@ export default function PlayersPage() {
       isDefaultSort: true,
       isDefaultVisible: true,
     },
-    {
-      key: "wins",
-      name: "Victoires",
-      allowSorting: true,
-      isDefaultVisible: true,
-    },
+    { key: "wins", name: "Victoires", allowSorting: true },
     { key: "loses", name: "Défaites", allowSorting: true },
     {
       key: "gamesGood",
       name: "Parties gentil",
       allowSorting: true,
+      isDefaultVisible: true,
     },
     {
       key: "gamesEvil",
