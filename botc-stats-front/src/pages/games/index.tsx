@@ -1,3 +1,4 @@
+import { GamesDraftTable } from "@/components/table/games-draft/GamesDraftTable";
 import {
   GenericTable,
   GenericTableColumnProps,
@@ -12,12 +13,21 @@ import {
 import Title from "@/components/ui/title";
 import { useUserHasStoryTellerRights } from "@/data/back-api/back-api-auth";
 import { useGetGames } from "@/data/back-api/back-api-game";
+import { useGetGamesDraft } from "@/data/back-api/back-api-game-draft";
 import { Game } from "@/entities/Game";
 import { getPlayerFullName } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
-import { Button, Listbox, Spacer, Spinner } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Listbox,
+  Spacer,
+  Spinner,
+} from "@nextui-org/react";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { Plus } from "react-feather";
 
 type RowType = GenericTableRowsExtendedProps & {
@@ -32,6 +42,13 @@ export default function GamesListPage() {
   const { data: games, isLoading } = useGetGames();
   const router = useRouter();
   const user = useUserHasStoryTellerRights();
+  const { data: gamesDraft, isLoading: isLoadingGamesDraft } =
+    useGetGamesDraft();
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    setKey((prev) => prev + 1);
+  }, [isLoadingGamesDraft]);
 
   const title = <Title>Dernières parties jouées</Title>;
 
@@ -77,7 +94,7 @@ export default function GamesListPage() {
         {getListboxItemGameDetails(game)}
         {getListboxItemPlayerDetails(game.storyteller)}
         {getListboxItemEditionDetails(game.edition)}
-        {getListboxItemUpdateGame(game, !user.isStoryTeller ? "hidden" : "")}
+        {getListboxItemUpdateGame(game, user.isStoryTeller)}
       </Listbox>
     );
   }
@@ -104,17 +121,39 @@ export default function GamesListPage() {
       {title}
       <Spacer y={1} />
       <div className={user.isStoryTeller ? "" : "hidden"}>
-        <Button
-          className="flex"
-          color="success"
-          startContent={<Plus className="h-4" />}
-          onPress={() => router.push(`/create/game`)}
-        >
-          Ajouter une nouvelle partie
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            className="flex-1"
+            color="success"
+            onPress={() => router.push(`/create/game`)}
+          >
+            Ajouter une partie
+          </Button>
+          <Button
+            className="flex-1"
+            color="success"
+            onPress={() => router.push("/create/gamedraft")}
+          >
+            Ajouter une partie de rappel
+          </Button>
+        </div>
         <Spacer y={3} />
       </div>
-      <GenericTable columns={genericTableColumns} rows={tableRows} />
+      <Accordion
+        selectionMode="multiple"
+        defaultExpandedKeys={["games", gamesDraft?.length ? "games-draft" : ""]}
+      >
+        <AccordionItem
+          key="games-draft"
+          aria-label="games-draft"
+          title="Parties de rappel"
+        >
+          <GamesDraftTable />
+        </AccordionItem>
+        <AccordionItem key="games" aria-label="games" title="Parties jouées">
+          <GenericTable columns={genericTableColumns} rows={tableRows} />
+        </AccordionItem>
+      </Accordion>
     </>
   );
 }

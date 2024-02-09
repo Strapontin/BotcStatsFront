@@ -79,10 +79,7 @@ export default function PlayersPage() {
     return (
       <Listbox aria-label="popover-items">
         {getListboxItemPlayerDetails(player)}
-        {getListboxItemUpdatePlayer(
-          player,
-          !user.isStoryTeller ? "hidden" : ""
-        )}
+        {getListboxItemUpdatePlayer(player, user.isStoryTeller)}
       </Listbox>
     );
   }

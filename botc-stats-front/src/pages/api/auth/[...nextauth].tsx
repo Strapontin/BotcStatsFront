@@ -23,10 +23,13 @@ export default NextAuth({
         token.refreshToken = account.refresh_token;
 
         token = await refreshAccessToken(token);
+        console.log("Account has data. New Token :", token);
       } else if (Date.now() > token.accessTokenExpires) {
         token = await refreshAccessToken(token);
+        console.log("Token has expired. New Token :", token);
       }
 
+      console.log("Normal Token :", token);
       return token;
     },
     async session({
@@ -39,6 +42,7 @@ export default NextAuth({
       user: any;
     }) {
       // Send properties to the client, like an access_token from a provider.
+      console.log("GetSession !", session);
       session.accessToken = token.accessToken;
       return session;
     },
