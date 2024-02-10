@@ -102,7 +102,7 @@ export default function RolesPage() {
     return (
       <Listbox aria-label="popover-items">
         {getListboxItemRoleDetails(role)}
-        {getListboxItemUpdateRole(role, !user.isStoryTeller ? "hidden" : "")}
+        {getListboxItemUpdateRole(role, user.isStoryTeller)}
         {getListboxItemRoleWikiLink(role)}
       </Listbox>
     );

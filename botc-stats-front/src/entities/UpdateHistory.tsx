@@ -5,6 +5,7 @@ export interface UpdateHistory {
   roleId: number;
   editionId: number;
   gameId: number;
+  gameDraftId: number;
 
   date: Date;
   text: string;

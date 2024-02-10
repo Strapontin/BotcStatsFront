@@ -1,6 +1,7 @@
 import { getWikiLinkrole } from "@/components/ui/image-role-name";
 import { Edition } from "@/entities/Edition";
 import { Game } from "@/entities/Game";
+import { GameDraft } from "@/entities/GameDraft";
 import { Player, getPlayerFullName } from "@/entities/Player";
 import { Role } from "@/entities/Role";
 import { ListboxItem } from "@nextui-org/react";
@@ -57,6 +58,19 @@ export function getListboxItemGameDetails(game: Game) {
   );
 }
 
+export function getListboxItemGameDraftDetails(gameDraft: GameDraft) {
+  return (
+    <ListboxItem
+      key={"gameDraft-details"}
+      aria-label="gameDraft-details"
+      className="w-full"
+      href={`/gamesDraft/${gameDraft.id}`}
+    >
+      Voir les détails de la partie de rappel
+    </ListboxItem>
+  );
+}
+
 export function getListboxItemRoleWikiLink(role: Role) {
   return (
     <ListboxItem
@@ -71,15 +85,12 @@ export function getListboxItemRoleWikiLink(role: Role) {
 }
 
 // Update
-export function getListboxItemUpdatePlayer(
-  player: Player,
-  listboxItemClass: string
-) {
+export function getListboxItemUpdatePlayer(player: Player, show: boolean) {
   return (
     <ListboxItem
       key={"player-update"}
       aria-label="player-update"
-      className={`w-full ${listboxItemClass}`}
+      className={`w-full ${show ? "" : "hidden"}`}
       href={`/update/players/${player.id}`}
     >
       Modifier le joueur &apos;{getPlayerFullName(player)}&apos;
@@ -87,12 +98,12 @@ export function getListboxItemUpdatePlayer(
   );
 }
 
-export function getListboxItemUpdateRole(role: Role, listboxItemClass: string) {
+export function getListboxItemUpdateRole(role: Role, show: boolean) {
   return (
     <ListboxItem
       key={"role-update"}
       aria-label="role-update"
-      className={`w-full ${listboxItemClass}`}
+      className={`w-full ${show ? "" : "hidden"}`}
       href={`/update/roles/${role.id}`}
     >
       Modifier le rôle &apos;{role.name}&apos;
@@ -100,15 +111,12 @@ export function getListboxItemUpdateRole(role: Role, listboxItemClass: string) {
   );
 }
 
-export function getListboxItemUpdateEdition(
-  edition: Edition,
-  listboxItemClass: string
-) {
+export function getListboxItemUpdateEdition(edition: Edition, show: boolean) {
   return (
     <ListboxItem
       key={"edition-update"}
       aria-label="edition-update"
-      className={`w-full ${listboxItemClass}`}
+      className={`w-full ${show ? "" : "hidden"}`}
       href={`/update/editions/${edition.id}`}
     >
       Modifier le module &apos;{edition.name}&apos;
@@ -116,15 +124,31 @@ export function getListboxItemUpdateEdition(
   );
 }
 
-export function getListboxItemUpdateGame(game: Game, listboxItemClass: string) {
+export function getListboxItemUpdateGame(game: Game, show: boolean) {
   return (
     <ListboxItem
       key={"game-update"}
       aria-label="game-update"
-      className={`w-full ${listboxItemClass}`}
+      className={`w-full ${show ? "" : "hidden"}`}
       href={`/update/games/${game.id}`}
     >
       Modifier la partie
+    </ListboxItem>
+  );
+}
+
+export function getListboxItemUpdateGameDraft(
+  gameDraft: GameDraft,
+  show: boolean
+) {
+  return (
+    <ListboxItem
+      key={"gameDraft-update"}
+      aria-label="gameDraft-update"
+      className={`w-full ${show ? "" : "hidden"}`}
+      href={`/update/gamesDraft/${gameDraft.id}`}
+    >
+      Modifier la partie de rappel
     </ListboxItem>
   );
 }
