@@ -67,10 +67,7 @@ export default function UpdateEditionsPage() {
     return (
       <Listbox aria-label="popover-items">
         {getListboxItemEditionDetails(edition)}
-        {getListboxItemUpdateEdition(
-          edition,
-          !user.isStoryTeller ? "hidden" : ""
-        )}
+        {getListboxItemUpdateEdition(edition, user.isStoryTeller)}
       </Listbox>
     );
   }
