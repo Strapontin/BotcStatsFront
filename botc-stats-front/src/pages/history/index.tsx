@@ -20,6 +20,7 @@ type RowType = GenericTableRowsExtendedProps & {
   roleId?: number;
   editionId?: number;
   gameId?: number;
+  gameDraftId?: number;
 };
 
 export default function HistoryPage() {
@@ -76,6 +77,7 @@ export default function HistoryPage() {
       roleId: uh.roleId,
       editionId: uh.editionId,
       gameId: uh.gameId,
+      gameDraftId: uh.gameDraftId,
 
       renderJSX: {
         date: dateTimeToString(uh.date),
@@ -90,75 +92,98 @@ export default function HistoryPage() {
   });
 
   return (
-    <Tabs aria-label="tabs">
-      <Tab key="players" title="Joueurs">
-        {filterId}
-        <Spacer y={2.5} />
-        <GenericTable
-          columns={genericTableColumns}
-          rows={tableRows
-            .filter(
-              (tr: RowType) =>
-                (tr.playerId && filter === "") ||
-                (!isNaN(Number(filter)) && Number(filter) === tr.playerId)
-            )
-            .map((tr: RowType) => {
-              tr.key = tr.playerId!;
-              return tr;
-            })}
-        />
-      </Tab>
-      <Tab key="roles" title="Rôles">
-        {filterId}
-        <Spacer y={2.5} />
-        <GenericTable
-          columns={genericTableColumns}
-          rows={tableRows
-            .filter(
-              (tr: RowType) =>
-                (tr.roleId && filter === "") ||
-                (!isNaN(Number(filter)) && Number(filter) === tr.roleId)
-            )
-            .map((tr: RowType) => {
-              tr.key = tr.roleId!;
-              return tr;
-            })}
-        />
-      </Tab>
-      <Tab key="editions" title="Modules">
-        {filterId}
-        <Spacer y={2.5} />
-        <GenericTable
-          columns={genericTableColumns}
-          rows={tableRows
-            .filter(
-              (tr: RowType) =>
-                (tr.editionId && filter === "") ||
-                (!isNaN(Number(filter)) && Number(filter) === tr.editionId)
-            )
-            .map((tr: RowType) => {
-              tr.key = tr.editionId!;
-              return tr;
-            })}
-        />
-      </Tab>
-      <Tab key="games" title="Parties">
-        {filterId}
-        <Spacer y={2.5} />
-        <GenericTable
-          columns={genericTableColumns}
-          rows={tableRows
-            .filter(
-              (tr: RowType) =>
-                (tr.gameId && filter === "") ||
-                (!isNaN(Number(filter)) && Number(filter) === tr.gameId)
-            )
-            .map((tr: RowType) => {
-              tr.key = tr.gameId!;
-              return tr;
-            })}
-        />
-      </Tab>
-    </Tabs>
+    <div className="absolute left-0 w-full flex flex-col items-center">
+      <Tabs
+        className="flex flex-col items-center"
+        classNames={{ panel: "mr-56" }}
+        aria-label="tabs"
+      >
+        <Tab key="players" title="Joueurs">
+          {filterId}
+          <Spacer y={2.5} />
+          <GenericTable
+            columns={genericTableColumns}
+            rows={tableRows
+              .filter(
+                (tr: RowType) =>
+                  (tr.playerId && filter === "") ||
+                  (!isNaN(Number(filter)) && Number(filter) === tr.playerId)
+              )
+              .map((tr: RowType) => {
+                tr.key = tr.playerId!;
+                return tr;
+              })}
+          />
+        </Tab>
+        <Tab key="roles" title="Rôles">
+          {filterId}
+          <Spacer y={2.5} />
+          <GenericTable
+            columns={genericTableColumns}
+            rows={tableRows
+              .filter(
+                (tr: RowType) =>
+                  (tr.roleId && filter === "") ||
+                  (!isNaN(Number(filter)) && Number(filter) === tr.roleId)
+              )
+              .map((tr: RowType) => {
+                tr.key = tr.roleId!;
+                return tr;
+              })}
+          />
+        </Tab>
+        <Tab key="editions" title="Modules">
+          {filterId}
+          <Spacer y={2.5} />
+          <GenericTable
+            columns={genericTableColumns}
+            rows={tableRows
+              .filter(
+                (tr: RowType) =>
+                  (tr.editionId && filter === "") ||
+                  (!isNaN(Number(filter)) && Number(filter) === tr.editionId)
+              )
+              .map((tr: RowType) => {
+                tr.key = tr.editionId!;
+                return tr;
+              })}
+          />
+        </Tab>
+        <Tab key="games" title="Parties">
+          {filterId}
+          <Spacer y={2.5} />
+          <GenericTable
+            columns={genericTableColumns}
+            rows={tableRows
+              .filter(
+                (tr: RowType) =>
+                  (tr.gameId && filter === "") ||
+                  (!isNaN(Number(filter)) && Number(filter) === tr.gameId)
+              )
+              .map((tr: RowType) => {
+                tr.key = tr.gameId!;
+                return tr;
+              })}
+          />
+        </Tab>
+        <Tab key="games-draft" title="Parties de rappel">
+          {filterId}
+          <Spacer y={2.5} />
+          <GenericTable
+            columns={genericTableColumns}
+            rows={tableRows
+              .filter(
+                (tr: RowType) =>
+                  (tr.gameDraftId && filter === "") ||
+                  (!isNaN(Number(filter)) && Number(filter) === tr.gameDraftId)
+              )
+              .map((tr: RowType) => {
+                tr.key = tr.gameDraftId!;
+                return tr;
+              })}
+          />
+        </Tab>
+      </Tabs>
+    </div>
   );
 }

@@ -73,6 +73,17 @@ export default function GameDraftCreateEdit({
         value={gameDraft.notes}
         onChange={(event) => notesChanged(event.target.value)}
       />
+      <Spacer y={1.5} />
+      <Textarea
+        isReadOnly
+        variant="flat"
+        color="warning"
+        value={
+          "Il est possible de mettre les joueurs présents dans les notes, " +
+          "mais il est déconseillé de mettre des informations sur les rôles tant que " +
+          "la partie n'est pas terminée (risque de triche)."
+        }
+      ></Textarea>
       <Spacer y={3} />
 
       <Button

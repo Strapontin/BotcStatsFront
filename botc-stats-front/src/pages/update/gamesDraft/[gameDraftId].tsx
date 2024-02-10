@@ -46,7 +46,7 @@ export default function UpdateGameDraftPage() {
         <Spinner />
       </>
     );
-  } else if (gameDraftData.status === 404) {
+  } else if (!gameDraftData?.id) {
     return (
       <>
         <NotFoundPage />
@@ -56,12 +56,16 @@ export default function UpdateGameDraftPage() {
 
   const title = <Title>Modification d{"'"}une partie existante</Title>;
 
-  async function btnUpdateGameDraft() {
+  async function btnUpdateGameDraft(redirectToCreateGame: boolean = false) {
     const update = updateGameDraft(gameDraft, api);
     toastPromise(update, `Mise à jour de la partie...`);
 
     if (await update) {
       mutateRoutes();
+
+      if (typeof redirectToCreateGame === "boolean" && redirectToCreateGame) {
+        router.push(`/create/game?gameDraftId=${gameDraftId}`);
+      }
     }
   }
 
@@ -77,6 +81,31 @@ export default function UpdateGameDraftPage() {
     mutate(`${api.apiUrl}/GameDrafts/${gameDraft.id}`);
   }
 
+  const ModalDeleteGameDraft = () => (
+    <Modal
+      backdrop="blur"
+      isOpen={popupDeleteVisible}
+      onClose={() => setPopupDeleteVisible(false)}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <span id="modal-title">
+            Voulez-vous vraiment supprimer la partie de rappel du{" "}
+            <span>{dateToString(gameDraft.datePlayed)}</span> contée par{" '"}
+            <span>{getPlayerFullName(oldGameDraft.storyteller)}</span>
+            {"' "}?
+          </span>
+        </ModalHeader>
+        <ModalFooter>
+          <Button variant="flat" color="danger" onPress={btnDeletePressed}>
+            Confirmer
+          </Button>
+          <Button onPress={() => setPopupDeleteVisible(false)}>Annuler</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+
   return (
     <>
       <GameDraftCreateEdit
@@ -87,7 +116,16 @@ export default function UpdateGameDraftPage() {
         btnText="Modifier la partie de rappel"
       />
 
-      <Button color="success" onPress={() => (true)}>
+      <Button
+        color="success"
+        onPress={() => btnUpdateGameDraft(true)}
+        isDisabled={
+          !gameDraft.edition ||
+          gameDraft.edition?.id === -1 ||
+          !gameDraft.storyteller ||
+          gameDraft.storyteller?.id === -1
+        }
+      >
         Enregistrer et transformer en partie réelle
       </Button>
       <Spacer y={3} />
@@ -97,30 +135,7 @@ export default function UpdateGameDraftPage() {
 
       <Spacer y={3} />
 
-      <Modal
-        backdrop="blur"
-        isOpen={popupDeleteVisible}
-        onClose={() => setPopupDeleteVisible(false)}
-      >
-        <ModalContent>
-          <ModalHeader>
-            <span id="modal-title">
-              Voulez-vous vraiment supprimer la partie de rappel du{" "}
-              <span>{dateToString(gameDraft.datePlayed)}</span> contée par{" '"}
-              <span>{getPlayerFullName(oldGameDraft.storyteller)}</span>
-              {"' "}?
-            </span>
-          </ModalHeader>
-          <ModalFooter>
-            <Button variant="flat" color="danger" onPress={btnDeletePressed}>
-              Confirmer
-            </Button>
-            <Button onPress={() => setPopupDeleteVisible(false)}>
-              Annuler
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ModalDeleteGameDraft />
     </>
   );
 }

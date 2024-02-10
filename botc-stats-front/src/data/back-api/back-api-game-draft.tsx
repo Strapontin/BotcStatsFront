@@ -14,15 +14,25 @@ export function useGetGamesDraft() {
   return { data, error, isLoading: isLoading || isLoadingApi };
 }
 
-export function useGetGameDraftById(gameDraftId: number) {
+export function useGetGameDraftById(gameDraftId: number): {
+  data: GameDraft;
+  error: any;
+  isLoading: boolean;
+} {
   const { apiUrl, isLoadingApi } = useApi();
 
   const { data, error, isLoading } = useSWR(
-    !isLoadingApi && !isNaN(gameDraftId) ? `${apiUrl}/GamesDraft/${gameDraftId}` : null,
+    !isLoadingApi && !isNaN(gameDraftId)
+      ? `${apiUrl}/GamesDraft/${gameDraftId}`
+      : null,
     fetcher
   );
 
-  return { data, error, isLoading: isLoading || isLoadingApi || isNaN(gameDraftId) };
+  return {
+    data,
+    error,
+    isLoading: isLoading || isLoadingApi || isNaN(gameDraftId),
+  };
 }
 
 // export function useGetGamesDraftByStorytellerId(storytellerId: number): {

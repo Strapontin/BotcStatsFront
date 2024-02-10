@@ -29,18 +29,3 @@ export function getGameDraftDisplayName(game: GameDraft): JSX.Element {
     </>
   );
 }
-
-// export interface GrouppedGames {
-//   [key: string]: GameDraft[];
-// }
-
-// export function groupGamesByMonthPlayed(games: GameDraft[]): GrouppedGames {
-//   return games.reduce((acc: GrouppedGames, current: GameDraft) => {
-//     const key = new Date(current.datePlayed).getMonth();
-//     if (key != null && !acc[key]) {
-//       acc[key] = [];
-//     }
-//     acc[key].push(current);
-//     return acc;
-//   }, {});
-// }
