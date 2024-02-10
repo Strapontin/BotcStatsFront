@@ -140,7 +140,7 @@ export default function GamesListPage() {
         <AccordionItem
           key="games-draft"
           aria-label="games-draft"
-          title="Parties de rappel"
+          title="Rappel de parties (pour les conteurs)"
         >
           <GamesDraftTable />
         </AccordionItem>
