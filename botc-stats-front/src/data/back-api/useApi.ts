@@ -10,6 +10,8 @@ export default function useApi(): Api {
   const session: any = useSession();
 
   if (session.status === "loading") return { isLoadingApi: true };
+  if (session?.data?.error === "RefreshAccessTokenError")
+    signOut({ redirect: false });
 
   const accessToken = session.data?.accessToken;
 
