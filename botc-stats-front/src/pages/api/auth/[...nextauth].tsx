@@ -1,76 +1,77 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_ID!,
       clientSecret: process.env.DISCORD_SECRET!,
       authorization: {
-        params: { scope: "guilds guilds.members.read email identify" },
+        params: { scope: "identify email guilds guilds.members.read" },
       },
-      // issuer: process.env.NEXTAUTH_URL,
-      // checks: ["none"],
     }),
-    // ...add more providers here
   ],
   callbacks: {
-    async jwt({ token, account }: { token: any; account: any }) {
-      // Persist the OAuth access_token to the token right after signin
+    async jwt({ token, account, profile, user }: any) {
+      // Save the access token, refresh token & IDs in the JWT on the initial login
       if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
-
-        token = await refreshAccessToken(token);
-      } else if (Date.now() > token.accessTokenExpires) {
-        token = await refreshAccessToken(token);
+        if (profile) {
+          token.discordId = profile.id;
+        }
+        token.id = user.id;
+        token.access_token = account.access_token;
+        token.refresh_token = account.refresh_token;
+        token.expires_at = Math.floor(Date.now() / 1000 + account.expires_at);
       }
 
-      return token;
+      // If the refresh token is valid, return the token as is
+      if (Date.now() < token.expires_at * 1000) {
+        return token;
+      }
+      console.log("INVALIDREFRESH TOKEN", token, token.expires_at);
+
+      // If the refresh token is expired, refresh it
+      try {
+        const response = await fetch(`https://discord.com/api/oauth2/token`, {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            client_id: process.env.DISCORD_ID!,
+            client_secret: process.env.DISCORD_SECRET!,
+            grant_type: "refresh_token",
+            refresh_token: token.refreshToken,
+          }),
+          method: "POST",
+        });
+
+        const new_token = await response.json();
+
+        if (!response.ok) throw new_token;
+        return {
+          ...token, // Keep the previous token properties
+          accessToken: new_token.access_token,
+          expiresAt: Math.floor(Date.now() / 1000 + new_token.expires_in),
+          refreshToken: new_token.refresh_token as string,
+        };
+      } catch (error) {
+        console.error("Error refreshing access token:", error);
+        return {
+          ...token,
+          error: "RefreshAccessTokenError",
+        };
+      }
     },
-    async session({
-      session,
-      token,
-      user,
-    }: {
-      session: any;
-      token: any;
-      user: any;
-    }) {
-      // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
+    async session({ session, token, user }: any) {
+      // If you want to forward the user id to the client, you can do so here:
+      // session.user.id = token.id
+      // Send properties to the client.
+      session.error = token.error;
+      session.user.discordId = token.discordId;
+      session.accessToken = token.access_token;
+
       return session;
     },
   },
-});
+};
 
-async function refreshAccessToken(token: any) {
-  const url = "https://discord.com/api/v10/oauth2/token";
-
-  const response = await fetch(url, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    method: "POST",
-    body: new URLSearchParams({
-      client_id: process.env.DISCORD_ID!,
-      client_secret: process.env.DISCORD_SECRET!,
-      grant_type: "refresh_token",
-      refresh_token: token.refreshToken,
-    }),
-  });
-
-  const refreshedTokens = await response.json();
-
-  if (!response.ok) {
-    throw refreshedTokens;
-  }
-
-  return {
-    ...token,
-    accessToken: refreshedTokens.access_token,
-    accessTokenExpires: Date.now() + refreshedTokens.expires_in * 1000,
-    refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
-  };
-}
+export default NextAuth(authOptions);
