@@ -124,7 +124,7 @@ export default function GamesListPage() {
             Ajouter une partie
           </Button>
           <Button
-            className="flex-1"
+            className="flex-1 whitespace-normal"
             color="success"
             onPress={() => router.push("/create/gamedraft")}
           >
