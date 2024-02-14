@@ -21,6 +21,7 @@ import {
   ModalHeader,
   Spacer,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -30,7 +31,11 @@ export default function UpdatePlayerPage() {
   const router = useRouter();
   const playerId: number = Number(router.query.playerId);
 
-  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
+  const {
+    isOpen: popupDeleteVisible,
+    onOpen: openPopupDelete,
+    onClose: closePopupDelete,
+  } = useDisclosure();
 
   const { data: players, isLoading } = useGetPlayers();
   const [player, setPlayer] = useState<Player>(getNewEmptyPlayer());
@@ -75,7 +80,14 @@ export default function UpdatePlayerPage() {
   }
 
   async function btnDeletePressed() {
-    if (await deletePlayer(oldPlayer.id, api)) {
+    const delPlayer = deletePlayer(oldPlayer.id, api);
+    toastPromise(
+      delPlayer,
+      `Suppression du joueur '${getPlayerFullName(oldPlayer)}'`
+    );
+
+    closePopupDelete();
+    if (await delPlayer) {
       mutateRoutes();
       router.push("/players");
     }
@@ -96,7 +108,7 @@ export default function UpdatePlayerPage() {
         btnPressed={btnUpdatePlayer}
         btnText="Modifier le joueur"
       />
-      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
+      <Button color="danger" onPress={openPopupDelete}>
         Supprimer le joueur
       </Button>
 
@@ -105,23 +117,20 @@ export default function UpdatePlayerPage() {
       <Modal
         backdrop="blur"
         isOpen={popupDeleteVisible}
-        onClose={() => setPopupDeleteVisible(false)}
+        onClose={closePopupDelete}
       >
         <ModalContent>
           <ModalHeader>
-            <span id="modal-title">
-              Voulez-vous vraiment supprimer le joueur :{" '"}
-              <span>{getPlayerFullName(oldPlayer)}</span>
-              {"' "}?
-            </span>
+            {`Voulez-vous vraiment supprimer le joueur : '
+              ${getPlayerFullName(oldPlayer)}
+              ' ?
+            `}
           </ModalHeader>
           <ModalFooter>
             <Button color="danger" onPress={btnDeletePressed}>
               Confirmer
             </Button>
-            <Button onPress={() => setPopupDeleteVisible(false)}>
-              Annuler
-            </Button>
+            <Button onPress={closePopupDelete}>Annuler</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

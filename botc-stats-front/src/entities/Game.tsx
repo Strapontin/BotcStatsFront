@@ -1,5 +1,6 @@
 import { dateToString } from "@/helper/date";
 import { Edition, getNewEmptyEdition } from "./Edition";
+import { GameDraft } from "./GameDraft";
 import { Player, getNewEmptyPlayer, getPlayerFullName } from "./Player";
 import { PlayerRole } from "./PlayerRole";
 import { Role } from "./Role";
@@ -31,13 +32,9 @@ export function getNewEmptyGame() {
   return game;
 }
 
-export function getGameDisplayName(game: Game): JSX.Element {
-  return (
-    <>
-      {dateToString(game.datePlayed)} - Contée par{" "}
-      {getPlayerFullName(game.storyteller)}
-    </>
-  );
+export function getGameDisplayName(game: Game | GameDraft): string {
+  return `${dateToString(game.datePlayed)} - Contée par
+      ${getPlayerFullName(game.storyteller)}`;
 }
 
 export interface GrouppedGames {

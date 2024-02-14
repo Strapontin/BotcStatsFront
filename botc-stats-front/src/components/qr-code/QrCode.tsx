@@ -33,22 +33,18 @@ export default function QrCode({ text }: { text: string }) {
   };
 
   return (
-    <div>
+    <>
       <div className="cursor-pointer" onClick={onOpen}>
         <QrImage width={50} />
       </div>
       <Modal size="5xl" isOpen={isOpen} onClose={onClose}>
         <ModalContent>
-          {() => (
-            <>
-              <ModalHeader>Code QR de la page actuelle</ModalHeader>
-              <ModalBody>
-                <QrImage width={700} />
-              </ModalBody>
-            </>
-          )}
+          <ModalHeader>Code QR de la page actuelle</ModalHeader>
+          <ModalBody>
+            <QrImage width={700} />
+          </ModalBody>
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 }

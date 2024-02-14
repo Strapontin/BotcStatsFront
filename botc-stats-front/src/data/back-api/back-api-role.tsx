@@ -56,12 +56,8 @@ export async function createNewRole(
     }),
   });
 
-  console.log("createRole");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -89,12 +85,8 @@ export async function updateRole(
     }),
   });
 
-  console.log("updateRole");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -117,11 +109,8 @@ export async function deleteRole(
     referrerPolicy: "no-referrer",
   });
 
-  console.log("deleteRole");
-
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    throw await response.text();
   }
 
   return true;

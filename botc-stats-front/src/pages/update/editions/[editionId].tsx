@@ -17,6 +17,7 @@ import {
   ModalHeader,
   Spacer,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -26,7 +27,11 @@ export default function UpdateEditionPage() {
   const router = useRouter();
   const editionId: number = Number(router.query.editionId);
 
-  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
+  const {
+    isOpen: popupDeleteVisible,
+    onOpen: openPopupDelete,
+    onClose: closePopupDelete,
+  } = useDisclosure();
 
   const { data: editions, isLoading } = useGetEditions();
   const [edition, setEdition] = useState<Edition>(getNewEmptyEdition());
@@ -66,7 +71,11 @@ export default function UpdateEditionPage() {
   }
 
   async function btnDeletePressed() {
-    if (await deleteEdition(oldEdition.id, api)) {
+    const delEdition = deleteEdition(oldEdition.id, api);
+    toastPromise(delEdition, `Suppression du module '${edition.name}`);
+
+    closePopupDelete();
+    if (await delEdition) {
       mutateRoutes();
       router.push("/editions");
     }
@@ -88,7 +97,7 @@ export default function UpdateEditionPage() {
         btnText="Modifier le module"
       />
 
-      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
+      <Button color="danger" onPress={openPopupDelete}>
         Supprimer le module
       </Button>
 
@@ -97,23 +106,19 @@ export default function UpdateEditionPage() {
       <Modal
         backdrop="blur"
         isOpen={popupDeleteVisible}
-        onClose={() => setPopupDeleteVisible(false)}
+        onClose={closePopupDelete}
       >
         <ModalContent>
           <ModalHeader>
-            <span id="modal-title">
-              Voulez-vous vraiment supprimer le module :{" '"}
-              <span>{oldEdition.name}</span>
-              {"' "}?
-            </span>
+            {`Voulez-vous vraiment supprimer le module : '
+              ${oldEdition.name}
+              ' ?`}
           </ModalHeader>
           <ModalFooter>
             <Button color="danger" onPress={btnDeletePressed}>
               Confirmer
             </Button>
-            <Button onPress={() => setPopupDeleteVisible(false)}>
-              Annuler
-            </Button>
+            <Button onPress={closePopupDelete}>Annuler</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
