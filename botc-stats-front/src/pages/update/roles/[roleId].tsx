@@ -17,6 +17,7 @@ import {
   ModalHeader,
   Spacer,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -26,7 +27,11 @@ export default function UpdateRolePage() {
   const router = useRouter();
   const roleId: number = Number(router.query.roleId);
 
-  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
+  const {
+    isOpen: popupDeleteVisible,
+    onOpen: openPopupDelete,
+    onClose: closePopupDelete,
+  } = useDisclosure();
 
   const { data: roles, isLoading } = useGetRoles();
   const [role, setRole] = useState<Role>(getNewEmptyRole());
@@ -66,7 +71,10 @@ export default function UpdateRolePage() {
   }
 
   async function btnDeletePressed() {
-    if (await deleteRole(oldRole.id, api)) {
+    const delRole = deleteRole(oldRole.id, api);
+    toastPromise(delRole, `Suppression du rôle '${oldRole.name}'`);
+
+    if (await delRole) {
       mutateRoutes();
       router.push("/roles");
     }
@@ -87,7 +95,7 @@ export default function UpdateRolePage() {
         btnPressed={btnUpdateRole}
         btnText="Modifier le rôle"
       />
-      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
+      <Button color="danger" onPress={openPopupDelete}>
         Supprimer le rôle
       </Button>
 
@@ -96,28 +104,24 @@ export default function UpdateRolePage() {
       <Modal
         backdrop="blur"
         isOpen={popupDeleteVisible}
-        onClose={() => setPopupDeleteVisible(false)}
+        onClose={closePopupDelete}
       >
         <ModalContent>
           <ModalHeader>
             <span id="modal-title">
-              Voulez-vous vraiment supprimer le rôle :{" '"}
-              <span>{oldRole.name}</span>
-              {"' "}?
+              {`Voulez-vous vraiment supprimer le rôle : '
+              ${oldRole.name}
+              ' ?`}
               <br />
-              <span>
-                Si ce rôle est dans un module, il sera également supprimé de
-                celui-ci.
-              </span>
+              {`Si ce rôle est dans un module, il sera également supprimé de
+                celui-ci.`}
             </span>
           </ModalHeader>
           <ModalFooter>
             <Button color="danger" onPress={btnDeletePressed}>
               Confirmer
             </Button>
-            <Button onPress={() => setPopupDeleteVisible(false)}>
-              Annuler
-            </Button>
+            <Button onPress={closePopupDelete}>Annuler</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

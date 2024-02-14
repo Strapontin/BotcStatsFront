@@ -7,9 +7,8 @@ import {
   useGetGameDraftById,
 } from "@/data/back-api/back-api-game-draft";
 import useApi from "@/data/back-api/useApi";
+import { getGameDisplayName } from "@/entities/Game";
 import { GameDraft } from "@/entities/GameDraft";
-import { getPlayerFullName } from "@/entities/Player";
-import { dateToString } from "@/helper/date";
 import NotFoundPage from "@/pages/404";
 import {
   Button,
@@ -19,6 +18,7 @@ import {
   ModalHeader,
   Spacer,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -28,7 +28,11 @@ export default function UpdateGameDraftPage() {
   const router = useRouter();
   const gameDraftId: number = Number(router.query.gameDraftId);
 
-  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
+  const {
+    isOpen: popupDeleteVisible,
+    onOpen: openPopupDelete,
+    onClose: closePopupDelete,
+  } = useDisclosure();
 
   const { data: gameDraftData, isLoading } = useGetGameDraftById(gameDraftId);
   const [gameDraft, setGameDraft] = useState<GameDraft>(gameDraftData);
@@ -58,7 +62,7 @@ export default function UpdateGameDraftPage() {
 
   async function btnUpdateGameDraft(redirectToCreateGame: boolean = false) {
     const update = updateGameDraft(gameDraft, api);
-    toastPromise(update, `Mise à jour de la partie...`);
+    toastPromise(update, `Mise à jour de la partie de rappel...`);
 
     if (await update) {
       mutateRoutes();
@@ -70,7 +74,11 @@ export default function UpdateGameDraftPage() {
   }
 
   async function btnDeletePressed() {
-    if (await deleteGameDraft(gameDraft.id, api)) {
+    const delGameDraft = deleteGameDraft(gameDraft.id, api);
+    toastPromise(delGameDraft, `Suppression de la partie de rappel...`);
+
+    closePopupDelete();
+    if (await delGameDraft) {
       mutateRoutes();
       router.push("/games");
     }
@@ -85,22 +93,20 @@ export default function UpdateGameDraftPage() {
     <Modal
       backdrop="blur"
       isOpen={popupDeleteVisible}
-      onClose={() => setPopupDeleteVisible(false)}
+      onClose={closePopupDelete}
     >
       <ModalContent>
         <ModalHeader>
-          <span id="modal-title">
-            Voulez-vous vraiment supprimer la partie de rappel du{" "}
-            <span>{dateToString(gameDraft.datePlayed)}</span> contée par{" '"}
-            <span>{getPlayerFullName(oldGameDraft.storyteller)}</span>
-            {"' "}?
-          </span>
+          {`Voulez-vous vraiment supprimer la partie de rappel du ${getGameDisplayName(
+            gameDraft
+          )}
+            ?`}
         </ModalHeader>
         <ModalFooter>
           <Button variant="flat" color="danger" onPress={btnDeletePressed}>
             Confirmer
           </Button>
-          <Button onPress={() => setPopupDeleteVisible(false)}>Annuler</Button>
+          <Button onPress={closePopupDelete}>Annuler</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
@@ -129,7 +135,7 @@ export default function UpdateGameDraftPage() {
         Enregistrer et transformer en partie réelle
       </Button>
       <Spacer y={3} />
-      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
+      <Button color="danger" onPress={openPopupDelete}>
         Supprimer la partie de rappel
       </Button>
 

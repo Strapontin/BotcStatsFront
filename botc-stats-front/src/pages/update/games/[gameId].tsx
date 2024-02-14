@@ -7,7 +7,7 @@ import {
   useGetGameById,
 } from "@/data/back-api/back-api-game";
 import useApi from "@/data/back-api/useApi";
-import { Game } from "@/entities/Game";
+import { Game, getGameDisplayName } from "@/entities/Game";
 import { getPlayerFullName } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import NotFoundPage from "@/pages/404";
@@ -19,6 +19,7 @@ import {
   ModalHeader,
   Spacer,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -28,7 +29,11 @@ export default function UpdateGamePage() {
   const router = useRouter();
   const gameId: number = Number(router.query.gameId);
 
-  const [popupDeleteVisible, setPopupDeleteVisible] = useState(false);
+  const {
+    isOpen: popupDeleteVisible,
+    onOpen: openPopupDelete,
+    onClose: closePopupDelete,
+  } = useDisclosure();
 
   const { data: gameData, isLoading } = useGetGameById(gameId);
   const [game, setGame] = useState<Game>(gameData);
@@ -66,7 +71,11 @@ export default function UpdateGamePage() {
   }
 
   async function btnDeletePressed() {
-    if (await deleteGame(game.id, api)) {
+    const delGame = deleteGame(game.id, api);
+    toastPromise(delGame, `Suppression de la partie...`);
+
+    closePopupDelete();
+    if (await delGame) {
       mutateRoutes();
       router.push("/games");
     }
@@ -87,7 +96,7 @@ export default function UpdateGamePage() {
         btnText="Modifier la partie"
       />
 
-      <Button color="danger" onPress={() => setPopupDeleteVisible(true)}>
+      <Button color="danger" onPress={openPopupDelete}>
         Supprimer la partie
       </Button>
 
@@ -96,24 +105,20 @@ export default function UpdateGamePage() {
       <Modal
         backdrop="blur"
         isOpen={popupDeleteVisible}
-        onClose={() => setPopupDeleteVisible(false)}
+        onClose={closePopupDelete}
       >
         <ModalContent>
           <ModalHeader>
-            <span id="modal-title">
-              Voulez-vous vraiment supprimer la partie du{" "}
-              <span>{dateToString(game.datePlayed)}</span> contée par{" '"}
-              <span>{getPlayerFullName(oldGame.storyteller)}</span>
-              {"' "}?
-            </span>
+            {`Voulez-vous vraiment supprimer la partie du ${getGameDisplayName(
+              game
+            )}
+            ?`}
           </ModalHeader>
           <ModalFooter>
             <Button variant="flat" color="danger" onPress={btnDeletePressed}>
               Confirmer
             </Button>
-            <Button onPress={() => setPopupDeleteVisible(false)}>
-              Annuler
-            </Button>
+            <Button onPress={closePopupDelete}>Annuler</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -55,12 +55,8 @@ export async function createNewEdition(
     }),
   });
 
-  console.log("createNewEdition");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -88,12 +84,8 @@ export async function updateEdition(
     }),
   });
 
-  console.log("updateEdition");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -116,11 +108,8 @@ export async function deleteEdition(
     referrerPolicy: "no-referrer",
   });
 
-  console.log("deleteEdition");
-
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    throw await response.text();
   }
 
   return true;

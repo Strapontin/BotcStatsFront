@@ -53,12 +53,8 @@ export async function createNewPlayer(
     body: JSON.stringify({ playerName: player.name, pseudo: player.pseudo }),
   });
 
-  console.log("createPlayer");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -86,12 +82,8 @@ export async function updatePlayer(
     }),
   });
 
-  console.log("updatePlayer");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -114,11 +106,8 @@ export async function deletePlayer(
     referrerPolicy: "no-referrer",
   });
 
-  console.log("deletePlayer");
-
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    throw await response.text();
   }
 
   return true;

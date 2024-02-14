@@ -135,12 +135,8 @@ export async function createNewGame(
     }),
   });
 
-  console.log("createNewGame");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -181,12 +177,8 @@ export async function updateGame(
     }),
   });
 
-  console.log("updateGame");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -209,11 +201,8 @@ export async function deleteGame(
     referrerPolicy: "no-referrer",
   });
 
-  console.log("deleteGame");
-
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    throw await response.text();
   }
 
   return true;

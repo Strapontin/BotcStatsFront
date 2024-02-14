@@ -58,12 +58,8 @@ export async function createNewGameDraft(
     }),
   });
 
-  console.log("createNewGameDraft");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -93,12 +89,8 @@ export async function updateGameDraft(
     }),
   });
 
-  console.log("updateGameDraft");
-
   if (!response.ok) {
-    const error = response.text();
-    console.log("ERROR :", await error);
-    throw await error;
+    throw await response.text();
   }
 
   return true;
@@ -121,11 +113,8 @@ export async function deleteGameDraft(
     referrerPolicy: "no-referrer",
   });
 
-  console.log("deleteGameDraft");
-
   if (!response.ok) {
-    console.log("ERROR :", await response.text());
-    return false;
+    throw await response.text();
   }
 
   return true;
