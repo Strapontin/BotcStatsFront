@@ -18,16 +18,15 @@ import {
 import { Role } from "@/entities/Role";
 import { CharacterType } from "@/entities/enums/characterType";
 import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
+  Autocomplete,
+  AutocompleteItem,
   Listbox,
   Spacer,
   Spinner,
 } from "@nextui-org/react";
-import { useCallback, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type RowType = GenericTableRowsExtendedProps & {
   firstNight: string;
@@ -48,6 +47,9 @@ const keywords = {
 };
 
 export default function NighsheetPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { data: officialNightSheet, isLoading: isLoadingOfficialNightSheet } =
     useGetOfficialNightSheet();
   const { data: wikiTbaRoles, isLoading: isLoadingWikiRoles } =
@@ -57,6 +59,13 @@ export default function NighsheetPage() {
   const [selectedEdition, setSelectedEdition] = useState<string | number>(
     "all"
   );
+
+  useEffect(() => {
+    const editionId = searchParams.get("editionId");
+    if (!editionId) return;
+
+    setSelectedEdition(editionId);
+  }, [searchParams]);
 
   const officialNightSheetRef = useRef(officialNightSheet);
   if (officialNightSheet !== officialNightSheetRef.current)
@@ -76,7 +85,7 @@ export default function NighsheetPage() {
       );
       if (wikiTypeRole?.name && !role?.name) {
         // Log role in case it's a new one that isn't added yet
-        console.log(name, wikiTypeRole?.name, role?.name);
+        console.debug(name, wikiTypeRole?.name, role?.name);
       }
 
       if (role !== undefined) {
@@ -88,12 +97,17 @@ export default function NighsheetPage() {
     []
   );
 
-  if (isLoadingOfficialNightSheet || isLoadingWikiRoles || isLoadingRoles) {
+  if (
+    isLoadingOfficialNightSheet ||
+    isLoadingWikiRoles ||
+    isLoadingRoles ||
+    isLoadingEditions
+  ) {
     return <Spinner />;
   }
 
   if (!wikiTbaRoles) {
-    return <p>{"Les rôles de la TBA n'ont pas chargé correctement"}</p>;
+    return <p>{"Les rôles du Wiki de la TBA n'ont pas chargé correctement"}</p>;
   }
   if (!allRoles) {
     return <p>{"Les roles n'ont pas chargé correctement"}</p>;
@@ -194,35 +208,39 @@ export default function NighsheetPage() {
     { key: "notWaking", name: "Ne se réveillent pas" },
   ];
 
-  const DropdownEditions = isLoadingEditions
+  const AutocompleteEditions = isLoadingEditions
     ? () => <Spinner />
     : () => (
-        <div className="flex">
-          <Dropdown type="menu">
-            <DropdownTrigger>
-              <Button className="w-auto" variant="flat">
-                {selectedEdition === "all"
-                  ? "Tous les rôles"
-                  : editions.find((e) => e.id === +selectedEdition)?.name}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Static Actions"
-              onAction={(key: string | number) => setSelectedEdition(key)}
-            >
-              {[{ id: "all", name: "--Tous les rôles--" }, ...editions].map(
-                (edition: { id: string | number; name: string }) => (
-                  <DropdownItem key={edition.id}>{edition.name}</DropdownItem>
-                )
-              )}
-            </DropdownMenu>
-          </Dropdown>
-        </div>
+        <Autocomplete
+          aria-label="Sélectionner un module..."
+          placeholder="Sélectionner un module..."
+          selectedKey={selectedEdition}
+          onSelectionChange={(editionId) => {
+            editionId = editionId ?? "all";
+            setSelectedEdition(editionId);
+
+            // Updates the URL to land on this page with the filter
+            router.push(
+              {
+                pathname: "/nightsheet",
+                query: editionId !== "all" ? { editionId: editionId } : {},
+              },
+              undefined,
+              { shallow: true }
+            );
+          }}
+        >
+          {editions.map((edition) => (
+            <AutocompleteItem key={edition.id} aria-label={edition.name}>
+              {edition.name}
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
       );
 
   return (
     <div className="flex flex-col text-start">
-      <DropdownEditions />
+      <AutocompleteEditions />
       <Spacer y={2} />
       <GenericTable
         columns={colNightSheet}
