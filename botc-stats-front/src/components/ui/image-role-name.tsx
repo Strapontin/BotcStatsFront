@@ -5,20 +5,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { toLowerRemoveDiacritics } from "../../helper/string";
 
-export function RoleImageName(props: {
-  name: string;
-  characterType: CharacterType;
-}) {
-  const imgPath = getRoleIconPath(props.name);
-
+export function RoleImageName({ role }: { role: Role }) {
   const [hideImage, setHideImage] = useState(false);
+  
+  const imgPath = getRoleIconPath(role.name);
 
   const image = !hideImage && (
     <Image
       width={50}
       height={50}
       src={imgPath}
-      alt={props.name}
+      alt={role.name}
       onError={() => {
         setHideImage(true);
       }}
@@ -27,7 +24,7 @@ export function RoleImageName(props: {
 
   return (
     <div className="flex items-center flex-auto shrink-1 text-end ml-1">
-      {props.name}
+      {role.name}
       {image}
     </div>
   );

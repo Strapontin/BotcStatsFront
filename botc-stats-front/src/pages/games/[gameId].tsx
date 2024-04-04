@@ -1,4 +1,4 @@
-import ListboxPlayerRolesComponent from "@/components/listbox/ListboxPlayerRolesComponent";
+import ListboxPlayerRolesComponent from "@/components/listbox/player-role/ListboxPlayerRolesComponent";
 import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import { getListboxItemPlayerDetails } from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";

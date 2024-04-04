@@ -119,7 +119,7 @@ export default function RoleIdPage() {
         >
           {gamesPlayed.map((game: Game) => {
             const playerRole = game.playerRoles.find(
-              (pr) => pr.role.id === role.id
+              (pr) => pr?.role?.id === role.id
             )!;
 
             return (

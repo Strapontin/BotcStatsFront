@@ -69,7 +69,9 @@ export function sortRoles(roles: Role[]) {
   });
 }
 
-export function getDefaultAlignmentFromRole(role: Role): Alignment {
+export function getDefaultAlignmentFromRole(role?: Role): Alignment {
+  if (!role) return Alignment.None;
+
   return [
     CharacterType.Townsfolk,
     CharacterType.Outsider,

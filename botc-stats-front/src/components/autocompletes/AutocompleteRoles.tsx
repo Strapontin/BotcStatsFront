@@ -10,28 +10,26 @@ import {
   getAvatarRole,
   getCssClassesFromCharacterType,
 } from "../ui/image-role-name";
+import { useGetRoles } from "@/data/back-api/back-api-role";
 
 export default function AutocompleteRoles({
-  roles,
   selectedRoles,
   setSelectedRoles,
   autocompleteLabel,
   autocompletePlaceholder,
-  isLoading,
   multipleSelection,
   autoRefocus,
   autoFocus,
 }: {
-  roles: Role[];
   selectedRoles: Role[];
   setSelectedRoles: any;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
-  isLoading?: boolean;
   multipleSelection?: boolean;
   autoRefocus?: boolean;
   autoFocus?: boolean;
 }) {
+  const { data: roles, isLoading } = useGetRoles();
   const rolesGroupedByCharacterType = groupRolesByCharacterType(
     isLoading || !roles ? [] : roles
   );

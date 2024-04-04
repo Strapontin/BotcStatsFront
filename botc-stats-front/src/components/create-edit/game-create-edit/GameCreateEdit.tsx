@@ -77,8 +77,6 @@ export default function GameCreateEdit({
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
-        players={players}
-        isLoading={isPlayersLoading}
         setSelectedPlayer={storytellerSelected}
         autocompleteLabel="Conteur"
         defaultSelectedKey={String(game?.storyteller?.id)}
@@ -111,7 +109,6 @@ export default function GameCreateEdit({
         selectedPlayerRoles={game.playerRoles}
         setSelectedPlayerRoles={selectedPlayerRolesChanged}
         roles={[...(allTravellers ?? []), ...(edition?.roles ?? [])]}
-        allPlayers={players}
         isPlayersLoading={isPlayersLoading}
         isRolesLoading={isEditionByIdLoading}
       />
