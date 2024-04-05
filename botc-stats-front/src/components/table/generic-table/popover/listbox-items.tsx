@@ -6,7 +6,12 @@ import { Player, getPlayerFullName } from "@/entities/Player";
 import { Role } from "@/entities/Role";
 import { ListboxItem } from "@nextui-org/react";
 
-export function getListboxItemPlayerDetails(player: Player) {
+export function getListboxItemPlayerDetails(player?: Player): JSX.Element {
+  if (!player)
+    return (
+      <ListboxItem key={"player-details"} className="hidden"></ListboxItem>
+    );
+
   return (
     <ListboxItem
       key={"player-details"}
@@ -19,7 +24,10 @@ export function getListboxItemPlayerDetails(player: Player) {
   );
 }
 
-export function getListboxItemRoleDetails(role: Role) {
+export function getListboxItemRoleDetails(role?: Role) {
+  if (!role)
+    return <ListboxItem key={"role-details"} className="hidden"></ListboxItem>;
+
   return (
     <ListboxItem
       key={"role-details"}
@@ -71,7 +79,10 @@ export function getListboxItemGameDraftDetails(gameDraft: GameDraft) {
   );
 }
 
-export function getListboxItemRoleWikiLink(role: Role) {
+export function getListboxItemRoleWikiLink(role?: Role) {
+  if (!role)
+    return <ListboxItem key={"wiki-link"} className="hidden"></ListboxItem>;
+
   return (
     <ListboxItem
       key={"wiki-link"}

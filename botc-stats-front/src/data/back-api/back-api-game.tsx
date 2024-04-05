@@ -106,8 +106,8 @@ export async function createNewGame(
   { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const playersIdRolesId = game.playerRoles.map((pr) => ({
-    playerId: pr.player.id,
-    roleId: pr.role.id,
+    playerId: pr?.player?.id,
+    roleId: pr?.role?.id,
     finalAlignment: pr.finalAlignment,
   }));
 
@@ -147,8 +147,8 @@ export async function updateGame(
   { apiUrl, accessToken }: Api
 ): Promise<boolean> {
   const playersIdRolesId = game.playerRoles.map((pr) => ({
-    playerId: pr.player.id,
-    roleId: pr.role.id,
+    playerId: pr?.player?.id,
+    roleId: pr?.role?.id,
     finalAlignment: pr.finalAlignment,
   }));
 

@@ -31,14 +31,13 @@ export function getNewEmptyPlayer(): Player {
   return edition;
 }
 
-function getPlayerPseudoString(pseudo: string): string {
-  const pseudoFormatted =
-    pseudo !== undefined && pseudo.length > 0 ? ` (${pseudo})` : "";
+function getPlayerPseudoString(pseudo?: string): string {
+  const pseudoFormatted = pseudo && pseudo.length > 0 ? ` (${pseudo})` : "";
 
   return pseudoFormatted;
 }
 
-export function getPlayerFullName(player: Player): string {
+export function getPlayerFullName(player?: Player): string {
   if (!player) return "";
   return `${player.name}${getPlayerPseudoString(player.pseudo)}`;
 }

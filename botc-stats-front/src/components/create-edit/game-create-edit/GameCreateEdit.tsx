@@ -5,7 +5,6 @@ import {
   useGetEditionById,
   useGetEditions,
 } from "@/data/back-api/back-api-edition";
-import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Edition } from "@/entities/Edition";
 import { Game } from "@/entities/Game";
@@ -33,7 +32,6 @@ export default function GameCreateEdit({
   btnText: string;
 }) {
   const { data: editions, isLoading: isEditionsLoading } = useGetEditions();
-  const { data: players, isLoading: isPlayersLoading } = useGetPlayers();
   const {
     data: edition,
     isLoading: isEditionByIdLoading,
@@ -77,8 +75,6 @@ export default function GameCreateEdit({
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
-        players={players}
-        isLoading={isPlayersLoading}
         setSelectedPlayer={storytellerSelected}
         autocompleteLabel="Conteur"
         defaultSelectedKey={String(game?.storyteller?.id)}
@@ -111,9 +107,6 @@ export default function GameCreateEdit({
         selectedPlayerRoles={game.playerRoles}
         setSelectedPlayerRoles={selectedPlayerRolesChanged}
         roles={[...(allTravellers ?? []), ...(edition?.roles ?? [])]}
-        allPlayers={players}
-        isPlayersLoading={isPlayersLoading}
-        isRolesLoading={isEditionByIdLoading}
       />
       <Spacer y={1.5} />
       <RolesSelector

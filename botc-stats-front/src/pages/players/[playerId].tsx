@@ -104,7 +104,7 @@ export default function PlayerPage() {
         >
           {gamesPlayed.map((game: Game) => {
             const playerRole = game.playerRoles.find(
-              (pr) => pr.player.id === player.id
+              (pr) => pr?.player?.id === player.id
             )!;
 
             return (
@@ -123,7 +123,7 @@ export default function PlayerPage() {
                     {game.winningAlignment === playerRole.finalAlignment
                       ? "Victoire - "
                       : "Défaite - "}
-                    Rôle joué : {playerRole.role.name}
+                    Rôle joué : {playerRole?.role?.name}
                   </span>
                 </Link>
               </ListboxItem>

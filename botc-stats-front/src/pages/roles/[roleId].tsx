@@ -57,8 +57,8 @@ export default function RoleIdPage() {
         <div className="flex justify-center">
           <Image
             priority
-            src={getRoleIconPath(role.name)}
-            alt={getRoleIconPath(role.name)}
+            src={getRoleIconPath(role.name)!}
+            alt={getRoleIconPath(role.name)!}
             width={150}
             height={150}
           ></Image>
@@ -119,7 +119,7 @@ export default function RoleIdPage() {
         >
           {gamesPlayed.map((game: Game) => {
             const playerRole = game.playerRoles.find(
-              (pr) => pr.role.id === role.id
+              (pr) => pr?.role?.id === role.id
             )!;
 
             return (
