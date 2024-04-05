@@ -1,6 +1,6 @@
 import { Player } from "@/entities/Player";
-import { PlayerRole } from "@/entities/PlayerRole";
-import { Role } from "@/entities/Role";
+import { PlayerRole, getNewEmptyPlayerRole } from "@/entities/PlayerRole";
+import { Role, getDefaultAlignmentFromRole } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { X } from "react-feather";
+import { Menu } from "react-feather";
 import AutocompletePlayer from "../autocompletes/AutocompletePlayer";
 import AutocompleteRoles from "../autocompletes/AutocompleteRoles";
 import {
@@ -20,18 +20,24 @@ import {
 } from "../table/generic-table/popover/listbox-items";
 import IconAlignment from "../ui/icon-alignment";
 import { RoleImageName } from "../ui/image-role-name";
+import { useMemo, useState } from "react";
 
 export function PlayerRoleItem({
-  playerRole,
+  playerRole: propsPlayerRole,
   playerRoleSelected,
-  showBtnDelete,
-  deleteClicked,
+  deleteLine,
 }: {
-  playerRole: PlayerRole;
+  playerRole?: PlayerRole;
   playerRoleSelected?: (playerRole: PlayerRole) => void;
-  showBtnDelete: boolean;
-  deleteClicked?: () => void;
+  deleteLine?: () => void;
 }) {
+  const playerRole = useMemo(
+    () => propsPlayerRole ?? getNewEmptyPlayerRole(),
+    [propsPlayerRole]
+  );
+  const [autocompletePlayerKey, setAutocompletePlayerKey] = useState(0);
+  const [autocompleteRoleKey, setAutocompleteRoleKey] = useState(0);
+
   const RoleAlignment = () => {
     return (
       (playerRoleSelected && (
@@ -57,88 +63,58 @@ export function PlayerRoleItem({
     );
   };
 
-  return (
-    <Popover>
+  const PopoverPlayerRoleItem = () => (
+    <Popover showArrow>
       <PopoverTrigger>
-        <div
-          className={[
-            "flex",
-            "items-center",
-            "justify-between",
-            "px-1.5",
-            "py-0.5",
-            "cursor-pointer",
-            //   index < playerRoles.length - 1 && "border-b-1",
-            "border-zinc-800",
-          ].join(" ")}
+        <Button
+          className="ml-1"
+          aria-label="delete"
+          color="primary"
+          variant="flat"
+          isIconOnly
         >
-          {playerRole.player ? (
-            <div className="flex flex-col items-start flex-auto basis-0">
-              <span>{playerRole.player.name}</span>
-              <span className="text-default-400 text-sm">
-                {playerRole.player.pseudo}
-              </span>
-            </div>
-          ) : (
-            <AutocompletePlayer
-              setSelectedPlayer={(p: Player) => {
-                playerRoleSelected!({ ...playerRole, player: p });
-              }}
-              autocompleteLabel="Joueur"
-              canAddNewPlayer
-            />
-          )}
-
-          {playerRole.role ? (
-            <div className="flex items-center">
-              {playerRole.role ? (
-                <RoleImageName role={playerRole?.role} />
-              ) : (
-                <></>
-              )}
-              <RoleAlignment />
-              {showBtnDelete ? (
-                <Button
-                  className="ml-1"
-                  onClick={() => {
-                    deleteClicked && deleteClicked();
-                  }}
-                  isIconOnly
-                  color="danger"
-                  aria-label="delete"
-                  variant="flat"
-                >
-                  <X />
-                </Button>
-              ) : (
-                <></>
-              )}
-            </div>
-          ) : (
-            <AutocompleteRoles
-              selectedRoles={[]}
-              setSelectedRoles={(r: Role) => {
-                playerRoleSelected!({ ...playerRole, role: playerRole.role });
-              }}
-              autocompleteLabel="Rôle"
-            />
-          )}
-        </div>
+          <Menu />
+        </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <Listbox aria-label="popover-items">
+        <Listbox
+          aria-label="popover-items"
+          disabledKeys={[
+            playerRole.player ? "" : "delete-player",
+            playerRole.role ? "" : "delete-role",
+          ]}
+        >
           <ListboxItem
             key="delete-player"
             textValue="delete-player"
+            color="warning"
             onClick={() => {
-              console.log("deletePlayer", { ...playerRole, player: undefined });
               playerRoleSelected!({ ...playerRole, player: undefined });
             }}
           >
             Supprimer le joueur
           </ListboxItem>
-          <ListboxItem key="delete-role" textValue="delete-role" showDivider>
+          <ListboxItem
+            key="delete-role"
+            textValue="delete-role"
+            color="warning"
+            onClick={() => {
+              playerRoleSelected!({ ...playerRole, role: undefined });
+            }}
+          >
             Supprimer le rôle
+          </ListboxItem>
+          <ListboxItem
+            className={deleteLine ? "" : "hidden"}
+            key="delete-line"
+            textValue="delete-line"
+            color="danger"
+            showDivider={!!(playerRole.player || playerRole.role)}
+            onClick={() => {
+              deleteLine!();
+            }}
+          >
+            Supprimer la ligne
           </ListboxItem>
           {getListboxItemPlayerDetails(playerRole.player)}
           {getListboxItemRoleDetails(playerRole.role)}
@@ -146,5 +122,78 @@ export function PlayerRoleItem({
         </Listbox>
       </PopoverContent>
     </Popover>
+  );
+
+  return (
+    <div
+      className={[
+        "flex",
+        "items-center",
+        "justify-between",
+        "px-1.5",
+        "py-0.5",
+        "cursor-pointer",
+        "[&:not(:last-child)]:border-b-1 border-zinc-800",
+        "gap-2"
+      ].join(" ")}
+    >
+      {playerRole.player ? (
+        <div className="flex flex-col items-start text-left">
+          {/* <div className="flex flex-col items-start flex-auto basis-0"> */}
+          <span>{playerRole.player.name}</span>
+          <span className="text-default-400 text-sm">
+            {playerRole.player.pseudo}
+          </span>
+        </div>
+      ) : (
+        <div className={propsPlayerRole ? "max-w-[40%]" : ""}>
+          <AutocompletePlayer
+            key={`player_${autocompletePlayerKey}`}
+            setSelectedPlayer={(p: Player) => {
+              playerRoleSelected!({ ...playerRole, player: p });
+              setAutocompletePlayerKey((prev) => ++prev);
+            }}
+            autocompleteLabel="Joueur"
+            canAddNewPlayer
+            autocompleteSize="sm"
+          />
+        </div>
+      )}
+
+      <div
+        className={[
+          "flex",
+          "flex-auto",
+          "justify-end",
+          "items-center",
+          playerRole.role ? "" : "max-w-[50%]",
+        ].join(" ")}
+      >
+        {playerRole.role ? (
+          <div className="flex items-center">
+            {playerRole.role && <RoleImageName role={playerRole?.role} />}
+            <RoleAlignment />
+          </div>
+        ) : (
+          <div className={propsPlayerRole ? "" : ""}>
+            <AutocompleteRoles
+              key={`role_${autocompleteRoleKey}`}
+              selectedRoles={[]}
+              setSelectedRoles={(r: Role) => {
+                playerRoleSelected!({
+                  player: playerRole.player,
+                  role: r,
+                  finalAlignment: getDefaultAlignmentFromRole(r),
+                });
+                setAutocompleteRoleKey((prev) => ++prev);
+              }}
+              autocompleteLabel="Rôle"
+              autocompleteSize="sm"
+            />
+          </div>
+        )}
+        {propsPlayerRole && <PopoverPlayerRoleItem />}
+      </div>
+    </div>
   );
 }

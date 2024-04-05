@@ -31,9 +31,8 @@ export function getNewEmptyPlayer(): Player {
   return edition;
 }
 
-function getPlayerPseudoString(pseudo: string): string {
-  const pseudoFormatted =
-    pseudo !== undefined && pseudo.length > 0 ? ` (${pseudo})` : "";
+function getPlayerPseudoString(pseudo?: string): string {
+  const pseudoFormatted = pseudo && pseudo.length > 0 ? ` (${pseudo})` : "";
 
   return pseudoFormatted;
 }

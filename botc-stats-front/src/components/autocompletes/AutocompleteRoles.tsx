@@ -20,6 +20,7 @@ export default function AutocompleteRoles({
   multipleSelection,
   autoRefocus,
   autoFocus,
+  autocompleteSize,
 }: {
   selectedRoles: Role[];
   setSelectedRoles: any;
@@ -28,6 +29,7 @@ export default function AutocompleteRoles({
   multipleSelection?: boolean;
   autoRefocus?: boolean;
   autoFocus?: boolean;
+  autocompleteSize?: "sm" | "md" | "lg";
 }) {
   const { data: roles, isLoading } = useGetRoles();
   const rolesGroupedByCharacterType = groupRolesByCharacterType(
@@ -67,6 +69,7 @@ export default function AutocompleteRoles({
       inputProps={{ baseRef: autocompleteRef }}
       isLoading={isLoading}
       autoFocus={autoFocus}
+      size={autocompleteSize}
     >
       {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
         return (

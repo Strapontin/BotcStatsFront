@@ -7,10 +7,10 @@ import { toLowerRemoveDiacritics } from "../../helper/string";
 
 export function RoleImageName({ role }: { role: Role }) {
   const [hideImage, setHideImage] = useState(false);
-  
+
   const imgPath = getRoleIconPath(role.name);
 
-  const image = !hideImage && (
+  const image = !hideImage && imgPath && (
     <Image
       width={50}
       height={50}
@@ -37,13 +37,17 @@ function getRoleImgName(roleName: string): string {
   return roleImgName;
 }
 
-export function getWikiLinkrole(roleName: string): string {
+export function getWikiLinkrole(roleName?: string): string | undefined {
+  if (!roleName) return;
+
   return `https://brain-academy.github.io/botc-wiki/docs/roles/${getRoleImgName(
     roleName
   )}`;
 }
 
-export function getRoleIconPath(roleName: string): string {
+export function getRoleIconPath(roleName?: string): string | undefined {
+  if (!roleName) return;
+
   const imgFileName = getRoleImgName(roleName);
   const imgPath = `/images/roles-icons/${imgFileName}.png`;
 

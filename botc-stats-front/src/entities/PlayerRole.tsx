@@ -7,3 +7,10 @@ export type PlayerRole = {
   role?: Role;
   finalAlignment: Alignment;
 };
+
+export function getNewEmptyPlayerRole() {
+  const playerRole: PlayerRole = {
+    finalAlignment: Alignment.None,
+  };
+  return playerRole;
+}

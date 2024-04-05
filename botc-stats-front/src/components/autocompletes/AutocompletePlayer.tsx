@@ -18,6 +18,7 @@ export default function AutocompletePlayer({
   defaultSelectedKey,
   canAddNewPlayer,
   autoFocus,
+  autocompleteSize,
 }: {
   setSelectedPlayer: (player: Player) => void;
   autocompleteLabel?: string;
@@ -25,6 +26,7 @@ export default function AutocompletePlayer({
   defaultSelectedKey?: string;
   canAddNewPlayer?: boolean;
   autoFocus?: boolean;
+  autocompleteSize?: "sm" | "md" | "lg";
 }) {
   const { data: players, isLoading } = useGetPlayers();
   const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
@@ -82,6 +84,7 @@ export default function AutocompletePlayer({
           emptyContent: <ButtonEmptyPlayer />,
         }}
         autoFocus={autoFocus}
+        size={autocompleteSize}
       >
         {items}
       </Autocomplete>
