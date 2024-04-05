@@ -22,7 +22,6 @@ export default function GameDraftCreateEdit({
   btnText: string;
 }) {
   const { data: editions, isLoading: isEditionsLoading } = useGetEditions();
-  const { data: players, isLoading: isPlayersLoading } = useGetPlayers();
 
   async function editionSelected(edition: Edition) {
     setGameDraft({ ...gameDraft, edition: edition });
@@ -50,8 +49,6 @@ export default function GameDraftCreateEdit({
       />
       <Spacer y={1.5} />
       <AutocompletePlayer
-        players={players}
-        isLoading={isPlayersLoading}
         setSelectedPlayer={storytellerSelected}
         autocompleteLabel="Conteur"
         defaultSelectedKey={String(gameDraft?.storyteller?.id)}
