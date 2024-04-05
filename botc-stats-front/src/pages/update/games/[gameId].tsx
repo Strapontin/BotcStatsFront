@@ -8,8 +8,6 @@ import {
 } from "@/data/back-api/back-api-game";
 import useApi from "@/data/back-api/useApi";
 import { Game, getGameDisplayName } from "@/entities/Game";
-import { getPlayerFullName } from "@/entities/Player";
-import { dateToString } from "@/helper/date";
 import NotFoundPage from "@/pages/404";
 import {
   Button,

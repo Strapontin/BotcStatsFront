@@ -1,5 +1,5 @@
-import ListboxPlayerRolesComponent from "@/components/listbox/ListboxPlayerRolesComponent";
 import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
+import PlayerRolesSelector from "@/components/selector/PlayerRolesSelector";
 import { getListboxItemPlayerDetails } from "@/components/table/generic-table/popover/listbox-items";
 import Title from "@/components/ui/title";
 import { useGetGameById } from "@/data/back-api/back-api-game";
@@ -125,7 +125,7 @@ export default function GamePage() {
           aria-label="Liste des rôles des joueurs"
           title="Liste des rôles des joueurs"
         >
-          <ListboxPlayerRolesComponent playerRoles={game.playerRoles} />
+          <PlayerRolesSelector selectedPlayerRoles={game.playerRoles} />
         </AccordionItem>
         <AccordionItem
           key="demon-bluffs"

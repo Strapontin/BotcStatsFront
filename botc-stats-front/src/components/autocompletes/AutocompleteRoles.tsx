@@ -1,3 +1,4 @@
+import { useGetRoles } from "@/data/back-api/back-api-role";
 import { Role, groupRolesByCharacterType } from "@/entities/Role";
 import { characterTypeList } from "@/entities/enums/characterType";
 import {
@@ -12,29 +13,27 @@ import {
 } from "../ui/image-role-name";
 
 export default function AutocompleteRoles({
-  roles,
   selectedRoles,
   setSelectedRoles,
   autocompleteLabel,
   autocompletePlaceholder,
-  isLoading,
   multipleSelection,
   autoRefocus,
   autoFocus,
+  autocompleteSize,
+  propRoles,
 }: {
-  roles: Role[];
   selectedRoles: Role[];
   setSelectedRoles: any;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
-  isLoading?: boolean;
   multipleSelection?: boolean;
   autoRefocus?: boolean;
   autoFocus?: boolean;
+  autocompleteSize?: "sm" | "md" | "lg";
+  propRoles?: Role[];
 }) {
-  const rolesGroupedByCharacterType = groupRolesByCharacterType(
-    isLoading || !roles ? [] : roles
-  );
+  const { data: getRoles, isLoading } = useGetRoles();
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const autocompleteRef = useRef<HTMLInputElement>(null);
 
@@ -44,6 +43,11 @@ export default function AutocompleteRoles({
       autocompleteRef.current?.focus();
     }, 0);
   }, [autocompleteKey]);
+
+  const roles = propRoles ?? getRoles;
+  const rolesGroupedByCharacterType = groupRolesByCharacterType(
+    isLoading || !roles ? [] : roles
+  );
 
   function setRoleSelected(roleId: number) {
     const roleSelected = roles.find((r) => r.id === roleId);
@@ -69,6 +73,7 @@ export default function AutocompleteRoles({
       inputProps={{ baseRef: autocompleteRef }}
       isLoading={isLoading}
       autoFocus={autoFocus}
+      size={autocompleteSize}
     >
       {Object.keys(rolesGroupedByCharacterType).map((characterType) => {
         return (

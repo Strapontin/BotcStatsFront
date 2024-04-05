@@ -8,13 +8,11 @@ export default function RolesSelector({
   setSelectedRoles,
   autocompleteLabel,
   roles,
-  isLoadingRoles,
 }: {
   selectedRoles: Role[];
   setSelectedRoles: any;
   autocompleteLabel: string;
   roles: Role[];
-  isLoadingRoles?: boolean;
 }) {
   return (
     <>
@@ -25,11 +23,10 @@ export default function RolesSelector({
       />
       {selectedRoles.some((r) => r) && <Spacer y={1} />}
       <AutocompleteRoles
-        roles={roles}
         selectedRoles={selectedRoles}
         setSelectedRoles={setSelectedRoles}
         autocompleteLabel={autocompleteLabel}
-        isLoading={isLoadingRoles}
+        propRoles={roles}
         multipleSelection
         autoRefocus
       />

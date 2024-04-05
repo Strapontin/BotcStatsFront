@@ -5,20 +5,17 @@ import Image from "next/image";
 import { useState } from "react";
 import { toLowerRemoveDiacritics } from "../../helper/string";
 
-export function RoleImageName(props: {
-  name: string;
-  characterType: CharacterType;
-}) {
-  const imgPath = getRoleIconPath(props.name);
-
+export function RoleImageName({ role }: { role: Role }) {
   const [hideImage, setHideImage] = useState(false);
 
-  const image = !hideImage && (
+  const imgPath = getRoleIconPath(role.name);
+
+  const image = !hideImage && imgPath && (
     <Image
       width={50}
       height={50}
       src={imgPath}
-      alt={props.name}
+      alt={role.name}
       onError={() => {
         setHideImage(true);
       }}
@@ -27,7 +24,7 @@ export function RoleImageName(props: {
 
   return (
     <div className="flex items-center flex-auto shrink-1 text-end ml-1">
-      {props.name}
+      {role.name}
       {image}
     </div>
   );
@@ -40,13 +37,17 @@ function getRoleImgName(roleName: string): string {
   return roleImgName;
 }
 
-export function getWikiLinkrole(roleName: string): string {
+export function getWikiLinkrole(roleName?: string): string | undefined {
+  if (!roleName) return;
+
   return `https://brain-academy.github.io/botc-wiki/docs/roles/${getRoleImgName(
     roleName
   )}`;
 }
 
-export function getRoleIconPath(roleName: string): string {
+export function getRoleIconPath(roleName?: string): string | undefined {
+  if (!roleName) return;
+
   const imgFileName = getRoleImgName(roleName);
   const imgPath = `/images/roles-icons/${imgFileName}.png`;
 
@@ -125,7 +126,7 @@ export function getUserRole(role: Role) {
         name={role.name}
         avatarProps={{
           isBordered: true,
-          src: `${getRoleIconPath(role.name)}`,
+          src: getRoleIconPath(role.name),
           radius: "sm",
           size: "sm",
           classNames: {

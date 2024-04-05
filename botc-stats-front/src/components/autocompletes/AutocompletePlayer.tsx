@@ -1,3 +1,4 @@
+import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player, getPlayerFullName } from "@/entities/Player";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import CreatePlayer from "@/pages/create/player";
@@ -11,24 +12,23 @@ import {
 import { useState } from "react";
 
 export default function AutocompletePlayer({
-  players,
-  isLoading,
   setSelectedPlayer,
   autocompleteLabel,
   autocompletePlaceholder,
   defaultSelectedKey,
   canAddNewPlayer,
   autoFocus,
+  autocompleteSize,
 }: {
-  players: Player[];
-  isLoading?: boolean;
   setSelectedPlayer: (player: Player) => void;
   autocompleteLabel?: string;
   autocompletePlaceholder?: string;
   defaultSelectedKey?: string;
   canAddNewPlayer?: boolean;
   autoFocus?: boolean;
+  autocompleteSize?: "sm" | "md" | "lg";
 }) {
+  const { data: players, isLoading } = useGetPlayers();
   const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
   const [showModalCreatePlayer, setShowModalCreatePlayer] =
     useState<boolean>(false);
@@ -84,6 +84,7 @@ export default function AutocompletePlayer({
           emptyContent: <ButtonEmptyPlayer />,
         }}
         autoFocus={autoFocus}
+        size={autocompleteSize}
       >
         {items}
       </Autocomplete>

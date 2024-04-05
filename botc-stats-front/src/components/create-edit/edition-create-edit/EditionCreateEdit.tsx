@@ -68,7 +68,6 @@ export default function EditionCreateEdit({
         setSelectedRoles={rolesInEditionChanged}
         autocompleteLabel="Rôles"
         roles={roles}
-        isLoadingRoles={isLoadingRoles}
       />
       <Spacer y={3} />
 
