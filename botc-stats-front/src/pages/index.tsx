@@ -1,8 +1,9 @@
+import { MainAccordion } from "@/components/Accordion/MainAccordion";
 import { Last30DaysWinsByAlignmentChartPie } from "@/components/chart/games/Last30DaysWinsByAlignmentChartPie";
 import { Last6MonthsGamesChartBar } from "@/components/chart/games/Last6MonthsGamesChartBar";
 import { GamesDraftTable } from "@/components/table/games-draft/GamesDraftTable";
 import { useGetGamesDraft } from "@/data/back-api/back-api-game-draft";
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import { AccordionItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -14,7 +15,7 @@ export default function Home() {
   }, [isLoading]);
 
   return (
-    <Accordion
+    <MainAccordion
       key={key}
       selectionMode={"multiple"}
       defaultExpandedKeys={[
@@ -45,6 +46,6 @@ export default function Home() {
       >
         <Last30DaysWinsByAlignmentChartPie />
       </AccordionItem>
-    </Accordion>
+    </MainAccordion>
   );
 }

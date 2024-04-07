@@ -1,3 +1,4 @@
+import { MainAccordion } from "@/components/Accordion/MainAccordion";
 import { RolePlayersTable } from "@/components/table/role-players/RolePlayersTable";
 import {
   getRoleIconPath,
@@ -10,7 +11,6 @@ import { Game, getGameDisplayName } from "@/entities/Game";
 import { getPlayerFullName } from "@/entities/Player";
 import { Role } from "@/entities/Role";
 import {
-  Accordion,
   AccordionItem,
   Button,
   Listbox,
@@ -158,7 +158,7 @@ export default function RoleIdPage() {
       >
         Voir le rôle sur le wiki
       </Button>
-      <Accordion
+      <MainAccordion
         selectionMode={"multiple"}
         defaultExpandedKeys={["main-details"]}
       >
@@ -171,7 +171,7 @@ export default function RoleIdPage() {
             {item.children}
           </AccordionItem>
         ))}
-      </Accordion>
+      </MainAccordion>
     </>
   );
 }

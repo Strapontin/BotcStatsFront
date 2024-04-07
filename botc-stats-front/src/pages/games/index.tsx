@@ -1,3 +1,4 @@
+import { MainAccordion } from "@/components/Accordion/MainAccordion";
 import { GamesDraftTable } from "@/components/table/games-draft/GamesDraftTable";
 import {
   GenericTable,
@@ -19,7 +20,6 @@ import { getPlayerFullName } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
 import {
-  Accordion,
   AccordionItem,
   Button,
   Listbox,
@@ -27,8 +27,6 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { Plus } from "react-feather";
 
 type RowType = GenericTableRowsExtendedProps & {
   datePlayed: Date | string;
@@ -133,7 +131,7 @@ export default function GamesListPage() {
         </div>
         <Spacer y={3} />
       </div>
-      <Accordion
+      <MainAccordion
         selectionMode="multiple"
         defaultExpandedKeys={["games", gamesDraft?.length ? "games-draft" : ""]}
       >
@@ -148,7 +146,7 @@ export default function GamesListPage() {
         <AccordionItem key="games" aria-label="games" title="Parties jouées">
           <GenericTable columns={genericTableColumns} rows={tableRows} />
         </AccordionItem>
-      </Accordion>
+      </MainAccordion>
     </>
   );
 }
