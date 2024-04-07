@@ -1,3 +1,4 @@
+import { MainAccordion } from "@/components/Accordion/MainAccordion";
 import { PlayerRolesTable } from "@/components/table/player-roles/PlayerRolesTable";
 import Title from "@/components/ui/title";
 import {
@@ -9,7 +10,6 @@ import { Game, getGameDisplayName } from "@/entities/Game";
 import { getPlayerFullName } from "@/entities/Player";
 import { dateToString } from "@/helper/date";
 import {
-  Accordion,
   AccordionItem,
   Listbox,
   ListboxItem,
@@ -168,7 +168,7 @@ export default function PlayerPage() {
   return (
     <>
       {title}
-      <Accordion
+      <MainAccordion
         selectionMode={"multiple"}
         defaultExpandedKeys={["main-details", "table-roles-played"]}
       >
@@ -181,7 +181,7 @@ export default function PlayerPage() {
             {item.children}
           </AccordionItem>
         ))}
-      </Accordion>
+      </MainAccordion>
     </>
   );
 }

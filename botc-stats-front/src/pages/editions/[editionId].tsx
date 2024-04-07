@@ -1,3 +1,4 @@
+import { MainAccordion } from "@/components/Accordion/MainAccordion";
 import Filter from "@/components/filter/Filter";
 import { EditionPlayersTable } from "@/components/table/edition-players/EditionPlayersTable";
 import {
@@ -14,7 +15,6 @@ import { Role } from "@/entities/Role";
 import { Alignment } from "@/entities/enums/alignment";
 import { toLowerRemoveDiacritics } from "@/helper/string";
 import {
-  Accordion,
   AccordionItem,
   Listbox,
   ListboxItem,
@@ -175,7 +175,7 @@ export default function EditionIdPage() {
     <>
       <Title>{`Détails du module '${edition.name}'`}</Title>
       <Spacer y={3} />
-      <Accordion
+      <MainAccordion
         selectionMode={"multiple"}
         defaultExpandedKeys={["main-details"]}
       >
@@ -188,7 +188,7 @@ export default function EditionIdPage() {
             {item.children}
           </AccordionItem>
         ))}
-      </Accordion>
+      </MainAccordion>
     </>
   );
 }

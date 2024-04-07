@@ -1,3 +1,4 @@
+import { MainAccordion } from "@/components/Accordion/MainAccordion";
 import ListboxRolesComponent from "@/components/listbox/ListboxRolesComponent";
 import PlayerRolesSelector from "@/components/selector/PlayerRolesSelector";
 import { getListboxItemPlayerDetails } from "@/components/table/generic-table/popover/listbox-items";
@@ -8,7 +9,6 @@ import { getPlayerFullName } from "@/entities/Player";
 import { alignmentToString } from "@/entities/enums/alignment";
 import { dateToString } from "@/helper/date";
 import {
-  Accordion,
   AccordionItem,
   Listbox,
   ListboxItem,
@@ -63,7 +63,7 @@ export default function GamePage() {
     <>
       {title}
       <Spacer y={5} />
-      <Accordion
+      <MainAccordion
         selectionMode="multiple"
         defaultExpandedKeys={["main-details"]}
       >
@@ -134,7 +134,7 @@ export default function GamePage() {
         >
           <ListboxRolesComponent roles={game.demonBluffs} />
         </AccordionItem>
-      </Accordion>
+      </MainAccordion>
       <Spacer y={5} />
     </>
   );
