@@ -1,5 +1,5 @@
-function removeDiacritics(string: string): string {
-  return string.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function removeDiacritics(string?: string): string {
+  return string ? string.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
 }
 
 export function toLowerRemoveDiacritics(string: string): string {

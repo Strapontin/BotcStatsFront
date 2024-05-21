@@ -1,6 +1,6 @@
 import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player, getPlayerFullName } from "@/entities/Player";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
 import CreatePlayer from "@/pages/create/player";
 import {
   Autocomplete,
@@ -19,6 +19,7 @@ export default function AutocompletePlayer({
   canAddNewPlayer,
   autoFocus,
   autocompleteSize,
+  playersIdToHide,
 }: {
   setSelectedPlayer: (player: Player) => void;
   autocompleteLabel?: string;
@@ -27,9 +28,11 @@ export default function AutocompletePlayer({
   canAddNewPlayer?: boolean;
   autoFocus?: boolean;
   autocompleteSize?: "sm" | "md" | "lg";
+  playersIdToHide?: number[];
 }) {
   const { data: players, isLoading } = useGetPlayers();
   const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
+  const [filterAutocomplete, setFilterAutocomplete] = useState<string>("");
   const [showModalCreatePlayer, setShowModalCreatePlayer] =
     useState<boolean>(false);
 
@@ -41,16 +44,30 @@ export default function AutocompletePlayer({
           : 1
       );
 
-  const items = playersSorted.map((player) => {
-    return (
-      <AutocompleteItem key={player.id} aria-label={getPlayerFullName(player)}>
-        <div className="flex flex-col">
-          <span>{player.name}</span>
-          <span className="text-default-400 text-sm">{player.pseudo}</span>
-        </div>
-      </AutocompleteItem>
-    );
-  });
+  const items = playersSorted
+    .filter((player, index, array) => {
+      return (
+        !playersIdToHide?.includes(player.id) &&
+        stringContainsString(getPlayerFullName(player), filterAutocomplete)
+      );
+    })
+    .filter((player, index, array) => {
+      // Shorten the list to not overload the frontend
+      return index < 35;
+    })
+    .map((player) => {
+      return (
+        <AutocompleteItem
+          key={player.id}
+          aria-label={getPlayerFullName(player)}
+        >
+          <div className="flex flex-col">
+            <span>{player.name}</span>
+            <span className="text-default-400 text-sm">{player.pseudo}</span>
+          </div>
+        </AutocompleteItem>
+      );
+    });
 
   function ButtonEmptyPlayer() {
     return canAddNewPlayer ? (
@@ -76,7 +93,8 @@ export default function AutocompletePlayer({
         variant="bordered"
         placeholder={autocompletePlaceholder}
         onSelectionChange={(playerId) => {
-          setSelectedPlayer(players.find((e) => e.id === +playerId)!);
+          if (playerId)
+            setSelectedPlayer(players.find((e) => e.id === +playerId)!);
         }}
         isLoading={isLoading}
         defaultSelectedKey={defaultSelectedKey}
@@ -85,6 +103,7 @@ export default function AutocompletePlayer({
         }}
         autoFocus={autoFocus}
         size={autocompleteSize}
+        onInputChange={setFilterAutocomplete}
       >
         {items}
       </Autocomplete>

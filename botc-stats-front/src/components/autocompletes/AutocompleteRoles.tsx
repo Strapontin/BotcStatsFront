@@ -65,7 +65,9 @@ export default function AutocompleteRoles({
       label={autocompleteLabel ?? "Rôles"}
       variant="bordered"
       placeholder={autocompletePlaceholder}
-      onSelectionChange={(roleId) => setRoleSelected(+roleId)}
+      onSelectionChange={(roleId) => {
+        if (roleId) setRoleSelected(+roleId);
+      }}
       disabledKeys={selectedRoles.map((sr) => sr.id + "")}
       scrollShadowProps={{
         visibility: "none",
