@@ -1,4 +1,5 @@
 import {
+  Divider,
   Navbar,
   NavbarBrand,
   NavbarContent,
@@ -9,13 +10,13 @@ import {
 } from "@nextui-org/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import imgRecette from "../../../public/images/Recette.png";
 import ConnectionWithAvatar from "../connection-with-avatar/ConnectionWithAvatar";
 import QrCode from "../qr-code/QrCode";
-import { useRouter } from "next/router";
 
-type MenuItem = { name: string; href: string };
+type MenuItem = { name: string; href?: string };
 
 export default function HeaderNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,9 +36,14 @@ export default function HeaderNavbar() {
     { name: "Parties", href: "/games" },
   ];
   const menuItemsLeftMenuOnly: MenuItem[] = [
+    { name: "divider" },
     {
       name: "Ordre de nuit",
       href: "/nightsheet",
+    },
+    {
+      name: "Rôles récemment joués par joueur",
+      href: "/recently-played",
     },
   ];
 
@@ -72,7 +78,7 @@ export default function HeaderNavbar() {
       <NavbarContent className="hidden sm:flex" justify="center">
         {menuItems.map((item) => (
           <NavbarItem key={item.href} isActive={pathname === item.href}>
-            <Link href={item.href} color="foreground">
+            <Link href={item.href!} color="foreground">
               {item.name}
             </Link>
           </NavbarItem>
@@ -84,14 +90,23 @@ export default function HeaderNavbar() {
 
       <NavbarMenu>
         {[...menuItems, ...menuItemsLeftMenuOnly].map((item) => (
-          <NavbarMenuItem key={item.href} isActive={pathname === item.href}>
-            <Link
-              href={item.href}
-              color="foreground"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.name}
-            </Link>
+          <NavbarMenuItem
+            key={item.name + item.href}
+            isActive={pathname === item.href}
+          >
+            {item.href ? (
+              <Link
+                href={item.href}
+                color="foreground"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ) : item.name === "divider" ? (
+              <Divider />
+            ) : (
+              <>{item.name}</>
+            )}
           </NavbarMenuItem>
         ))}
         <NavbarMenuItem>
