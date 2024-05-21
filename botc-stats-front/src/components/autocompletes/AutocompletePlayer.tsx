@@ -1,6 +1,6 @@
 import { useGetPlayers } from "@/data/back-api/back-api-player";
 import { Player, getPlayerFullName } from "@/entities/Player";
-import { toLowerRemoveDiacritics } from "@/helper/string";
+import { stringContainsString, toLowerRemoveDiacritics } from "@/helper/string";
 import CreatePlayer from "@/pages/create/player";
 import {
   Autocomplete,
@@ -38,25 +38,31 @@ export default function AutocompletePlayer({
 
   const playersSorted = isLoading
     ? []
-    : players.sort((a, b) =>
-        toLowerRemoveDiacritics(a.name) < toLowerRemoveDiacritics(b.name)
-          ? -1
-          : 1
-      );
+    : players
+        .filter((player) => {
+          return stringContainsString(
+            getPlayerFullName(player),
+            filterAutocomplete
+          );
+        })
+        .sort((a, b) =>
+          toLowerRemoveDiacritics(a.name) < toLowerRemoveDiacritics(b.name)
+            ? -1
+            : 1
+        )
+        .filter(
+          // Shorten the list to not overload the frontend
+          (player, index) => index < 35
+        );
 
-  const items = playersSorted
-    .filter(
-      // Shorten the list to not overload the frontend
-      (player, index) => index < 35
-    )
-    .map((player) => (
-      <AutocompleteItem key={player.id} aria-label={getPlayerFullName(player)}>
-        <div className="flex flex-col">
-          <span>{player.name}</span>
-          <span className="text-default-400 text-sm">{player.pseudo}</span>
-        </div>
-      </AutocompleteItem>
-    ));
+  const items = playersSorted.map((player) => (
+    <AutocompleteItem key={player.id} aria-label={getPlayerFullName(player)}>
+      <div className="flex flex-col">
+        <span>{player.name}</span>
+        <span className="text-default-400 text-sm">{player.pseudo}</span>
+      </div>
+    </AutocompleteItem>
+  ));
 
   function ButtonEmptyPlayer() {
     return canAddNewPlayer ? (
