@@ -129,7 +129,7 @@ export default function RecentlyPlayedPage() {
   const AddPlayer = () => {
     return (
       <AutocompletePlayer
-        playersIdToHide={playersSelected.map((p) => p.id)}
+        disabledPlayerIds={playersSelected.map((p) => p.id)}
         setSelectedPlayer={(player) => {
           setPlayersSelected((prev) => [...prev, player]);
         }}
