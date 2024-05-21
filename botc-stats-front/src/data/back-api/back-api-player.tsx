@@ -1,4 +1,5 @@
 import { Player } from "@/entities/Player";
+import { RoleHistory } from "@/entities/RoleHistory";
 import useSWR from "swr";
 import useApi, { Api } from "./useApi";
 
@@ -32,6 +33,30 @@ export function useGetPlayerById(playerId: number): {
   return {
     data: data?.status === 404 ? null : data,
     isLoading: isLoading || isLoadingApi || isNaN(playerId),
+  };
+}
+
+export function useGetRoleHistory(
+  playersId: number[],
+  maxRolesShown: number
+): {
+  data?: RoleHistory[];
+  isLoading: boolean;
+} {
+  const { apiUrl, isLoadingApi } = useApi();
+
+  const { data, isLoading, error } = useSWR(
+    !isLoadingApi && playersId.length > 0
+      ? `${apiUrl}/Players/RoleHistory?playersId=${playersId.join(
+          "&playersId="
+        )}&maxRolesShown=${maxRolesShown}`
+      : null,
+    fetcher
+  );
+
+  return {
+    data: data?.status === 404 ? null : data,
+    isLoading: isLoading || isLoadingApi,
   };
 }
 

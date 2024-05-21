@@ -19,6 +19,7 @@ export default function AutocompletePlayer({
   canAddNewPlayer,
   autoFocus,
   autocompleteSize,
+  disabledPlayerIds,
 }: {
   setSelectedPlayer: (player: Player) => void;
   autocompleteLabel?: string;
@@ -27,9 +28,11 @@ export default function AutocompletePlayer({
   canAddNewPlayer?: boolean;
   autoFocus?: boolean;
   autocompleteSize?: "sm" | "md" | "lg";
+  disabledPlayerIds?: number[];
 }) {
   const { data: players, isLoading } = useGetPlayers();
   const [autocompleteKey, setAutocompleteKey] = useState<number>(0);
+  const [filterAutocomplete, setFilterAutocomplete] = useState<string>("");
   const [showModalCreatePlayer, setShowModalCreatePlayer] =
     useState<boolean>(false);
 
@@ -41,16 +44,19 @@ export default function AutocompletePlayer({
           : 1
       );
 
-  const items = playersSorted.map((player) => {
-    return (
+  const items = playersSorted
+    .filter(
+      // Shorten the list to not overload the frontend
+      (player, index) => index < 35
+    )
+    .map((player) => (
       <AutocompleteItem key={player.id} aria-label={getPlayerFullName(player)}>
         <div className="flex flex-col">
           <span>{player.name}</span>
           <span className="text-default-400 text-sm">{player.pseudo}</span>
         </div>
       </AutocompleteItem>
-    );
-  });
+    ));
 
   function ButtonEmptyPlayer() {
     return canAddNewPlayer ? (
@@ -76,7 +82,8 @@ export default function AutocompletePlayer({
         variant="bordered"
         placeholder={autocompletePlaceholder}
         onSelectionChange={(playerId) => {
-          setSelectedPlayer(players.find((e) => e.id === +playerId)!);
+          if (playerId)
+            setSelectedPlayer(players.find((e) => e.id === +playerId)!);
         }}
         isLoading={isLoading}
         defaultSelectedKey={defaultSelectedKey}
@@ -85,6 +92,8 @@ export default function AutocompletePlayer({
         }}
         autoFocus={autoFocus}
         size={autocompleteSize}
+        onInputChange={setFilterAutocomplete}
+        disabledKeys={disabledPlayerIds?.map((id) => `${id}`)}
       >
         {items}
       </Autocomplete>

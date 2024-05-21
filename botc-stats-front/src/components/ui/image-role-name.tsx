@@ -120,6 +120,8 @@ export function getAvatarRole(role: Role) {
 }
 
 export function getUserRole(role: Role) {
+  if (!role || role.id === 0) return <></>;
+  
   return (
     <div className="flex text-left">
       <User

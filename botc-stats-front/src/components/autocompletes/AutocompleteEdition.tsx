@@ -47,7 +47,8 @@ export default function AutocompleteEdition({
       variant="bordered"
       placeholder={autocompletePlaceholder}
       onSelectionChange={(editionId) => {
-        setSelectedEdition(editions.find((e) => e.id === +editionId)!);
+        if (editionId)
+          setSelectedEdition(editions.find((e) => e.id === +editionId)!);
       }}
       onInputChange={(text) => {
         setShowDivider(
@@ -57,10 +58,7 @@ export default function AutocompleteEdition({
       isLoading={isLoading}
       defaultSelectedKey={defaultSelectedKey}
     >
-      <AutocompleteSection
-        showDivider={showDivider}
-        title="Modules officiels"
-      >
+      <AutocompleteSection showDivider={showDivider} title="Modules officiels">
         {editionsSorted
           .filter((e) => officialEditionNames.includes(e.name))
           .map((edition) => {

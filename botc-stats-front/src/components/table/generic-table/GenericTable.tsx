@@ -70,6 +70,7 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
   rows,
   rowsPercentage,
 }: GenericTableProps<T>) {
+  let timeoutFilter: NodeJS.Timeout;
   const [filters, setFilters] = useState<{ key: string; value: string }[]>([]);
   const [showPercentage, setShowPercentage] = useState<boolean>(false);
   const [keyTable, setKeyTable] = useState<number>(0);
@@ -203,10 +204,13 @@ export function GenericTable<T extends GenericTableRowsExtendedProps>({
                 filterValue={filter.value}
                 size="sm"
                 setFilter={(value) => {
-                  setFilters((prev) => [
-                    ...prev.filter((p) => p.key !== filter.key),
-                    { key: filter.key, value: value },
-                  ]);
+                  clearTimeout(timeoutFilter);
+                  timeoutFilter = setTimeout(() => {
+                    setFilters((prev) => [
+                      ...prev.filter((p) => p.key !== filter.key),
+                      { key: filter.key, value: value },
+                    ]);
+                  }, 500);
                 }}
                 placeholder={`${
                   columns.find((c) => c.key === filter.key)?.name
