@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/react": "^2.3.6",
+    "@nextui-org/react": "^0.0.0-canary-20240520130845",
     "@react-stately/data": "^3.11.3",
     "chart.js": "^4.4.2",
     "framer-motion": "^11.1.7",
